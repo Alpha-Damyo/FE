@@ -39,8 +39,9 @@ Future<bool> _getLocationPermission() async {
 // 위치 권한 요청
 Future<bool> _requestLocationPermission() async {
   Map<Permission, PermissionStatus> statuses =
-      await [Permission.storage, Permission.location].request();
+      await [Permission.storage , Permission.location].request();
   if (statuses[Permission.storage]!.isGranted) {
+    print(statuses);
     return Future.value(true);
   } else {
     openAppSettings();
@@ -48,9 +49,26 @@ Future<bool> _requestLocationPermission() async {
   }
 }
 
+// 카메라 권한 요청
+Future<bool> _requestCameraPermission() async {
+  Map<Permission, PermissionStatus> statuses =
+      await [Permission.storage, Permission.camera].request();
+  if (statuses[Permission.storage]!.isGranted) {
+    print(statuses);
+    return Future.value(true);
+  } else {
+    openAppSettings();
+    return Future.value(false);
+  }
+}
+
+
+
+
 void main() async {
   await _initializeMap();
-  // await _requestLocationPermission();
+  await _requestLocationPermission();
+  await _requestCameraPermission();
   // Kakao sdk 초기화
   _initializeKakao();
   runApp(const App());
