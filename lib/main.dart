@@ -35,40 +35,54 @@ Future<bool> _getLocationPermission() async {
     return false;
   }
 }
-
-// 위치 권한 요청
-Future<bool> _requestLocationPermission() async {
-  Map<Permission, PermissionStatus> statuses =
-      await [Permission.storage , Permission.location].request();
-  if (statuses[Permission.storage]!.isGranted) {
-    print(statuses);
-    return Future.value(true);
+// 카메라 권한 조회
+Future<bool> _getCameraPermission() async {
+  bool status = await Permission.camera.isGranted;
+  if (status == true) {
+    return true;
   } else {
-    openAppSettings();
-    return Future.value(false);
+    return false;
   }
 }
 
-// 카메라 권한 요청
-Future<bool> _requestCameraPermission() async {
-  Map<Permission, PermissionStatus> statuses =
-      await [Permission.storage, Permission.camera].request();
-  if (statuses[Permission.storage]!.isGranted) {
-    print(statuses);
-    return Future.value(true);
-  } else {
-    openAppSettings();
-    return Future.value(false);
-  }
+// // 위치 권한
+// Future<bool> _requestLocationPermission(Map<Permission, PermissionStatus> statuses) async {
+//   if(statuses[Permission.location]!.isGranted){
+//     return Future.value(true);
+//   }
+//   else{
+//     openAppSettings();
+//     return Future.value(false);
+//   }
+// }
+
+// // 카메라 권한 
+// Future<bool> _requestCameraPermission(Map<Permission, PermissionStatus> statuses) async {
+//   if(statuses[Permission.camera]!.isGranted){
+//     return Future.value(true);
+//   }
+//   else{
+//     openAppSettings();
+//     return Future.value(false);
+//   }
+// }
+
+// 권한 요청 & 권한 상태 객체 생성
+void _requestPermission() async{
+  Map<Permission, PermissionStatus> statuses_loc =
+    await [Permission.location].request();
+  Map<Permission, PermissionStatus> statuses_cam =
+    await [Permission.camera].request();
+  
+  // _requestLocationPermission(statuses_loc);
+  // _requestCameraPermission(statuses_cam);
+  
 }
-
-
 
 
 void main() async {
   await _initializeMap();
-  await _requestLocationPermission();
-  await _requestCameraPermission();
+  _requestPermission();
   // Kakao sdk 초기화
   _initializeKakao();
   runApp(const App());
