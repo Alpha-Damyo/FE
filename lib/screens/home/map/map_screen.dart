@@ -18,6 +18,34 @@ class _MapScreenState extends State<MapScreen>
   @override
   bool get wantKeepAlive => true;
 
+  // 사용자의 현재 위치를 받아오는 함수
+
+  // void _getCurrentLocation() async {
+  //   Location location = Location();
+  //   bool serviceEnabled;
+  //   PermissionStatus permissionGranted;
+  //   LocationData locationData;
+
+  //   serviceEnabled = await location.serviceEnabled();
+  //   if (!serviceEnabled) {
+  //     serviceEnabled = await location.requestService();
+  //     if (!serviceEnabled) {
+  //       return;
+  //     }
+  //   }
+
+  //   permissionGranted = await location.hasPermission();
+  //   if (permissionGranted == PermissionStatus.denied) {
+  //     permissionGranted = await location.requestPermission();
+  //     if (permissionGranted != PermissionStatus.granted) {
+  //       return;
+  //     }
+  //   }
+
+  //   locationData = await location.getLocation();
+  //   print(locationData.longitude);
+  // }
+
   // 지도  핵심 worker
   NaverMapController? mapController;
   final onCameraChangeStreamController = StreamController<void>.broadcast();
@@ -66,12 +94,17 @@ class _MapScreenState extends State<MapScreen>
     // NaverMapController 객체의 비동기 작업 완료를 나타내는 Completer 생성
     final Completer<NaverMapController> mapControllerCompleter = Completer();
 
+    // _getCurrentLocation();
     return Scaffold(
       body: Stack(
         children: [
           // 지도 화면
           NaverMap(
             options: const NaverMapViewOptions(
+              // initialCameraPosition: NCameraPosition(
+              // target: NLatLng(37.56659, 126.97899),
+              //   zoom: 14.0,
+              // ),
               locationButtonEnable: true, // 위치 버튼 표시 여부 설정
               consumeSymbolTapEvents: false, // 심볼 탭 이벤트 소비 여부 설정
             ),
