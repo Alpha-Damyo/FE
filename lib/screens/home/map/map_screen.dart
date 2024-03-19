@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'dart:developer';
+import 'package:damyo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,8 @@ class _MapScreenState extends State<MapScreen>
   // 한 번 지도를 실행하면 다시 로드하지 않도록 해주는 변수
   @override
   bool get wantKeepAlive => true;
+
+  // Position? userPosition; // 사용자의 현재 위치
 
   // 지도  핵심 worker
   NaverMapController? mapController;
@@ -44,8 +47,7 @@ class _MapScreenState extends State<MapScreen>
     if (d == null) {
       return 'null';
     } else {
-      var s = d.toString().split('.');
-      return '${s[0]}.${s[1].substring(0, 5)}';
+      return d.toStringAsFixed(5);
     }
   }
 
@@ -71,7 +73,11 @@ class _MapScreenState extends State<MapScreen>
         children: [
           // 지도 화면
           NaverMap(
-            options: const NaverMapViewOptions(
+            options: NaverMapViewOptions(
+              initialCameraPosition: NCameraPosition(
+                target: NLatLng(userLatitude, userLongitude),
+                zoom: 14.0,
+              ),
               locationButtonEnable: true, // 위치 버튼 표시 여부 설정
               consumeSymbolTapEvents: false, // 심볼 탭 이벤트 소비 여부 설정
             ),
