@@ -39,9 +39,18 @@ Future<bool> _getLocationPermission() async {
 Future<bool> _getCameraPermission() async {
   bool status = await Permission.camera.isGranted;
   if (status == true) {
-    return true;
+    return Future.value(true);
   } else {
-    return false;
+    return Future.value(false);
+  }
+}
+// 카메라 권한 조회
+Future<bool> _getPhotoPermission() async {
+  bool status = await Permission.photos.isGranted;
+  if (status == true) {
+    return Future.value(true);
+  } else {
+    return Future.value(false);
   }
 }
 
@@ -73,7 +82,8 @@ void _requestPermission() async{
     await [Permission.location].request();
   Map<Permission, PermissionStatus> statuses_cam =
     await [Permission.camera].request();
-  
+  Map<Permission, PermissionStatus> statuses_photos =
+    await [Permission.photos].request();
   // _requestLocationPermission(statuses_loc);
   // _requestCameraPermission(statuses_cam);
   
