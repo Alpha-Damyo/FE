@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -27,13 +28,19 @@ class _LoginScreenState extends State<LoginScreen> {
   void signInWithNaver() async {
     NaverLoginResult naverUser = await FlutterNaverLogin.logIn();
 
+    // print(naverUser.accessToken);
     if (naverUser != null) {
       print('name = ${naverUser.account.name}');
       print('email = ${naverUser.account.email}');
       print('id = ${naverUser.account.id}');
 
-      setState(() {});
+      
     }
+    setState(() {
+        // print('name = ${naverUser.account.name}');
+        // print('email = ${naverUser.account.email}');
+        // print('id = ${naverUser.account.id}');
+    });
   }
 
   void signInWithKakao() async {
