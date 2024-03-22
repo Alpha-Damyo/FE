@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
+import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -75,6 +76,11 @@ final GoRouter router = GoRouter(
       name: 'login',
       path: '/login',
       builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      name: 'signup',
+      path: '/signup',
+      builder: (context, state) => const SignupScreen(),
     ),
   ],
 );
