@@ -18,6 +18,14 @@
             android:value="@string/client_name" />
 
 
+        <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity">
+            <intent-filter android:label="flutter_web_auth"> <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="kakaocbaed3d762d9586bc9359bc32f29edc0" android:host="oauth"/>
+            </intent-filter>
+        </activity>
+
 
         <activity
             android:name=".MainActivity"
