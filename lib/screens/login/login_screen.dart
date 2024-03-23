@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -27,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void signInWithNaver() async {
     NaverLoginResult naverUser = await FlutterNaverLogin.logIn();
+    // final NaverLoginResult User = await FlutterNaverLogin.logIn();
+    NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
 
     // print(naverUser.accessToken);
     if (naverUser != null) {
@@ -37,10 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
       
     }
     setState(() {
-        // print('name = ${naverUser.account.name}');
-        // print('email = ${naverUser.account.email}');
-        // print('id = ${naverUser.account.id}');
+      
     });
+  }
+
+  void signOutWithNaver() async {
+    FlutterNaverLogin.logOut();
   }
 
   void signInWithKakao() async {
