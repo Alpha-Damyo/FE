@@ -3,6 +3,11 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'package:damyo/screens/signup/signup_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -13,6 +18,16 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
+
+/*final GoRouter router = GoRouter(
+  routes: [
+    GoRoute(
+      name: 'signup',
+      path: '/signup',
+      builder: (context, state) => const SignupScreen(),
+    ),
+  ],
+);*/
 
 class _LoginScreenState extends State<LoginScreen> {
   FlutterSecureStorage storage = const FlutterSecureStorage();
@@ -52,6 +67,15 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await UserApi.instance.loginWithKakaoTalk();
         print('카카오톡으로 로그인 성공');
+        try {
+          User user = await UserApi.instance.me();
+          print('사용자 정보 요청 성공'
+              '\n회원번호: ${user.id}'
+              '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+              '\n이메일: ${user.kakaoAccount?.email}');
+        } catch (error) {
+          print('사용자 정보 요청 실패 $error');
+        }
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
         // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
@@ -63,6 +87,15 @@ class _LoginScreenState extends State<LoginScreen> {
         try {
           await UserApi.instance.loginWithKakaoAccount();
           print('카카오계정으로 로그인 성공');
+          try {
+            User user = await UserApi.instance.me();
+            print('사용자 정보 요청 성공'
+                '\n회원번호: ${user.id}'
+                '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+                '\n이메일: ${user.kakaoAccount?.email}');
+          } catch (error) {
+            print('사용자 정보 요청 실패 $error');
+          }
         } catch (error) {
           print('카카오계정으로 로그인 실패 $error');
         }
@@ -71,6 +104,15 @@ class _LoginScreenState extends State<LoginScreen> {
       try {
         await UserApi.instance.loginWithKakaoAccount();
         print('카카오계정으로 로그인 성공');
+        try {
+          User user = await UserApi.instance.me();
+          print('사용자 정보 요청 성공'
+              '\n회원번호: ${user.id}'
+              '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+              '\n이메일: ${user.kakaoAccount?.email}');
+        } catch (error) {
+          print('사용자 정보 요청 실패 $error');
+        }
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
       }
@@ -80,59 +122,143 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const Flexible(
-            flex: 1,
-            fit: FlexFit.tight,
-            child: Text(''),
-          ),
-          Flexible(
-            flex: 1,
-            child: Container(
-              alignment: Alignment.center,
-              child: const Text(
-                '로그인',
-                style: TextStyle(fontSize: 100),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 89),
+            Container(
+              width: 158,
+              height: 161,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
               ),
-            ),
-          ),
-          Flexible(
-            flex: 2,
-            child: Container(
-              alignment: Alignment.center,
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      signInWithGoogle();
-                    },
-                    icon: const Icon(
-                      Icons.g_mobiledata,
-                      size: 130,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      signInWithKakao();
-                    },
-                    icon: const Icon(
-                      Icons.chat_bubble_outline,
-                      size: 100,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      signInWithNaver();
-                    },
-                    icon: const Icon(
-                      Icons.adb,
-                      size: 100,
+                  Container(
+                    width: 150,
+                    height: 150,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image:
+                            NetworkImage("https://via.placeholder.com/150x150"),
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 15),
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '로그인',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 32,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  '담요의 재미있는 서비스와 혜택을 누려보세요 !',
+                  style: TextStyle(
+                    color: Color(0xFF6E767F),
+                    fontSize: 14,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 60),
+            GestureDetector(
+              onTap: signInWithGoogle,
+              child: buildLoginButton(
+                text: '    구글로 계속하기',
+                backgroundColor: Colors.white,
+                imageUrl: "https://via.placeholder.com/20x20",
+              ),
+            ),
+            const SizedBox(height: 15),
+            GestureDetector(
+              onTap: signInWithKakao,
+              child: buildLoginButton(
+                text: '카카오로 계속하기',
+                backgroundColor: const Color(0xFFF9E000),
+                imageUrl: "https://via.placeholder.com/23x24",
+              ),
+            ),
+            const SizedBox(height: 15),
+            GestureDetector(
+              onTap: signInWithNaver,
+              child: buildLoginButton(
+                text: '네이버로 계속하기',
+                backgroundColor: const Color(0xFF00C73C),
+                imageUrl: "https://via.placeholder.com/28x28",
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildLoginButton({
+    required String text,
+    required Color backgroundColor,
+    required String imageUrl,
+  }) {
+    return Container(
+      width: 240,
+      height: 50,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(
+          color: Colors.black,
+          width: 0.1,
+        ),
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
