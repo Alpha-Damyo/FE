@@ -6,6 +6,7 @@ import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -35,6 +36,7 @@ Future<bool> _getLocationPermission() async {
     return false;
   }
 }
+
 // 카메라 권한 조회
 Future<bool> _getCameraPermission() async {
   bool status = await Permission.camera.isGranted;
@@ -64,13 +66,30 @@ void _requestPermission() async{
     await [Permission.photos].request();
   // _requestLocationPermission(statuses_loc);
   // _requestCameraPermission(statuses_cam);
-  
 }
 
+// 사용자의 현재 위치를 받아오는 함수
+double userLatitude = 37.56660;
+double userLongitude = 126.97900;
+Future<void> _getCurrentLocation() async {
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+  }
+  try {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    userLatitude = position.latitude;
+    userLongitude = position.longitude;
+  } catch (e) {
+    print(e);
+  }
+}
 
 void main() async {
   await _initializeMap();
   _requestPermission();
+  await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
   runApp(const App());
