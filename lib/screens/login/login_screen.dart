@@ -2,10 +2,10 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+
   void signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -23,7 +25,9 @@ class _LoginScreenState extends State<LoginScreen> {
       print('email = ${googleUser.email}');
       print('id = ${googleUser.id}');
 
-      setState(() {});
+      await storage.write(key: 'userID', value: googleUser.email);
+      // 읽고 싶을 때는
+      // String? id = await storage.read(key: 'userID');
     }
   }
 
@@ -33,16 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
     NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
 
     // print(naverUser.accessToken);
-    if (naverUser != null) {
-      print('name = ${naverUser.account.name}');
-      print('email = ${naverUser.account.email}');
-      print('id = ${naverUser.account.id}');
-
-      
-    }
-    setState(() {
-      
-    });
+    print('name = ${naverUser.account.name}');
+    print('email = ${naverUser.account.email}');
+    print('id = ${naverUser.account.id}');
+    setState(() {});
   }
 
   void signOutWithNaver() async {
