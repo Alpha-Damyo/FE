@@ -46,7 +46,7 @@ Future<bool> _getCameraPermission() async {
     return Future.value(false);
   }
 }
-// 카메라 권한 조회
+// 갤러리 권한 조회
 Future<bool> _getPhotoPermission() async {
   bool status = await Permission.photos.isGranted;
   if (status == true) {
@@ -55,28 +55,6 @@ Future<bool> _getPhotoPermission() async {
     return Future.value(false);
   }
 }
-
-// // 위치 권한
-// Future<bool> _requestLocationPermission(Map<Permission, PermissionStatus> statuses) async {
-//   if(statuses[Permission.location]!.isGranted){
-//     return Future.value(true);
-//   }
-//   else{
-//     openAppSettings();
-//     return Future.value(false);
-//   }
-// }
-
-// // 카메라 권한
-// Future<bool> _requestCameraPermission(Map<Permission, PermissionStatus> statuses) async {
-//   if(statuses[Permission.camera]!.isGranted){
-//     return Future.value(true);
-//   }
-//   else{
-//     openAppSettings();
-//     return Future.value(false);
-//   }
-// }
 
 // 권한 요청 & 권한 상태 객체 생성
 void _requestPermission() async{
