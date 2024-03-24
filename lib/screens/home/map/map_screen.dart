@@ -1,8 +1,14 @@
 import 'dart:async';
 
 import 'dart:developer';
+import 'package:balloon_widget/balloon_widget.dart';
+import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
+import 'package:damyo/screens/home/map/bottom_drawer.dart';
+import 'package:damyo/screens/home/map/marker.dart';
+import 'package:damyo/screens/home/map/ovelay_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,26 +25,16 @@ class _MapScreenState extends State<MapScreen>
   @override
   bool get wantKeepAlive => true;
 
-  // Position? userPosition; // 사용자의 현재 위치
-
   // 지도  핵심 worker
   NaverMapController? mapController;
   final onCameraChangeStreamController = StreamController<void>.broadcast();
   StreamSubscription<void>? onCameraChangeStreamSubscription;
+  final NInfoOverlayPortalController nOverlayInfoOverlayPortalController =
+      NInfoOverlayPortalController();
 
   // 현재 카메라 상태
   NCameraPosition? _nowCameraPosition;
   final int _animationMill = 300;
-
-  void onCameraChange() async {
-    _nowCameraPosition = mapController?.nowCameraPosition;
-    if (mounted) setState(() {});
-  }
-
-  void updateCamera(NCameraUpdate cameraUpdate) {
-    mapController?.updateCamera(cameraUpdate
-      ..setAnimation(duration: Duration(milliseconds: _animationMill)));
-  }
 
   // 제보 버튼이 눌렀는지 여부
   bool informPressed = false;
@@ -50,6 +46,10 @@ class _MapScreenState extends State<MapScreen>
       return d.toStringAsFixed(5);
     }
   }
+
+  bool smokingAreaSelected = false;
+  BottomDrawerController bottomDrawerController = BottomDrawerController();
+  String smokingAreaId = '';
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +87,18 @@ class _MapScreenState extends State<MapScreen>
               mapControllerCompleter
                   .complete(controller); // Completer에 지도 컨트롤러 완료 신호 전송
               log("onMapReady", name: "onMapReady");
+              // 마커를 지도 위에 추가
+              // final Marker marker = Marker(
+              //   mapController: mapController!,
+              //   nOverlayInfoOverlayPortalController:
+              //       nOverlayInfoOverlayPortalController,
+              //   onCameraChangeStream: onCameraChangeStreamController.stream,
+              // );
+              attachOverlay("1", 37.65640, 127.11670);
+              attachOverlay("2", 37.65690, 127.11720);
             },
             onMapTapped: (point, latLng) {
+              smokingAreaSelected = false;
               debugPrint("${latLng.latitude}, ${latLng.longitude}");
             },
             onCameraChange: (reason, animated) {
@@ -163,6 +173,7 @@ class _MapScreenState extends State<MapScreen>
                             onPressed: () {
                               setState(() {
                                 informPressed = !informPressed;
+                                bottomDrawerController.open();
                               });
                             },
                             backgroundColor: Theme.of(context).primaryColor,
@@ -210,23 +221,52 @@ class _MapScreenState extends State<MapScreen>
               ],
             ),
           ),
-
-          // 위도 경도 임시 출력
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              color: Colors.blue,
-              child: Text(
-                '위도: ${stringCoordinate(_nowCameraPosition?.target.latitude)} 경도: ${stringCoordinate(_nowCameraPosition?.target.longitude)}',
-                style: const TextStyle(fontSize: 20),
-              ),
+          Visibility(
+            visible: smokingAreaSelected,
+            child: MapBottomDrawer(
+              smokingAreaId: smokingAreaId,
             ),
           ),
+
+          // 위도 경도 임시 출력
+          // Positioned(
+          //   left: 0,
+          //   right: 0,
+          //   bottom: 0,
+          //   child: Container(
+          //     color: Colors.blue,
+          //     child: Text(
+          //       '위도: ${stringCoordinate(_nowCameraPosition?.target.latitude)} 경도: ${stringCoordinate(_nowCameraPosition?.target.longitude)}',
+          //       style: const TextStyle(fontSize: 20),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
+  }
+
+  void attachOverlay(String id, double lat, double lng) async {
+    final cameraPosition = mapController!.nowCameraPosition;
+    final marker = NMarker(
+      id: id,
+      position: NLatLng(lat, lng),
+    );
+    marker.setOnTapListener((overlay) async {
+      smokingAreaId = id;
+      smokingAreaSelected = true;
+    });
+    mapController!.addOverlay(marker);
+  }
+
+  void onCameraChange() async {
+    _nowCameraPosition = mapController?.nowCameraPosition;
+    if (mounted) setState(() {});
+  }
+
+  void updateCamera(NCameraUpdate cameraUpdate) {
+    mapController!.updateCamera(cameraUpdate
+      ..setAnimation(duration: Duration(milliseconds: _animationMill)));
   }
 
   @override
