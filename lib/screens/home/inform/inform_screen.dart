@@ -71,7 +71,6 @@ class _InformScreenState extends State<InformScreen> {
           children: [
             Flexible(
               flex: 4,
-              child: GestureDetector(
                 child: Container(
                   alignment: Alignment.center,
                   decoration: const BoxDecoration(
@@ -80,11 +79,6 @@ class _InformScreenState extends State<InformScreen> {
                   ),
                   child: const Text('사진을 업로드 해주세요'),
                 ),
-                onTap: (){
-                  // if(!_getCameraPermission()){}
-                  
-                },
-              ),
             ),
             const SizedBox(height: 20),
             Flexible(
@@ -93,6 +87,7 @@ class _InformScreenState extends State<InformScreen> {
               child: InkWell(
                 child: informImage(),
                 onTap: () {
+                  //제보 사진을 가져오는 부분
                   getImage(ImageSource.camera);
                 },
               ),
