@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:damyo/screens/home/inform/inform_screen.dart';
+import 'package:damyo/screens/home/filter/filter_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -107,6 +108,19 @@ final GoRouter router = GoRouter(
           path: 'inform',
           builder: (context, state) {
             return const InformScreen();
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+      routes: [
+        GoRoute(
+          name: 'filter',
+          path: 'filter',
+          builder: (context, state) {
+            return const FilterScreen();
           },
         ),
       ],
