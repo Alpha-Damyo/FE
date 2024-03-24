@@ -7,6 +7,7 @@ import 'package:damyo/main.dart';
 import 'package:damyo/screens/home/map/bottom_drawer.dart';
 import 'package:damyo/screens/home/map/marker.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -116,34 +117,102 @@ class _MapScreenState extends State<MapScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 검색창
-                    Container(
-                      width: searchWidth,
-                      height: alignButtonSize,
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.search,
-                            size: iconSize,
+                    Column(
+                      children: [
+                        Container(
+                          width: searchWidth,
+                          height: alignButtonSize,
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search,
+                                size: iconSize,
+                              ),
+                              const Text(
+                                ' 검색창 입니다',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
                           ),
-                          const Text(
-                            ' 검색창 입니다',
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        // 필터 목록
+                        Container(
+                          height: 50,
+                          width: 350,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: <Widget>[
+                              OutlinedButton(
+                                child:Text('a'),
+                                onPressed:(){
+                                  print('a');
+                                } ,
+                              ),
+                              OutlinedButton(
+                                child: Text('b'),
+                                onPressed:(){
+                                  print('b');
+                                } ,
+                              ),
+                              OutlinedButton(
+                                child: Text('c'),
+                                onPressed:(){
+                                  print('c');
+                                } ,
+                              ),
+                              OutlinedButton(
+                                child: Text('d'),
+                                onPressed:(){
+                                  print('d');
+                                } ,
+                              ),OutlinedButton(
+                                child: Text('e'),
+                                onPressed:(){
+                                  print('e');
+                                } ,
+                              ),
+                              OutlinedButton(
+                                child: Text('f'),
+                                onPressed:(){
+                                  print('f');
+                                } ,
+                              ),
+                              OutlinedButton(
+                                child: Text('g'),
+                                onPressed:(){
+                                  print('g');
+                                } ,
+                              ),
+                              OutlinedButton(
+                                child: Text('h'),
+                                onPressed:(){
+                                  print('h');
+                                } ,
+                              ),
+                              OutlinedButton(
+                                child: Text('i'),
+                                onPressed:(){
+                                  print('i');
+                                } ,
+                              ),
+                          ],
+                        ),
+                                          ),
+                      ],
                     ),
+                      
                     SizedBox(
                       width: margin,
                     ),
                     // 여백
                     Column(
                       children: [
-                        // 정렬 버튼
+                        // 필터 설정 버튼
                         Container(
                           width: alignButtonSize,
                           height: alignButtonSize,
@@ -154,7 +223,12 @@ class _MapScreenState extends State<MapScreen>
                               )),
                           child: FloatingActionButton(
                             heroTag: "alignbtn",
-                            onPressed: () {},
+                            onPressed: () {
+                              // 필터 설정 화면
+                              setState(() {
+                                context.push('/filter');
+                              });
+                            },
                             child: Icon(
                               Icons.format_list_bulleted_rounded,
                               size: iconSize,
@@ -188,7 +262,7 @@ class _MapScreenState extends State<MapScreen>
                 SizedBox(
                   height: mapHeight / 2 - (margin * 6 + alignButtonSize * 3),
                 ),
-
+                
                 // 제보를 누르면 등장하는 마커
                 Visibility(
                   visible: informPressed,
