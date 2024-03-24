@@ -41,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print('id = ${googleUser.id}');
 
       await storage.write(key: 'userID', value: googleUser.email);
+      await storage.write(key: 'sns', value: "google");
       // 읽고 싶을 때는
       // String? id = await storage.read(key: 'userID');
     }
