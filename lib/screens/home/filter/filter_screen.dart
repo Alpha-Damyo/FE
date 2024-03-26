@@ -24,6 +24,17 @@ const List<Widget> ox = <Widget>[
   Text('X'),
 ];
 
+const List<Widget> bigsmall = <Widget>[
+  Text('크다'),
+  Text('작다'),
+];
+
+const List<Widget> density = <Widget>[
+  Text('혼잡'),
+  Text('한산'),
+];
+
+
 class FilterScreen extends StatefulWidget {
   const FilterScreen({
     super.key,
@@ -38,7 +49,9 @@ class _FilterScreenState extends State<FilterScreen> {
   final List<bool> _selectedOpenClose = <bool>[false, false];
   final List<bool> _selectedVentilation = <bool>[false, false];
   final List<bool> _selectedCleanliness = <bool>[false, false];
-  final List<bool> _toggleIsSelected = <bool>[false, false, false, false];
+  final List<bool> _selectedBigSmall = <bool>[false, false];
+  final List<bool> _selectedDenisty = <bool>[false, false];
+  final List<bool> _toggleIsSelected = <bool>[false, false, false, false, false, false];
 
   bool activateInformBtn = false;
 
@@ -70,7 +83,9 @@ class _FilterScreenState extends State<FilterScreen> {
                   informToggle('실내 여부', inout, _selectedInOut, 0),
                   informToggle('개방 여부', openclose, _selectedOpenClose, 1),
                   informToggle('환풍 여부', ox, _selectedVentilation, 2),
-                  informToggle('청결도', ox, _selectedCleanliness, 3),
+                  informToggle('청결함 여부', ox, _selectedCleanliness, 3),
+                  informToggle('크기', bigsmall, _selectedBigSmall, 4),
+                  informToggle('혼잡도', density, _selectedDenisty, 5),
                 ],
               ) ,
             ),
@@ -79,7 +94,7 @@ class _FilterScreenState extends State<FilterScreen> {
               fit: FlexFit.tight,
               child: InkWell(
                 onTap: () {
-                  // activateInformBtn ? null : null;
+                  
                 },
                 child: Ink(
                   decoration: BoxDecoration(
