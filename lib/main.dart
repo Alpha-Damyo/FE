@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/filter/filter_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
@@ -12,6 +13,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+
+import 'package:provider/provider.dart';
 
 // 지도 초기화
 Future<void> _initializeMap() async {
@@ -94,7 +97,12 @@ void main() async {
   // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
-  runApp(const App());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => FilterList(),
+      child: const App(),
+      )
+  );
 }
 
 final GoRouter router = GoRouter(
