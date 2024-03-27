@@ -140,5 +140,9 @@ app.*.symbols
 
 # Secret Files
 lib/secret.dart
-ios/Runner/Info.plist
 android/app/src/main/res/values/strings.xml
+android/app/Google-services.json
+ios/Runner/Info.plist
+ios/Runner/GoogleService-Info.plist
+ios/Pods/naveridlogin-sdk-ios/NaverThirdPartyLogin.xcframework/ios-arm64_x86_64-simulator/NaverThirdPartyLogin.framework/Headers/NaverThirdPartyConstantsForApp.h
+ios/Pods/naveridlogin-sdk-ios/NaverThirdPartyLogin.xcframework/ios-arm64/NaverThirdPartyLogin.framework/Headers/NaverThirdPartyConstantsForApp.h
