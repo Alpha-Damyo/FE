@@ -1,3 +1,9 @@
+import 'dart:ffi';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +30,7 @@ final GoRouter router = GoRouter(
 );
 
 class _LoginScreenState extends State<LoginScreen> {
+<<<<<<< HEAD
   @override
   void initState() {
     checkLoginState();
@@ -34,6 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
     print('checkLoginState');
     //GoRouter.of(context).pop();
   }
+=======
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+>>>>>>> d4721162fd2e744b4ddf275f901df440ebf89534
 
   void signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -43,20 +53,32 @@ class _LoginScreenState extends State<LoginScreen> {
       print('email = ${googleUser.email}');
       print('id = ${googleUser.id}');
 
-      setState(() {});
+      await storage.write(key: 'userID', value: googleUser.email);
+      await storage.write(key: 'sns', value: "google");
+      // 읽고 싶을 때는
+      // String? id = await storage.read(key: 'userID');
     }
   }
 
   void signInWithNaver() async {
     NaverLoginResult naverUser = await FlutterNaverLogin.logIn();
+    // final NaverLoginResult User = await FlutterNaverLogin.logIn();
+    NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
 
-    if (naverUser != null) {
+    // print(naverUser.accessToken);
+    if(naverUser != null){
       print('name = ${naverUser.account.name}');
       print('email = ${naverUser.account.email}');
       print('id = ${naverUser.account.id}');
-
-      setState(() {});
+      await storage.write(key: 'userID', value: naverUser.account.email);
+      await storage.write(key: 'sns', value: "naver");
     }
+    setState(() {});
+  }
+
+
+  void signOutWithNaver() async {
+    FlutterNaverLogin.logOut();
   }
 
   void signInWithKakao() async {
@@ -137,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Container(
         width: double.infinity,
-        height: double.infinity,
+        height: double.infinity, 
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

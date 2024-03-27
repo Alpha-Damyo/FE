@@ -1,15 +1,20 @@
 import 'dart:developer';
 
+import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
+import 'package:damyo/screens/home/filter/filter_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+
+import 'package:provider/provider.dart';
 
 // 지도 초기화
 Future<void> _initializeMap() async {
@@ -37,24 +42,67 @@ Future<bool> _getLocationPermission() async {
   }
 }
 
-// 위치 권한 요청
-Future<bool> _requestLocationPermission() async {
-  Map<Permission, PermissionStatus> statuses =
-      await [Permission.storage, Permission.location].request();
-  if (statuses[Permission.storage]!.isGranted) {
+// 카메라 권한 조회
+Future<bool> _getCameraPermission() async {
+  bool status = await Permission.camera.isGranted;
+  if (status == true) {
     return Future.value(true);
   } else {
-    openAppSettings();
     return Future.value(false);
+  }
+}
+// 갤러리 권한 조회
+Future<bool> _getPhotoPermission() async {
+  bool status = await Permission.photos.isGranted;
+  if (status == true) {
+    return Future.value(true);
+  } else {
+    return Future.value(false);
+  }
+}
+
+// 권한 요청 & 권한 상태 객체 생성
+void _requestPermission() async{
+  Map<Permission, PermissionStatus> statuses_loc =
+    await [Permission.location].request();
+  Map<Permission, PermissionStatus> statuses_cam =
+    await [Permission.camera].request();
+  Map<Permission, PermissionStatus> statuses_photos =
+    await [Permission.photos].request();
+  // _requestLocationPermission(statuses_loc);
+  // _requestCameraPermission(statuses_cam);
+}
+
+// 사용자의 현재 위치를 받아오는 함수
+double userLatitude = 37.56660;
+double userLongitude = 126.97900;
+Future<void> _getCurrentLocation() async {
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+  }
+  try {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    userLatitude = position.latitude;
+    userLongitude = position.longitude;
+  } catch (e) {
+    print(e);
   }
 }
 
 void main() async {
   await _initializeMap();
-  // await _requestLocationPermission();
+  _requestPermission();
+  // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
-  runApp(const App());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => FilterList(),
+      child: const App(),
+      )
+  );
 }
 
 final GoRouter router = GoRouter(
@@ -68,6 +116,19 @@ final GoRouter router = GoRouter(
           path: 'inform',
           builder: (context, state) {
             return const InformScreen();
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+      routes: [
+        GoRoute(
+          name: 'filter',
+          path: 'filter',
+          builder: (context, state) {
+            return const FilterScreen();
           },
         ),
       ],
