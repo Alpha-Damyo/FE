@@ -30,7 +30,6 @@ final GoRouter router = GoRouter(
 );
 
 class _LoginScreenState extends State<LoginScreen> {
-<<<<<<< HEAD
   @override
   void initState() {
     checkLoginState();
@@ -41,9 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
     print('checkLoginState');
     //GoRouter.of(context).pop();
   }
-=======
+
   FlutterSecureStorage storage = const FlutterSecureStorage();
->>>>>>> d4721162fd2e744b4ddf275f901df440ebf89534
 
   void signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -66,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
     NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
 
     // print(naverUser.accessToken);
-    if(naverUser != null){
+    if (naverUser != null) {
       print('name = ${naverUser.account.name}');
       print('email = ${naverUser.account.email}');
       print('id = ${naverUser.account.id}');
@@ -75,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     setState(() {});
   }
-
 
   void signOutWithNaver() async {
     FlutterNaverLogin.logOut();
@@ -159,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Container(
         width: double.infinity,
-        height: double.infinity, 
+        height: double.infinity,
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
