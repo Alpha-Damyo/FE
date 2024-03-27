@@ -1,13 +1,12 @@
-import 'dart:io';
-
-import 'package:damyo/http.dart';
-import 'package:damyo/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:damyo/provider/filterlist_provider.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+
+
 
 const List<Widget> inout = <Widget>[
   Text('실내'),
@@ -24,6 +23,17 @@ const List<Widget> ox = <Widget>[
   Text('X'),
 ];
 
+const List<Widget> bigsmall = <Widget>[
+  Text('크다'),
+  Text('작다'),
+];
+
+const List<Widget> density = <Widget>[
+  Text('혼잡'),
+  Text('한산'),
+];
+
+
 class FilterScreen extends StatefulWidget {
   const FilterScreen({
     super.key,
@@ -38,9 +48,12 @@ class _FilterScreenState extends State<FilterScreen> {
   final List<bool> _selectedOpenClose = <bool>[false, false];
   final List<bool> _selectedVentilation = <bool>[false, false];
   final List<bool> _selectedCleanliness = <bool>[false, false];
-  final List<bool> _toggleIsSelected = <bool>[false, false, false, false];
-
+  final List<bool> _selectedBigSmall = <bool>[false, false];
+  final List<bool> _selectedDenisty = <bool>[false, false];
+  final List<bool> _toggleIsSelected = <bool>[false, false, false, false, false, false];
   bool activateInformBtn = false;
+
+  final List<List<bool> > _isSelectedFilter = List.generate(6, (index) => List.generate(2, (index) => false));
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +80,12 @@ class _FilterScreenState extends State<FilterScreen> {
               fit: FlexFit.tight,
               child: Column(
                 children: [
-                  informToggle('실내 여부', inout, _selectedInOut, 0),
-                  informToggle('개방 여부', openclose, _selectedOpenClose, 1),
-                  informToggle('환풍 여부', ox, _selectedVentilation, 2),
-                  informToggle('청결도', ox, _selectedCleanliness, 3),
+                  informToggle('개방여부', openclose,  _isSelectedFilter[0], 0),
+                  informToggle('실내여부', inout, _isSelectedFilter[1], 1),
+                  informToggle('환풍여부', ox,  _isSelectedFilter[2], 2),
+                  informToggle('청결함여부', ox,  _isSelectedFilter[3], 3),
+                  informToggle('크기', bigsmall,  _isSelectedFilter[4], 4),
+                  informToggle('혼잡도', density,  _isSelectedFilter[5], 5),
                 ],
               ) ,
             ),
@@ -79,7 +94,20 @@ class _FilterScreenState extends State<FilterScreen> {
               fit: FlexFit.tight,
               child: InkWell(
                 onTap: () {
-                  // activateInformBtn ? null : null;
+                  List<Map<String, dynamic>> filters = Provider.of<FilterList>(context, listen: false).filterList;
+                  for (int i = 0; i < _toggleIsSelected.length; i++){
+                    if(_toggleIsSelected[i]){
+                      String type = filters[i].keys.first;
+                      if(_isSelectedFilter[i][0]){
+                        Provider.of<FilterList>(context, listen: false).changeFilterList(type, 0);
+                      }
+                      else{
+                        Provider.of<FilterList>(context, listen: false).changeFilterList(type, 1);
+                      }
+                    }
+                  }
+                  
+                  context.pop('/filter');
                 },
                 child: Ink(
                   decoration: BoxDecoration(
@@ -104,9 +132,7 @@ class _FilterScreenState extends State<FilterScreen> {
             ),
           ],
         ),
-      ),
-      
-
+      ), 
     );
   }
 
@@ -149,12 +175,12 @@ class _FilterScreenState extends State<FilterScreen> {
   // 설정하기 버튼 활성화여부를 판단하는 함수
   void checkCanInform() {
   for (int i = 0; i < _toggleIsSelected.length; i++) {
-    if (!_toggleIsSelected[i]) {
-      activateInformBtn = false;
+    if (_toggleIsSelected[i]) {
+      activateInformBtn = true;
       return;
     }
   }
-  activateInformBtn = true;
+  activateInformBtn = false;
   }
 }
 
