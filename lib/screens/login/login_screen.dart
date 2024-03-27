@@ -60,9 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
       await storage.write(key: 'userID', value: naverUser.account.email);
       await storage.write(key: 'sns', value: "naver");
     }
-    
     setState(() {});
   }
+
 
   void signOutWithNaver() async {
     FlutterNaverLogin.logOut();
@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        height: double.infinity,
+        height: double.infinity, 
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
