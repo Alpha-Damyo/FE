@@ -19,7 +19,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-/*final GoRouter router = GoRouter(
+final GoRouter router = GoRouter(
   routes: [
     GoRoute(
       name: 'signup',
@@ -27,9 +27,20 @@ class LoginScreen extends StatefulWidget {
       builder: (context, state) => const SignupScreen(),
     ),
   ],
-);*/
+);
 
 class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    checkLoginState();
+    super.initState();
+  }
+
+  void checkLoginState() {
+    print('checkLoginState');
+    //GoRouter.of(context).pop();
+  }
+
   FlutterSecureStorage storage = const FlutterSecureStorage();
 
   void signInWithGoogle() async {
@@ -53,9 +64,13 @@ class _LoginScreenState extends State<LoginScreen> {
     NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
 
     // print(naverUser.accessToken);
-    print('name = ${naverUser.account.name}');
-    print('email = ${naverUser.account.email}');
-    print('id = ${naverUser.account.id}');
+    if (naverUser != null) {
+      print('name = ${naverUser.account.name}');
+      print('email = ${naverUser.account.email}');
+      print('id = ${naverUser.account.id}');
+      await storage.write(key: 'userID', value: naverUser.account.email);
+      await storage.write(key: 'sns', value: "naver");
+    }
     setState(() {});
   }
 
@@ -123,6 +138,22 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        foregroundColor: Colors.black,
+        title: const Text('로그인',
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 28,
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w700)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            GoRouter.of(context).pop();
+          },
+        ),
+      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -160,15 +191,6 @@ class _LoginScreenState extends State<LoginScreen> {
             const Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  '로그인',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 32,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
                 SizedBox(height: 15),
                 Text(
                   '담요의 재미있는 서비스와 혜택을 누려보세요 !',
@@ -206,6 +228,39 @@ class _LoginScreenState extends State<LoginScreen> {
                 text: '네이버로 계속하기',
                 backgroundColor: const Color(0xFF00C73C),
                 imageUrl: "https://via.placeholder.com/28x28",
+              ),
+            ),
+            //signup_screen으로 이동하는 버튼
+            const SizedBox(height: 15),
+            GestureDetector(
+              onTap: () {
+                GoRouter.of(context).push('/signup');
+              },
+              child: Container(
+                width: 240,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 0.1,
+                  ),
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '회원가입',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

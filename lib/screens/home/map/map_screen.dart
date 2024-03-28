@@ -13,6 +13,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:provider/provider.dart';
+import 'package:damyo/provider/filterlist_provider.dart';
+import 'package:damyo/screens/home/filter/filter_screen.dart';
+
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
@@ -68,6 +72,12 @@ class _MapScreenState extends State<MapScreen>
 
     // NaverMapController 객체의 비동기 작업 완료를 나타내는 Completer 생성
     final Completer<NaverMapController> mapControllerCompleter = Completer();
+    
+    // 필터 목록을 구독
+    final List<Map<String, dynamic>> filters = Provider.of<FilterList>(context, listen: true).filterList;
+    // 필터 버튼 상태
+    final List<List<String>> filtersItem = Provider.of<FilterList>(context, listen: false).filterItem;
+    final List<bool> _isPressedFilter = List.generate(12, (index) => false);
 
     return Scaffold(
       body: Stack(
@@ -144,65 +154,31 @@ class _MapScreenState extends State<MapScreen>
                         Container(
                           height: 50,
                           width: 350,
-                          child: ListView(
+                          child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            children: <Widget>[
-                              OutlinedButton(
-                                child:Text('a'),
-                                onPressed:(){
-                                  print('a');
-                                } ,
-                              ),
-                              OutlinedButton(
-                                child: Text('b'),
-                                onPressed:(){
-                                  print('b');
-                                } ,
-                              ),
-                              OutlinedButton(
-                                child: Text('c'),
-                                onPressed:(){
-                                  print('c');
-                                } ,
-                              ),
-                              OutlinedButton(
-                                child: Text('d'),
-                                onPressed:(){
-                                  print('d');
-                                } ,
-                              ),OutlinedButton(
-                                child: Text('e'),
-                                onPressed:(){
-                                  print('e');
-                                } ,
-                              ),
-                              OutlinedButton(
-                                child: Text('f'),
-                                onPressed:(){
-                                  print('f');
-                                } ,
-                              ),
-                              OutlinedButton(
-                                child: Text('g'),
-                                onPressed:(){
-                                  print('g');
-                                } ,
-                              ),
-                              OutlinedButton(
-                                child: Text('h'),
-                                onPressed:(){
-                                  print('h');
-                                } ,
-                              ),
-                              OutlinedButton(
-                                child: Text('i'),
-                                onPressed:(){
-                                  print('i');
-                                } ,
-                              ),
-                          ],
+                            itemCount: _isPressedFilter.length, // 필터의 개수만큼 아이템 생성
+                            itemBuilder: (context, index) {
+                              return ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states){
+                                    if(_isPressedFilter[index]){
+                                      return Colors.red;
+                                    }
+                                    return Colors.white;
+                                  })
+                                ),
+                                onPressed: (){
+                                  print(_isPressedFilter[index]);
+                                  _isPressedFilter[index] = !_isPressedFilter[index];
+                                  Provider.of<FilterList>(context, listen: false).changeFilterList(filters[index~/2].keys.first, index%2);
+                                  print(_isPressedFilter[index]);
+                                  // print(filters[index~/2].values.first);
+                                },
+                                child: Text(filtersItem[index~/2][index%2]),
+                              );
+                            },
+                          ),
                         ),
-                                          ),
                       ],
                     ),
                       
@@ -227,6 +203,7 @@ class _MapScreenState extends State<MapScreen>
                               // 필터 설정 화면
                               setState(() {
                                 context.push('/filter');
+                                
                               });
                             },
                             child: Icon(
