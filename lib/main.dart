@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/filter/filter_screen.dart';
+import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -51,6 +52,7 @@ Future<bool> _getCameraPermission() async {
     return Future.value(false);
   }
 }
+
 // 갤러리 권한 조회
 Future<bool> _getPhotoPermission() async {
   bool status = await Permission.photos.isGranted;
@@ -62,13 +64,13 @@ Future<bool> _getPhotoPermission() async {
 }
 
 // 권한 요청 & 권한 상태 객체 생성
-void _requestPermission() async{
-  Map<Permission, PermissionStatus> statuses_loc =
-    await [Permission.location].request();
-  Map<Permission, PermissionStatus> statuses_cam =
-    await [Permission.camera].request();
-  Map<Permission, PermissionStatus> statuses_photos =
-    await [Permission.photos].request();
+void _requestPermission() async {
+  Map<Permission, PermissionStatus> statusesLoc =
+      await [Permission.location].request();
+  Map<Permission, PermissionStatus> statusesCam =
+      await [Permission.camera].request();
+  Map<Permission, PermissionStatus> statusesPhotos =
+      await [Permission.photos].request();
   // _requestLocationPermission(statuses_loc);
   // _requestCameraPermission(statuses_cam);
 }
@@ -97,12 +99,10 @@ void main() async {
   // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => FilterList(),
-      child: const App(),
-      )
-  );
+  runApp(ChangeNotifierProvider(
+    create: (context) => FilterList(),
+    child: const App(),
+  ));
 }
 
 final GoRouter router = GoRouter(
@@ -132,6 +132,11 @@ final GoRouter router = GoRouter(
           },
         ),
       ],
+    ),
+    GoRoute(
+      name: 'sa_info',
+      path: '/sa_info',
+      builder: (context, state) => const SmokingAreaInfoScreen(),
     ),
     GoRoute(
       name: 'login',
@@ -168,6 +173,10 @@ class App extends StatelessWidget {
               fontFamily: 'pretendard',
               fontSize: 20,
               fontWeight: FontWeight.w600),
+          bodyLarge: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
           bodyMedium: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w400,
