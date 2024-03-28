@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/filter/filter_screen.dart';
+import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -133,6 +134,11 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
+      name: 'sa_info',
+      path: '/sa_info',
+      builder: (context, state) => const SmokingAreaInfoScreen(),
+    ),
+    GoRoute(
       name: 'login',
       path: '/login',
       builder: (context, state) => const LoginScreen(),
@@ -167,6 +173,10 @@ class App extends StatelessWidget {
               fontFamily: 'pretendard',
               fontSize: 20,
               fontWeight: FontWeight.w600),
+          bodyLarge: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
           bodyMedium: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w400,
