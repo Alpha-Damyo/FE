@@ -4,13 +4,15 @@ import 'dart:developer';
 import 'package:balloon_widget/balloon_widget.dart';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
-import 'package:damyo/screens/home/map/bottom_drawer.dart';
+import 'package:damyo/screens/home/map/somking_area/bottom_drawer.dart';
 import 'package:damyo/screens/home/map/marker.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
+import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
@@ -62,12 +64,10 @@ class _MapScreenState extends State<MapScreen>
 
     // 화면을 동적으로 빌드하기 위한 사이즈
     final Size size = MediaQuery.of(context).size;
-    final double searchMargin = size.width * 0.05;
-    final double margin = size.width * 0.025;
-    final double alignButtonSize = size.height * 0.05;
-    final double searchWidth =
-        size.width - 2 * searchMargin - margin - alignButtonSize;
-    final double iconSize = alignButtonSize * 0.5;
+    const double padding = 10;
+    const double alignButtonSize = 53;
+    final double searchWidth = size.width - 3 * padding - alignButtonSize;
+    const double iconSize = 25;
     final double mapHeight = size.height - kBottomNavigationBarHeight;
 
     // NaverMapController 객체의 비동기 작업 완료를 나타내는 Completer 생성
@@ -118,134 +118,137 @@ class _MapScreenState extends State<MapScreen>
               onCameraChangeStreamController.sink.add(null);
             },
           ),
-          Positioned.fill(
+          Padding(
+            padding: const EdgeInsets.all(padding),
             child: Column(
               children: [
-                SizedBox(
-                  height: margin * 5,
+                const SizedBox(
+                  height: 50,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // 검색창
-                    Column(
-                      children: [
-                        Container(
-                          width: searchWidth,
-                          height: alignButtonSize,
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.search,
-                                size: iconSize,
-                              ),
-                              const Text(
-                                ' 검색창 입니다',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
+                    Container(
+                      width: searchWidth,
+                      height: alignButtonSize,
+                      decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.search,
+                            size: iconSize,
                           ),
-                        ),
-                        // 필터 목록
-                        SizedBox(
-                          height: 50,
-                          width: 350,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount:
-                                isPressedFilter.length, // 필터의 개수만큼 아이템 생성
-                            itemBuilder: (context, index) {
-                              return ElevatedButton(
-                                style: ButtonStyle(backgroundColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                        (states) {
-                                  if (isPressedFilter[index]) {
-                                    return Colors.red;
-                                  }
-                                  return Colors.white;
-                                })),
-                                onPressed: () {
-                                  print(isPressedFilter[index]);
-                                  isPressedFilter[index] =
-                                      !isPressedFilter[index];
-                                  Provider.of<FilterList>(context,
-                                          listen: false)
-                                      .changeFilterList(
-                                          filters[index ~/ 2].keys.first,
-                                          index % 2);
-                                  print(isPressedFilter[index]);
-                                  // print(filters[index~/2].values.first);
-                                },
-                                child: Text(filtersItem[index ~/ 2][index % 2]),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(
-                      width: margin,
-                    ),
-                    // 여백
-                    Column(
-                      children: [
-                        // 필터 설정 버튼
-                        Container(
-                          width: alignButtonSize,
-                          height: alignButtonSize,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
-                              )),
-                          child: FloatingActionButton(
-                            heroTag: "alignbtn",
-                            onPressed: () {
-                              // 필터 설정 화면
-                              setState(() {
-                                context.push('/filter');
-                              });
-                            },
-                            child: Icon(
-                              Icons.format_list_bulleted_rounded,
-                              size: iconSize,
+                          Text(
+                            ' 검색창 입니다',
+                            style: TextStyle(
+                              fontSize: 20,
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    // 필터 설정 버튼
+                    Container(
+                      width: alignButtonSize,
+                      height: alignButtonSize,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20),
+                          )),
+                      child: FloatingActionButton(
+                        heroTag: "alignbtn",
+                        onPressed: () {
+                          // 필터 설정 화면
+                          setState(() {
+                            context.push('/filter');
+                          });
+                        },
+                        child: const Icon(
+                          Icons.format_list_bulleted_rounded,
+                          size: iconSize,
                         ),
-                        SizedBox(
-                          height: margin,
-                        ),
-                        // 제보 버튼 (임시)
-                        SizedBox(
-                          width: alignButtonSize,
-                          height: alignButtonSize,
-                          child: FloatingActionButton(
-                            heroTag: "informbtn",
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(
+                  height: padding,
+                ),
+                // 여백
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // 필터 목록
+                    SizedBox(
+                      height: 50,
+                      width: searchWidth,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: isPressedFilter.length, // 필터의 개수만큼 아이템 생성
+                        itemBuilder: (context, index) {
+                          return ElevatedButton(
+                            style: ButtonStyle(backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                                    (states) {
+                              if (isPressedFilter[index]) {
+                                return Colors.red;
+                              }
+                              return Colors.white;
+                            })),
                             onPressed: () {
-                              setState(() {
-                                informPressed = !informPressed;
-                                bottomDrawerController.open();
-                              });
+                              print(isPressedFilter[index]);
+                              isPressedFilter[index] = !isPressedFilter[index];
+                              Provider.of<FilterList>(context, listen: false)
+                                  .changeFilterList(
+                                      filters[index ~/ 2].keys.first,
+                                      index % 2);
+                              print(isPressedFilter[index]);
+                              // print(filters[index~/2].values.first);
                             },
-                            backgroundColor: Theme.of(context).primaryColor,
-                            child: Icon(Icons.add_location_alt_outlined,
-                                size: iconSize),
-                          ),
+                            child: Text(filtersItem[index ~/ 2][index % 2]),
+                          );
+                        },
+                      ),
+                    ),
+                    // 제보 버튼 (임시)
+                    SizedBox(
+                      width: alignButtonSize,
+                      height: alignButtonSize,
+                      child: FloatingActionButton(
+                        heroTag: "informbtn",
+                        onPressed: () {
+                          setState(() {
+                            informPressed = !informPressed;
+                            bottomDrawerController.open();
+                          });
+                        },
+                        backgroundColor:
+                            Theme.of(context).colorScheme.background,
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_location_alt_outlined,
+                              size: iconSize,
+                              color: Color(0xff6f767f),
+                            ),
+                            Text(
+                              '제보',
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xff6f767f)),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: mapHeight / 2 - (margin * 6 + alignButtonSize * 3),
+                  height: mapHeight / 2 - (padding * 6 + alignButtonSize * 3),
                 ),
 
                 // 제보를 누르면 등장하는 마커
@@ -253,13 +256,13 @@ class _MapScreenState extends State<MapScreen>
                   visible: informPressed,
                   child: Column(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.add_location_alt,
                         color: Colors.red,
                         size: alignButtonSize,
                       ),
-                      SizedBox(
-                        height: margin,
+                      const SizedBox(
+                        height: padding,
                       ),
                       // 제보하기를 누르면 등장하는 '제보하기' 버튼
                       SizedBox(
@@ -280,10 +283,20 @@ class _MapScreenState extends State<MapScreen>
               ],
             ),
           ),
-          Visibility(
-            visible: smokingAreaSelected,
-            child: MapBottomDrawer(
-              smokingAreaId: smokingAreaId,
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(padding),
+              child: Visibility(
+                visible: smokingAreaSelected,
+                maintainAnimation: true,
+                maintainState: true,
+                child: SmokingAreaInfoCard(
+                  smokingAreaId: smokingAreaId,
+                ),
+              ),
             ),
           ),
 
