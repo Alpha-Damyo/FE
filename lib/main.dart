@@ -98,12 +98,10 @@ void main() async {
   await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => FilterList(),
-      child: const App(),
-      )
-  );
+  runApp(ChangeNotifierProvider(
+    create: (context) => FilterList(),
+    child: const App(),
+  ));
 }
 
 final GoRouter router = GoRouter(
