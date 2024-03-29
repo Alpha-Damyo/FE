@@ -176,7 +176,6 @@ class _MapScreenState extends State<MapScreen>
                                 child: Text(filtersItem[index~/2][index%2]),
                               );
                             },
-=======
                           
                         ],
                       ),
