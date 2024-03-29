@@ -159,21 +159,21 @@ class _MapScreenState extends State<MapScreen>
                             itemCount: _isPressedFilter.length, // 필터의 개수만큼 아이템 생성
                             itemBuilder: (context, index) {
                               return ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states){
-                                    if(_isPressedFilter[index]){
-                                      return Colors.red;
-                                    }
-                                    return Colors.white;
-                                  })
-                                ),
                                 onPressed: (){
-                                  print(_isPressedFilter[index]);
-                                  _isPressedFilter[index] = !_isPressedFilter[index];
+                                  // print(_isPressedFilter[index]);
+                                  print(index);
                                   Provider.of<FilterList>(context, listen: false).changeFilterList(filters[index~/2].keys.first, index%2);
-                                  print(_isPressedFilter[index]);
-                                  // print(filters[index~/2].values.first);
+                                  setState(() {
+                                    _isPressedFilter[index] = !_isPressedFilter[index];
+                                  });
+                                  // print(_isPressedFilter[index]);
+                                  print(filters[index~/2].values.first);
                                 },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _isPressedFilter[index]
+                                   ? Colors.red 
+                                   : Colors.white
+                                ),
                                 child: Text(filtersItem[index~/2][index%2]),
                               );
                             },
