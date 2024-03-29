@@ -77,9 +77,9 @@ class _MapScreenState extends State<MapScreen>
     final List<Map<String, dynamic>> filters =
         Provider.of<FilterList>(context, listen: true).filterList;
     // 필터 버튼 상태
-    final List<List<String>> filtersItem =
-        Provider.of<FilterList>(context, listen: false).filterItem;
-    final List<bool> isPressedFilter = List.generate(12, (index) => false);
+    final List<List<String>> filtersItem = Provider.of<FilterList>(context, listen: false).filterItem;
+    final List<bool> _isPressedFilter = List.generate(12, (index) => false);
+    // commit test
 
     return Scaffold(
       body: Stack(
