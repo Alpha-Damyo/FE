@@ -77,9 +77,9 @@ class _MapScreenState extends State<MapScreen>
     final List<Map<String, dynamic>> filters =
         Provider.of<FilterList>(context, listen: true).filterList;
     // 필터 버튼 상태
-    final List<List<String>> filtersItem =
-        Provider.of<FilterList>(context, listen: false).filterItem;
-    final List<bool> isPressedFilter = List.generate(12, (index) => false);
+    final List<List<String>> filtersItem = Provider.of<FilterList>(context, listen: false).filterItem;
+    final List<bool> _isPressedFilter = List.generate(12, (index) => false);
+    // commit test 3
 
     return Scaffold(
       body: Stack(
@@ -188,25 +188,25 @@ class _MapScreenState extends State<MapScreen>
                       width: searchWidth,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: isPressedFilter.length, // 필터의 개수만큼 아이템 생성
+                        itemCount: _isPressedFilter.length, // 필터의 개수만큼 아이템 생성
                         itemBuilder: (context, index) {
                           return ElevatedButton(
                             style: ButtonStyle(backgroundColor:
                                 MaterialStateProperty.resolveWith<Color>(
                                     (states) {
-                              if (isPressedFilter[index]) {
+                              if (_isPressedFilter[index]) {
                                 return Colors.red;
                               }
                               return Colors.white;
                             })),
                             onPressed: () {
-                              print(isPressedFilter[index]);
-                              isPressedFilter[index] = !isPressedFilter[index];
+                              print(_isPressedFilter[index]);
+                              _isPressedFilter[index] = !_isPressedFilter[index];
                               Provider.of<FilterList>(context, listen: false)
                                   .changeFilterList(
                                       filters[index ~/ 2].keys.first,
                                       index % 2);
-                              print(isPressedFilter[index]);
+                              print(_isPressedFilter[index]);
                               // print(filters[index~/2].values.first);
                             },
                             child: Text(filtersItem[index ~/ 2][index % 2]),
