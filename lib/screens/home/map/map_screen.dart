@@ -134,18 +134,50 @@ class _MapScreenState extends State<MapScreen>
                       decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Icon(
                             Icons.search,
                             size: iconSize,
                           ),
-                          Text(
+                          const Text(
                             ' 검색창 입니다',
                             style: TextStyle(
                               fontSize: 20,
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                        // 필터 목록
+                        Container(
+                          height: 50,
+                          width: 350,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _isPressedFilter.length, // 필터의 개수만큼 아이템 생성
+                            itemBuilder: (context, index) {
+                              return ElevatedButton(
+                                onPressed: (){
+                                  // print(_isPressedFilter[index]);
+                                  print(index);
+                                  Provider.of<FilterList>(context, listen: false).changeFilterList(filters[index~/2].keys.first, index%2);
+                                  setState(() {
+                                    _isPressedFilter[index] = !_isPressedFilter[index];
+                                  });
+                                  // print(_isPressedFilter[index]);
+                                  print(filters[index~/2].values.first);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _isPressedFilter[index]
+                                   ? Colors.red 
+                                   : Colors.white
+                                ),
+                                child: Text(filtersItem[index~/2][index%2]),
+                              );
+                            },
+=======
+                          
                         ],
                       ),
                     ),
