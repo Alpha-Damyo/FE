@@ -99,10 +99,25 @@ void main() async {
   await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
-  runApp(ChangeNotifierProvider(
-    create: (context) => FilterList(),
-    child: const App(),
-  ));
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => FilterList(),
+      child: const App(),
+      )
+  );
+  // provider 모델이 여러 개인 경우 List를 통해 제공
+  // runApp(
+  //   MultiProvider(
+  //     providers: [
+  //       ChangeNotifierProvider(create: (context) => FilterList()),
+  //       ChangeNotifierProvider(create: (context) => AnotherModel()),
+  //      
+  //     ],
+  //     child: const App(),
+  //   ),
+  // );
+
 }
 
 final GoRouter router = GoRouter(
