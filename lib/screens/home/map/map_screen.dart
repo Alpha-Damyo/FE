@@ -54,6 +54,24 @@ class _MapScreenState extends State<MapScreen>
     }
   }
 
+  // 필터 눌렸는지 여부 
+  final List<bool> isPressedFilter = List.generate(12, (index) => false);
+  // 필터 색깔 지정
+  Color _colors = Colors.white;
+
+  Color changeColor(bool _state, int index){
+    if(_state){
+      // print(_state);
+      _colors = Colors.red;
+      return _colors;
+    }
+    else{
+      // print(_state);
+      _colors = Colors.white;
+      return _colors;
+    }
+  }
+
   bool smokingAreaSelected = false;
   BottomDrawerController bottomDrawerController = BottomDrawerController();
   String smokingAreaId = '';
@@ -78,8 +96,6 @@ class _MapScreenState extends State<MapScreen>
         Provider.of<FilterList>(context, listen: true).filterList;
     // 필터 버튼 상태
     final List<List<String>> filtersItem = Provider.of<FilterList>(context, listen: false).filterItem;
-    final List<bool> _isPressedFilter = List.generate(12, (index) => false);
-    // commit test 3
 
     return Scaffold(
       body: Stack(
@@ -188,27 +204,32 @@ class _MapScreenState extends State<MapScreen>
                       width: searchWidth,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: _isPressedFilter.length, // 필터의 개수만큼 아이템 생성
+                        itemCount: isPressedFilter.length, // 필터의 개수만큼 아이템 생성
                         itemBuilder: (context, index) {
                           return ElevatedButton(
-                            style: ButtonStyle(backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                                    (states) {
-                              if (_isPressedFilter[index]) {
-                                return Colors.red;
-                              }
-                              return Colors.white;
-                            })),
                             onPressed: () {
-                              print(_isPressedFilter[index]);
-                              _isPressedFilter[index] = !_isPressedFilter[index];
-                              Provider.of<FilterList>(context, listen: false)
+                              setState(() {
+                                isPressedFilter[index] = !isPressedFilter[index];
+                                changeColor(isPressedFilter[index], index);
+                              });
+                              if (isPressedFilter[index]){
+                                Provider.of<FilterList>(context, listen: false)
                                   .changeFilterList(
                                       filters[index ~/ 2].keys.first,
-                                      index % 2);
-                              print(_isPressedFilter[index]);
+                                      index % 2);  
+                              }
+                              else{
+                                Provider.of<FilterList>(context, listen: false)
+                                  .changeFilterList(
+                                      filters[index ~/ 2].keys.first,
+                                      -1);
+                              }
                               // print(filters[index~/2].values.first);
+                              // print(filters);
                             },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _colors = changeColor(isPressedFilter[index], index)
+                            ),
                             child: Text(filtersItem[index ~/ 2][index % 2]),
                           );
                         },
