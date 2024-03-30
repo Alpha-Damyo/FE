@@ -11,13 +11,16 @@ class FilterList extends ChangeNotifier{
     int index = _filterList.indexWhere((filter) => filter.containsKey(filterKey));
 
     // print(filterKey);
-
-    if (index != -1) {
+    if(filterVal == -1){
+      _filterList.removeAt(index);
+      _filterList.insert(index,{filterKey: false});
+    }
+    else{
       _filterList.removeAt(index);
       _filterList.insert(index,{filterKey: _filterItem[index][filterVal]});
       // print(_filterItem[index][filterVal]);
-      notifyListeners(); // 상태 변경 알림
     }
+    notifyListeners(); // 상태 변경 알림
   }
    
 }
