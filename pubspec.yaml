@@ -46,6 +46,7 @@ dependencies:
   balloon_widget: ^0.0.1+1
   bottom_drawer: ^0.0.5
   provider: ^6.1.2
+  flutter_screenutil: ^5.9.0
 
   
 dev_dependencies:
