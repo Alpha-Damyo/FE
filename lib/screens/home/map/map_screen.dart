@@ -1,23 +1,18 @@
 import 'dart:async';
 
 import 'dart:developer';
-import 'package:balloon_widget/balloon_widget.dart';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
-import 'package:damyo/screens/home/map/somking_area/bottom_drawer.dart';
-import 'package:damyo/screens/home/map/marker.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
 import 'package:damyo/provider/filterlist_provider.dart';
-import 'package:damyo/screens/home/filter/filter_screen.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -54,18 +49,17 @@ class _MapScreenState extends State<MapScreen>
     }
   }
 
-  // 필터 눌렸는지 여부 
+  // 필터 눌렸는지 여부
   final List<bool> isPressedFilter = List.generate(12, (index) => false);
   // 필터 색깔 지정
   Color _colors = Colors.white;
 
-  Color changeColor(bool _state, int index){
-    if(_state){
+  Color changeColor(bool state, int index) {
+    if (state) {
       // print(_state);
       _colors = Colors.red;
       return _colors;
-    }
-    else{
+    } else {
       // print(_state);
       _colors = Colors.white;
       return _colors;
@@ -95,7 +89,8 @@ class _MapScreenState extends State<MapScreen>
     final List<Map<String, dynamic>> filters =
         Provider.of<FilterList>(context, listen: true).filterList;
     // 필터 버튼 상태
-    final List<List<String>> filtersItem = Provider.of<FilterList>(context, listen: false).filterItem;
+    final List<List<String>> filtersItem =
+        Provider.of<FilterList>(context, listen: false).filterItem;
 
     return Scaffold(
       body: Stack(
@@ -209,27 +204,26 @@ class _MapScreenState extends State<MapScreen>
                           return ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                isPressedFilter[index] = !isPressedFilter[index];
+                                isPressedFilter[index] =
+                                    !isPressedFilter[index];
                                 changeColor(isPressedFilter[index], index);
                               });
-                              if (isPressedFilter[index]){
+                              if (isPressedFilter[index]) {
                                 Provider.of<FilterList>(context, listen: false)
-                                  .changeFilterList(
-                                      filters[index ~/ 2].keys.first,
-                                      index % 2);  
-                              }
-                              else{
+                                    .changeFilterList(
+                                        filters[index ~/ 2].keys.first,
+                                        index % 2);
+                              } else {
                                 Provider.of<FilterList>(context, listen: false)
-                                  .changeFilterList(
-                                      filters[index ~/ 2].keys.first,
-                                      -1);
+                                    .changeFilterList(
+                                        filters[index ~/ 2].keys.first, -1);
                               }
                               // print(filters[index~/2].values.first);
                               // print(filters);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _colors = changeColor(isPressedFilter[index], index)
-                            ),
+                                backgroundColor: _colors =
+                                    changeColor(isPressedFilter[index], index)),
                             child: Text(filtersItem[index ~/ 2][index % 2]),
                           );
                         },
