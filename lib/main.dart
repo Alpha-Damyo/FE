@@ -100,24 +100,21 @@ void main() async {
   // Kakao sdk 초기화
   _initializeKakao();
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => FilterList(),
-      child: const App(),
-      )
-  );
+  runApp(ChangeNotifierProvider(
+    create: (context) => FilterList(),
+    child: const App(),
+  ));
   // provider 모델이 여러 개인 경우 List를 통해 제공
   // runApp(
   //   MultiProvider(
   //     providers: [
   //       ChangeNotifierProvider(create: (context) => FilterList()),
   //       ChangeNotifierProvider(create: (context) => AnotherModel()),
-  //      
+  //
   //     ],
   //     child: const App(),
   //   ),
   // );
-
 }
 
 final GoRouter router = GoRouter(
@@ -184,17 +181,21 @@ class App extends StatelessWidget {
               fontFamily: 'pretendard',
               fontSize: 20,
               fontWeight: FontWeight.w200),
+          titleLarge: TextStyle(
+              fontFamily: 'pretendard',
+              fontSize: 20,
+              fontWeight: FontWeight.w700),
           titleMedium: TextStyle(
               fontFamily: 'pretendard',
               fontSize: 20,
-              fontWeight: FontWeight.w600),
+              fontWeight: FontWeight.w500),
           bodyLarge: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
           bodyMedium: TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
