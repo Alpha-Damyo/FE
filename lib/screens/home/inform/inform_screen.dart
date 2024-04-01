@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:damyo/http.dart';
-import 'package:damyo/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -54,7 +53,6 @@ class _InformScreenState extends State<InformScreen> {
     // 화면을 동적으로 빌드하기 위한 사이즈
     final Size size = MediaQuery.of(context).size;
     final double margin = size.width * 0.05;
-    
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -71,14 +69,14 @@ class _InformScreenState extends State<InformScreen> {
           children: [
             Flexible(
               flex: 4,
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: Color(0xffd2d7dd),
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                  ),
-                  child: const Text('사진을 업로드 해주세요'),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Color(0xffd2d7dd),
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
                 ),
+                child: const Text('사진을 업로드 해주세요'),
+              ),
             ),
             const SizedBox(height: 20),
             Flexible(
