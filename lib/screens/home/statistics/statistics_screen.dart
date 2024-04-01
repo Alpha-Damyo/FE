@@ -14,7 +14,8 @@ class StatisticsScreen extends StatelessWidget {
     height: 2279,
     clipBehavior: Clip.antiAlias,
     decoration: BoxDecoration(color: Colors.white),
-    child: Stack(
+    child: ListView(
+        scrollDirection: Axis.vertical,
         children: [
             Positioned(
                 left: 0,
