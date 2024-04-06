@@ -177,27 +177,34 @@ class App extends StatelessWidget {
           accentColor: const Color(0xff0099fc),
         ),
         textTheme: const TextTheme(
-          headlineLarge: TextStyle(
-              fontFamily: 'pretendard',
+            headlineLarge: TextStyle(
+                fontFamily: 'pretendard',
+                fontSize: 20,
+                fontWeight: FontWeight.w200),
+            titleLarge: TextStyle(
+                fontFamily: 'pretendard',
+                fontSize: 20,
+                fontWeight: FontWeight.w700),
+            titleMedium: TextStyle(
+                fontFamily: 'pretendard',
+                fontSize: 20,
+                fontWeight: FontWeight.w500),
+            bodyLarge: TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.w200),
-          titleLarge: TextStyle(
-              fontFamily: 'pretendard',
-              fontSize: 20,
-              fontWeight: FontWeight.w700),
-          titleMedium: TextStyle(
-              fontFamily: 'pretendard',
-              fontSize: 20,
-              fontWeight: FontWeight.w500),
-          bodyLarge: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+              fontWeight: FontWeight.w700,
+            ),
+            bodyMedium: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            bodySmall: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+            displaySmall: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            )),
       ),
     );
   }
