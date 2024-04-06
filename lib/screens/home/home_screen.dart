@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const MapScreen(),
     const StatisticsScreen(),
-    const StatisticsScreen(),
     // InformScreen(),
     const ChallengeScreen(),
     const MypageScreen(),
@@ -63,10 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
             label: '통계',
             icon: Icon(Icons.bar_chart_rounded),
           ),
-          BottomNavigationBarItem(
-            label: '제보',
-            icon: Icon(Icons.add),
-          ),
+          // BottomNavigationBarItem(
+          //   label: '제보',
+          //   icon: Icon(Icons.add),
+          // ),
           BottomNavigationBarItem(
             label: '챌린지',
             icon: Icon(Icons.military_tech),

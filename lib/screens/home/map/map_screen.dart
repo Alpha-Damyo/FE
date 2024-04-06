@@ -219,7 +219,7 @@ class _MapScreenState extends State<MapScreen>
                                         filters[index ~/ 2].keys.first, -1);
                               }
                               // print(filters[index~/2].values.first);
-                              // print(filters);
+                              print(filters);
                             },
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: _colors =
