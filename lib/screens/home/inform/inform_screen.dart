@@ -44,7 +44,7 @@ class _InformScreenState extends State<InformScreen> {
   final List<bool> _selectedOpenClose = <bool>[false, false];
   final List<bool> _selectedVentilation = <bool>[false, false];
   final List<bool> _selectedCleanliness = <bool>[false, false];
-  final List<bool> _toggleIsSelected = <bool>[false, false, false, false];
+  final List<bool> _toggleIsSelected = <bool>[false, false];
 
   bool activateInformBtn = false;
 
