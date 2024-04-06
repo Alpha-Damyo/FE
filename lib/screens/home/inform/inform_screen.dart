@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:damyo/http.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -51,52 +53,35 @@ class _InformScreenState extends State<InformScreen> {
     // 이전 지도 페이지에서 좌표를 받아옴
     final String coords = GoRouterState.of(context).extra! as String;
     // 화면을 동적으로 빌드하기 위한 사이즈
-    final Size size = MediaQuery.of(context).size;
-    final double margin = size.width * 0.05;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          '제보',
-          style: Theme.of(context).textTheme.titleMedium,
+    return ScreenUtilInit(
+      designSize: const Size(390, 733),
+      builder: (context, child) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(
+            '제보',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(margin),
-        child: Column(
-          children: [
-            Flexible(
-              flex: 4,
-              child: Container(
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 184.h,
                 alignment: Alignment.center,
                 decoration: const BoxDecoration(
-                  color: Color(0xffd2d7dd),
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                child: const Text('사진을 업로드 해주세요'),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: InkWell(
                 child: informImage(),
-                onTap: () {
-                  //제보 사진을 가져오는 부분
-                  getImage(ImageSource.camera);
-                },
               ),
-            ),
-            const SizedBox(height: 20),
-            informTextInput('이름', '이름을 입력해주세요 (필수)', 0),
-            informTextInput('설명', '설명을 입력해주세요 (선택)', 1),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: Row(
+              const SizedBox(height: 20),
+              informTextInput('이름', '이름을 입력해주세요', 0),
+              const SizedBox(height: 20),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('주소',
@@ -123,33 +108,38 @@ class _InformScreenState extends State<InformScreen> {
                   ),
                 ],
               ),
-            ),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: Row(
+              const SizedBox(height: 20),
+              informTextInput('상세주소', '상세주소를 입력해주세요', 1),
+              const SizedBox(height: 20),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('별점',
-                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  const Row(
+                    children: [
+                      Text('별점', style: TextStyle(fontWeight: FontWeight.w600)),
+                      blueStar(),
+                    ],
+                  ),
                   ratingStars(),
                 ],
               ),
-            ),
-            informToggle('실내 여부', inout, _selectedInOut, 0),
-            informToggle('개방 여부', openclose, _selectedOpenClose, 1),
-            informToggle('환풍 여부', ox, _selectedVentilation, 2),
-            informToggle('청결도', ox, _selectedCleanliness, 3),
-            const SizedBox(height: 20),
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: InkWell(
+              const SizedBox(height: 20),
+              informToggle('실내 여부', inout, _selectedInOut, 0),
+              const SizedBox(height: 20),
+              informToggle('개방 여부', openclose, _selectedOpenClose, 1),
+              // informToggle('환풍 여부', ox, _selectedVentilation, 2),
+              // informToggle('청결도', ox, _selectedCleanliness, 3),
+              const Spacer(),
+              const Divider(),
+
+              InkWell(
                 onTap: () {
                   // activateInformBtn ? null : null;
                   print(_spotInfo[0]);
                 },
                 child: Ink(
+                  width: double.infinity,
+                  height: 47.h,
                   decoration: BoxDecoration(
                     color: activateInformBtn
                         ? Colors.blue
@@ -169,8 +159,8 @@ class _InformScreenState extends State<InformScreen> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -203,43 +193,46 @@ class _InformScreenState extends State<InformScreen> {
         : Container(
             alignment: Alignment.center,
             decoration: const BoxDecoration(
-              color: Color(0xffd2d7dd),
+              color: Color(0xffeef1f5),
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
-            child: const Text('사진을 업로드 해주세요'),
+            child: Icon(
+              Icons.camera_alt_rounded,
+              size: 60.w,
+              color: const Color(0xffa9afb7),
+            ),
           );
   }
 
   // 텍스트를 입력받는 위젯
-  Flexible informTextInput(String type, String hint, int index) {
-    return Flexible(
-      flex: 1,
-      fit: FlexFit.tight,
-      child: Row(
-        children: [
-          Text(type, style: const TextStyle(fontWeight: FontWeight.w600)),
-          const SizedBox(width: 120),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: const TextStyle(
-                  color: Color(0xffd2d7dd),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-                border: InputBorder.none,
+  Row informTextInput(String type, String hint, int index) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(type, style: const TextStyle(fontWeight: FontWeight.w600)),
+        index == 0 ? const blueStar() : const Text(""),
+        const SizedBox(width: 120),
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: hint,
+              hintTextDirection: TextDirection.rtl,
+              hintStyle: const TextStyle(
+                color: Color(0xffd2d7dd),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
               ),
-              onChanged: (text) {
-                setState(() {
-                  _spotInfo[index] = text;
-                  checkCanInform();
-                });
-              },
+              border: InputBorder.none,
             ),
+            onChanged: (text) {
+              setState(() {
+                _spotInfo[index] = text;
+                checkCanInform();
+              });
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -279,37 +272,123 @@ class _InformScreenState extends State<InformScreen> {
   }
 
   // 토글버튼으로 정보를 입력받는 위젯
-  Flexible informToggle(
+  Row informToggle(
       String type, List<Widget> children, List<bool> isSelected, int i) {
-    return Flexible(
-      flex: 1,
-      fit: FlexFit.tight,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            type,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          ToggleButtons(
-            isSelected: isSelected,
-            borderRadius: const BorderRadius.all(Radius.circular(16)),
-            onPressed: (int index) {
-              setState(() {
-                for (int i = 0; i < isSelected.length; i++) {
-                  isSelected[i] = i == index;
-                }
-                _toggleIsSelected[i] = true;
-                checkCanInform();
-              });
-            },
-            constraints: const BoxConstraints(
-              minHeight: 30.0,
-              minWidth: 60.0,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Text(
+              type,
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
-            children: children,
+            const blueStar(),
+          ],
+        ),
+        Material(
+          color: const Color(0xffeef1f5),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(3),
+            child: Row(
+              children: [
+                InkWell(
+                  child: Ink(
+                    width: 45.w,
+                    height: 27.h,
+                    decoration: BoxDecoration(
+                      color: isSelected[0]
+                          ? Colors.white
+                          : const Color(0xffeef1f5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: children[0],
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      isSelected[0] = true;
+                      isSelected[1] = false;
+                      _toggleIsSelected[i] = true;
+                      checkCanInform();
+                    });
+                  },
+                ),
+                InkWell(
+                  child: Ink(
+                    width: 45.w,
+                    height: 27.h,
+                    decoration: BoxDecoration(
+                      color: isSelected[1]
+                          ? Colors.white
+                          : const Color(0xffeef1f5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: children[1],
+                    ),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      isSelected[0] = false;
+                      isSelected[1] = true;
+                      _toggleIsSelected[i] = true;
+                      checkCanInform();
+                    });
+                  },
+                )
+              ],
+            ),
           ),
-        ],
+        ),
+      ],
+    );
+  }
+}
+// child: ToggleButtons(
+//   isSelected: isSelected,
+//   disabledBorderColor: const Color(0xffeef1f5),
+//   selectedColor: Colors.black,
+//   selectedBorderColor: const Color(0xffeef1f5),
+//   fillColor: Colors.white,
+//   borderColor: const Color(0xffeef1f5),
+//   borderRadius: const BorderRadius.all(Radius.circular(10)),
+//   onPressed: (int index) {
+//     setState(() {
+//       for (int i = 0; i < isSelected.length; i++) {
+//         isSelected[i] = i == index;
+//       }
+//       _toggleIsSelected[i] = true;
+//       checkCanInform();
+//     });
+//   },
+//   constraints: BoxConstraints(
+//     minWidth: 45.w,
+//     minHeight: 27.h,
+//   ),
+//   children: children,
+// ),
+
+class blueStar extends StatelessWidget {
+  const blueStar({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: const Offset(3, -3),
+      child: const Text(
+        '*',
+        style: TextStyle(
+          color: Colors.blue,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
