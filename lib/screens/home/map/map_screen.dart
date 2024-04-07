@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
+import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class _MapScreenState extends State<MapScreen>
         Provider.of<FilterList>(context, listen: false).filterItem;
 
     return ScreenUtilInit(
-      designSize: const Size(390, 733),
+      designSize: const Size(390, 667),
       builder: (context, child) => Scaffold(
         body: Stack(
           children: [
@@ -317,107 +318,9 @@ class _MapScreenState extends State<MapScreen>
                 ),
               ),
             ),
-
-            // 위도 경도 임시 출력
-            // Positioned(
-            //   left: 0,
-            //   right: 0,
-            //   bottom: 0,
-            //   child: Container(
-            //     color: Colors.blue,
-            //     child: Text(
-            //       '위도: ${stringCoordinate(_nowCameraPosition?.target.latitude)} 경도: ${stringCoordinate(_nowCameraPosition?.target.longitude)}',
-            //       style: const TextStyle(fontSize: 20),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
-    );
-  }
-
-  Future<dynamic> filterScreen(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          width: double.infinity,
-          height: 527.h,
-          child: Material(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 14.h),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              width: 35.w,
-                              height: 5.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xffe4e7eB),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 36.h),
-                          Text(
-                            "별점",
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            "실내 여부",
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            "리뷰",
-                            style: Theme.of(context).textTheme.displaySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () {},
-                      child: Ink(
-                        width: double.infinity,
-                        height: 47.h,
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                        ),
-                        child: const Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '적용하기',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ) // 모달 내부 디자인 영역
-              ),
-        );
-      },
     );
   }
 
