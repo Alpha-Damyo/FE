@@ -130,12 +130,12 @@ List<String> photoUrlList = [
 
 // 사진
 class SAInfoScreenPhotos extends StatelessWidget {
+  final List<String> photoUrlList;
+
   const SAInfoScreenPhotos({
     super.key,
     required this.photoUrlList,
   });
-
-  final List<String> photoUrlList;
 
   @override
   Widget build(BuildContext context) {
