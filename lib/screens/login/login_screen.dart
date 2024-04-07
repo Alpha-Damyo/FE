@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:damyo/provider/islogin_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,26 +21,23 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-final GoRouter router = GoRouter(
-  routes: [
-    GoRoute(
-      name: 'signup',
-      path: '/signup',
-      builder: (context, state) => const SignupScreen(),
-    ),
-  ],
-);
-
 class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
-    checkLoginState();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Provider.of<IsLoginProvider>(context, listen: false).isLogin) {
+        GoRouter.of(context).pop();
+      }
+    });
   }
 
   void checkLoginState() {
-    print('checkLoginState');
-    //GoRouter.of(context).pop();
+    if (Provider.of<IsLoginProvider>(context, listen: false).isFirst) {
+      context.push('/login/signup');
+    } else {
+      context.pop();
+    }
   }
 
   FlutterSecureStorage storage = const FlutterSecureStorage();
@@ -89,6 +88,10 @@ class _LoginScreenState extends State<LoginScreen> {
               '\n회원번호: ${user.id}'
               '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
               '\n이메일: ${user.kakaoAccount?.email}');
+          await storage.write(key: 'userID', value: ("${user.id}@kakao.com"));
+          await storage.write(key: 'sns', value: "kakao");
+          Provider.of<IsLoginProvider>(context, listen: false).login();
+          checkLoginState();
         } catch (error) {
           print('사용자 정보 요청 실패 $error');
         }
@@ -109,6 +112,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 '\n회원번호: ${user.id}'
                 '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
                 '\n이메일: ${user.kakaoAccount?.email}');
+            await storage.write(key: 'userID', value: ("${user.id}@kakao.com"));
+            await storage.write(key: 'sns', value: "kakao");
+            Provider.of<IsLoginProvider>(context, listen: false).login();
+            checkLoginState();
           } catch (error) {
             print('사용자 정보 요청 실패 $error');
           }
@@ -126,6 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
               '\n회원번호: ${user.id}'
               '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
               '\n이메일: ${user.kakaoAccount?.email}');
+          await storage.write(key: 'userID', value: ("${user.id}@kakao.com"));
+          await storage.write(key: 'sns', value: "kakao");
+          Provider.of<IsLoginProvider>(context, listen: false).login();
+          checkLoginState();
         } catch (error) {
           print('사용자 정보 요청 실패 $error');
         }
@@ -228,39 +239,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 text: '네이버로 계속하기',
                 backgroundColor: const Color(0xFF00C73C),
                 imageUrl: "https://via.placeholder.com/28x28",
-              ),
-            ),
-            //signup_screen으로 이동하는 버튼
-            const SizedBox(height: 15),
-            GestureDetector(
-              onTap: () {
-                GoRouter.of(context).push('/signup');
-              },
-              child: Container(
-                width: 240,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 0.1,
-                  ),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '회원가입',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ],
