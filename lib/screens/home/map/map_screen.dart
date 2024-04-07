@@ -4,11 +4,13 @@ import 'dart:developer';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
+import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:provider/provider.dart';
@@ -92,243 +94,232 @@ class _MapScreenState extends State<MapScreen>
     final List<List<String>> filtersItem =
         Provider.of<FilterList>(context, listen: false).filterItem;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          // 지도 화면
-          NaverMap(
-            options: NaverMapViewOptions(
-              initialCameraPosition: NCameraPosition(
-                target: NLatLng(userLatitude, userLongitude),
-                zoom: 14.0,
+    return ScreenUtilInit(
+      designSize: const Size(390, 667),
+      builder: (context, child) => Scaffold(
+        body: Stack(
+          children: [
+            // 지도 화면
+            NaverMap(
+              options: NaverMapViewOptions(
+                initialCameraPosition: NCameraPosition(
+                  target: NLatLng(userLatitude, userLongitude),
+                  zoom: 14.0,
+                ),
+                locationButtonEnable: true, // 위치 버튼 표시 여부 설정
+                consumeSymbolTapEvents: false, // 심볼 탭 이벤트 소비 여부 설정
               ),
-              locationButtonEnable: true, // 위치 버튼 표시 여부 설정
-              consumeSymbolTapEvents: false, // 심볼 탭 이벤트 소비 여부 설정
+              onMapReady: (controller) async {
+                // 지도 준비 완료 시 호출되는 콜백 함수
+                mapController = controller;
+                mapControllerCompleter
+                    .complete(controller); // Completer에 지도 컨트롤러 완료 신호 전송
+                log("onMapReady", name: "onMapReady");
+                // 마커를 지도 위에 추가
+                // final Marker marker = Marker(
+                //   mapController: mapController!,
+                //   nOverlayInfoOverlayPortalController:
+                //       nOverlayInfoOverlayPortalController,
+                //   onCameraChangeStream: onCameraChangeStreamController.stream,
+                // );
+                attachOverlay("1", 37.65640, 127.11670);
+                attachOverlay("2", 37.65690, 127.11720);
+              },
+              onMapTapped: (point, latLng) {
+                smokingAreaSelected = false;
+                debugPrint("${latLng.latitude}, ${latLng.longitude}");
+              },
+              onCameraChange: (reason, animated) {
+                onCameraChangeStreamController.sink.add(null);
+              },
             ),
-            onMapReady: (controller) async {
-              // 지도 준비 완료 시 호출되는 콜백 함수
-              mapController = controller;
-              mapControllerCompleter
-                  .complete(controller); // Completer에 지도 컨트롤러 완료 신호 전송
-              log("onMapReady", name: "onMapReady");
-              // 마커를 지도 위에 추가
-              // final Marker marker = Marker(
-              //   mapController: mapController!,
-              //   nOverlayInfoOverlayPortalController:
-              //       nOverlayInfoOverlayPortalController,
-              //   onCameraChangeStream: onCameraChangeStreamController.stream,
-              // );
-              attachOverlay("1", 37.65640, 127.11670);
-              attachOverlay("2", 37.65690, 127.11720);
-            },
-            onMapTapped: (point, latLng) {
-              smokingAreaSelected = false;
-              debugPrint("${latLng.latitude}, ${latLng.longitude}");
-            },
-            onCameraChange: (reason, animated) {
-              onCameraChangeStreamController.sink.add(null);
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.all(padding),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: searchWidth,
-                      height: alignButtonSize,
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.search,
-                            size: iconSize,
-                          ),
-                          Text(
-                            ' 검색창 입니다',
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // 필터 설정 버튼
-                    Container(
-                      width: alignButtonSize,
-                      height: alignButtonSize,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(20),
-                          )),
-                      child: FloatingActionButton(
-                        heroTag: "alignbtn",
-                        onPressed: () {
-                          // 필터 설정 화면
-                          setState(() {
-                            context.push('/filter');
-                          });
-                        },
-                        child: const Icon(
-                          Icons.format_list_bulleted_rounded,
-                          size: iconSize,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(
-                  height: padding,
-                ),
-                // 여백
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // 필터 목록
-                    SizedBox(
-                      height: 50,
-                      width: searchWidth,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: isPressedFilter.length, // 필터의 개수만큼 아이템 생성
-                        itemBuilder: (context, index) {
-                          return ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                isPressedFilter[index] =
-                                    !isPressedFilter[index];
-                                changeColor(isPressedFilter[index], index);
-                              });
-                              if (isPressedFilter[index]) {
-                                Provider.of<FilterList>(context, listen: false)
-                                    .changeFilterList(
-                                        filters[index ~/ 2].keys.first,
-                                        index % 2);
-                              } else {
-                                Provider.of<FilterList>(context, listen: false)
-                                    .changeFilterList(
-                                        filters[index ~/ 2].keys.first, -1);
-                              }
-                              // print(filters[index~/2].values.first);
-                              print(filters);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: _colors =
-                                    changeColor(isPressedFilter[index], index)),
-                            child: Text(filtersItem[index ~/ 2][index % 2]),
-                          );
-                        },
-                      ),
-                    ),
-                    // 제보 버튼 (임시)
-                    SizedBox(
-                      width: alignButtonSize,
-                      height: alignButtonSize,
-                      child: FloatingActionButton(
-                        heroTag: "informbtn",
-                        onPressed: () {
-                          setState(() {
-                            informPressed = !informPressed;
-                            bottomDrawerController.open();
-                          });
-                        },
-                        backgroundColor:
-                            Theme.of(context).colorScheme.background,
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+            Padding(
+              padding: const EdgeInsets.all(padding),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: searchWidth,
+                        height: alignButtonSize,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        child: const Row(
                           children: [
                             Icon(
-                              Icons.add_location_alt_outlined,
+                              Icons.search,
                               size: iconSize,
-                              color: Color(0xff6f767f),
                             ),
                             Text(
-                              '제보',
+                              ' 검색창 입니다',
                               style: TextStyle(
-                                  fontSize: 12, color: Color(0xff6f767f)),
+                                fontSize: 20,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: mapHeight / 2 - (padding * 6 + alignButtonSize * 3),
-                ),
-
-                // 제보를 누르면 등장하는 마커
-                Visibility(
-                  visible: informPressed,
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.add_location_alt,
-                        color: Colors.red,
-                        size: alignButtonSize,
-                      ),
-                      const SizedBox(
-                        height: padding,
-                      ),
-                      // 제보하기를 누르면 등장하는 '제보하기' 버튼
-                      SizedBox(
-                        width: 100,
-                        height: 40,
-                        child: ElevatedButton(
+                      // 필터 설정 버튼
+                      Container(
+                        width: alignButtonSize,
+                        height: alignButtonSize,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(20),
+                            )),
+                        child: FloatingActionButton(
+                          heroTag: "alignbtn",
                           onPressed: () {
-                            context.push('/inform',
-                                extra:
-                                    '${stringCoordinate(_nowCameraPosition?.target.longitude)},${stringCoordinate(_nowCameraPosition?.target.latitude)}');
+                            filterScreen(context);
                           },
-                          child: const Text('제보하기'),
+                          child: const Icon(
+                            Icons.format_list_bulleted_rounded,
+                            size: iconSize,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+
+                  const SizedBox(
+                    height: padding,
+                  ),
+                  // 여백
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // 필터 목록
+                      SizedBox(
+                        height: 50,
+                        width: searchWidth,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: isPressedFilter.length, // 필터의 개수만큼 아이템 생성
+                          itemBuilder: (context, index) {
+                            return ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  isPressedFilter[index] =
+                                      !isPressedFilter[index];
+                                  changeColor(isPressedFilter[index], index);
+                                });
+                                if (isPressedFilter[index]) {
+                                  Provider.of<FilterList>(context,
+                                          listen: false)
+                                      .changeFilterList(
+                                          filters[index ~/ 2].keys.first,
+                                          index % 2);
+                                } else {
+                                  Provider.of<FilterList>(context,
+                                          listen: false)
+                                      .changeFilterList(
+                                          filters[index ~/ 2].keys.first, -1);
+                                }
+                                // print(filters[index~/2].values.first);
+                                print(filters);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: _colors = changeColor(
+                                      isPressedFilter[index], index)),
+                              child: Text(filtersItem[index ~/ 2][index % 2]),
+                            );
+                          },
+                        ),
+                      ),
+                      // 제보 버튼 (임시)
+                      SizedBox(
+                        width: alignButtonSize,
+                        height: alignButtonSize,
+                        child: FloatingActionButton(
+                          heroTag: "informbtn",
+                          onPressed: () {
+                            setState(() {
+                              informPressed = !informPressed;
+                              bottomDrawerController.open();
+                            });
+                          },
+                          backgroundColor:
+                              Theme.of(context).colorScheme.background,
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_location_alt_outlined,
+                                size: iconSize,
+                                color: Color(0xff6f767f),
+                              ),
+                              Text(
+                                '제보',
+                                style: TextStyle(
+                                    fontSize: 12, color: Color(0xff6f767f)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: mapHeight / 2 - (padding * 6 + alignButtonSize * 3),
+                  ),
+
+                  // 제보를 누르면 등장하는 마커
+                  Visibility(
+                    visible: informPressed,
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.add_location_alt,
+                          color: Colors.red,
+                          size: alignButtonSize,
+                        ),
+                        const SizedBox(
+                          height: padding,
+                        ),
+                        // 제보하기를 누르면 등장하는 '제보하기' 버튼
+                        SizedBox(
+                          width: 100,
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context.push('/inform',
+                                  extra:
+                                      '${stringCoordinate(_nowCameraPosition?.target.longitude)},${stringCoordinate(_nowCameraPosition?.target.latitude)}');
+                            },
+                            child: const Text('제보하기'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(padding),
-              child: Visibility(
-                visible: smokingAreaSelected,
-                maintainAnimation: true,
-                maintainState: true,
-                child: SmokingAreaInfoCard(
-                  smokingAreaId: smokingAreaId,
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(padding),
+                child: Visibility(
+                  visible: smokingAreaSelected,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  child: SmokingAreaInfoCard(
+                    smokingAreaId: smokingAreaId,
+                  ),
                 ),
               ),
             ),
-          ),
-
-          // 위도 경도 임시 출력
-          // Positioned(
-          //   left: 0,
-          //   right: 0,
-          //   bottom: 0,
-          //   child: Container(
-          //     color: Colors.blue,
-          //     child: Text(
-          //       '위도: ${stringCoordinate(_nowCameraPosition?.target.latitude)} 경도: ${stringCoordinate(_nowCameraPosition?.target.longitude)}',
-          //       style: const TextStyle(fontSize: 20),
-          //     ),
-          //   ),
-          // ),
-        ],
+          ],
+        ),
       ),
     );
   }
