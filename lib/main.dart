@@ -149,7 +149,7 @@ final GoRouter router = GoRouter(
       routes: [
         GoRoute(
           name: 'login',
-          path: '/login',
+          path: 'login',
           builder: (context, state) => const LoginScreen(),
           routes: [
             GoRoute(
