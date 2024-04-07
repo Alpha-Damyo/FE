@@ -42,7 +42,7 @@ dependencies:
   flutter_rating_stars: ^1.0.3+4
   image_picker: ^1.0.7
   geolocator: ^9.0.0
-  flutter_secure_storage: ^4.2.1
+  flutter_secure_storage: ^9.0.0
   balloon_widget: ^0.0.1+1
   bottom_drawer: ^0.0.5
   provider: ^6.1.2
