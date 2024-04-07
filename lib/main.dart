@@ -1,8 +1,12 @@
 import 'dart:developer';
 
 import 'package:damyo/provider/filterlist_provider.dart';
+import 'package:damyo/provider/islogin_provider.dart';
+import 'package:damyo/provider/userInfo_provider.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
+import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
+import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -99,21 +103,20 @@ void main() async {
   // Kakao sdk 초기화
   _initializeKakao();
 
-  runApp(ChangeNotifierProvider(
+  /*runApp(ChangeNotifierProvider(
     create: (context) => FilterList(),
     child: const App(),
-  ));
-  // provider 모델이 여러 개인 경우 List를 통해 제공
-  // runApp(
-  //   MultiProvider(
-  //     providers: [
-  //       ChangeNotifierProvider(create: (context) => FilterList()),
-  //       ChangeNotifierProvider(create: (context) => AnotherModel()),
-  //
-  //     ],
-  //     child: const App(),
-  //   ),
-  // );
+  ));*/
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => FilterList()),
+        ChangeNotifierProvider(create: (context) => IsLoginProvider()),
+        ChangeNotifierProvider(create: (context) => UserInfoProvider()),
+      ],
+      child: const App(),
+    ),
+  );
 }
 
 final GoRouter router = GoRouter(
@@ -141,14 +144,29 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const SmokingAreaInfoScreen(),
     ),
     GoRoute(
-      name: 'login',
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+      routes: [
+        GoRoute(
+          name: 'login',
+          path: 'login',
+          builder: (context, state) => const LoginScreen(),
+          routes: [
+            GoRoute(
+              name: 'signup',
+              path: 'signup',
+              builder: (context, state) => const SignupScreen(),
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
-      name: 'signup',
-      path: '/signup',
-      builder: (context, state) => const SignupScreen(),
+      name: 'favorite',
+      path: '/favorite',
+      builder: (context, state) {
+        return const FavoriteScreen();
+      },
     ),
   ],
 );
