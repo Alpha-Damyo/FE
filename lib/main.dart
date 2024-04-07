@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
-import 'package:damyo/screens/home/filter/filter_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
@@ -96,7 +95,7 @@ Future<void> _getCurrentLocation() async {
 void main() async {
   await _initializeMap();
   _requestPermission();
-  await _getCurrentLocation();
+  // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 
@@ -135,15 +134,6 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
-      routes: [
-        GoRoute(
-          name: 'filter',
-          path: 'filter',
-          builder: (context, state) {
-            return const FilterScreen();
-          },
-        ),
-      ],
     ),
     GoRoute(
       name: 'sa_info',
@@ -172,10 +162,18 @@ class App extends StatelessWidget {
       routerConfig: router,
       theme: ThemeData(
         fontFamily: 'pretendard',
-        colorScheme: ColorScheme.fromSwatch(
-          backgroundColor: Colors.white,
-          accentColor: const Color(0xff0099fc),
-        ),
+        colorScheme: const ColorScheme(
+            brightness: Brightness.light,
+            primary: Color(0xFF0099FC),
+            onPrimary: Color(0xFFD6ECFA),
+            secondary: Colors.white,
+            onSecondary: Colors.white,
+            error: Colors.white,
+            onError: Colors.white,
+            background: Colors.white,
+            onBackground: Colors.black,
+            surface: Colors.white,
+            onSurface: Colors.black),
         textTheme: const TextTheme(
             headlineLarge: TextStyle(
                 fontFamily: 'pretendard',
