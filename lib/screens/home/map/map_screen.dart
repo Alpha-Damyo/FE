@@ -3,9 +3,11 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
+import 'package:damyo/screens/home/map/filter/smoking_area_filter_util.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
+import 'package:damyo/screens/home/map/util/map_filter_listview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -51,22 +53,31 @@ class _MapScreenState extends State<MapScreen>
     }
   }
 
-  // 필터 눌렸는지 여부
-  final List<bool> isPressedFilter = List.generate(12, (index) => false);
-  // 필터 색깔 지정
-  Color _colors = Colors.white;
+  // // 필터 눌렸는지 여부
+  // final List<bool> isPressedFilter = List.generate(12, (index) => false);
+  // // 필터 색깔 지정
+  // Color _colors = Colors.white;
 
-  Color changeColor(bool state, int index) {
-    if (state) {
-      // print(_state);
-      _colors = Colors.red;
-      return _colors;
-    } else {
-      // print(_state);
-      _colors = Colors.white;
-      return _colors;
-    }
-  }
+  // Color changeColor(bool state, int index) {
+  //   if (state) {
+  //     // print(_state);
+  //     _colors = Colors.red;
+  //     return _colors;
+  //   } else {
+  //     // print(_state);
+  //     _colors = Colors.white;
+  //     return _colors;
+  //   }
+  // }
+
+  // 필터 목록
+  final List<String> _mapFilterCharacterList = [
+    '실외',
+    '개방된',
+    '한산한',
+    '청결한',
+    '의자가 있는',
+  ];
 
   bool smokingAreaSelected = false;
   BottomDrawerController bottomDrawerController = BottomDrawerController();
@@ -79,8 +90,8 @@ class _MapScreenState extends State<MapScreen>
     // 화면을 동적으로 빌드하기 위한 사이즈
     final Size size = MediaQuery.of(context).size;
     const double padding = 10;
-    const double alignButtonSize = 53;
-    final double searchWidth = size.width - 3 * padding - alignButtonSize;
+    const double alignButtonSize = 40;
+    const double searchWidth = double.infinity;
     const double iconSize = 25;
     final double mapHeight = size.height - kBottomNavigationBarHeight;
 
@@ -134,119 +145,125 @@ class _MapScreenState extends State<MapScreen>
               },
             ),
             Padding(
-              padding: const EdgeInsets.all(padding),
+              padding: const EdgeInsets.symmetric(horizontal: padding),
               child: Column(
                 children: [
                   const SizedBox(
                     height: 50,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: searchWidth,
-                        height: alignButtonSize,
-                        decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.search,
-                              size: iconSize,
-                            ),
-                            Text(
-                              ' 검색창 입니다',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        ),
+                  GestureDetector(
+                    onTap: () {
+                      context.push('/search');
+                    },
+                    child: Container(
+                      width: searchWidth,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 0,
+                            blurRadius: 2.0,
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
+                          ),
+                        ],
                       ),
-                      // 필터 설정 버튼
-                      Container(
-                        width: alignButtonSize,
-                        height: alignButtonSize,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(20),
-                            )),
-                        child: FloatingActionButton(
-                          heroTag: "alignbtn",
-                          onPressed: () {
-                            filterScreen(context);
-                          },
-                          child: const Icon(
-                            Icons.format_list_bulleted_rounded,
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(
+                            Icons.search,
                             size: iconSize,
                           ),
-                        ),
+                          SizedBox(width: 10),
+                          Text(
+                            "흡연구역 검색",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF6F767F),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
 
                   const SizedBox(
                     height: padding,
                   ),
-                  // 여백
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // 필터 목록
-                      SizedBox(
-                        height: 50,
-                        width: searchWidth,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: isPressedFilter.length, // 필터의 개수만큼 아이템 생성
-                          itemBuilder: (context, index) {
-                            return ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  isPressedFilter[index] =
-                                      !isPressedFilter[index];
-                                  changeColor(isPressedFilter[index], index);
-                                });
-                                if (isPressedFilter[index]) {
-                                  Provider.of<FilterList>(context,
-                                          listen: false)
-                                      .changeFilterList(
-                                          filters[index ~/ 2].keys.first,
-                                          index % 2);
-                                } else {
-                                  Provider.of<FilterList>(context,
-                                          listen: false)
-                                      .changeFilterList(
-                                          filters[index ~/ 2].keys.first, -1);
-                                }
-                                // print(filters[index~/2].values.first);
-                                print(filters);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: _colors = changeColor(
-                                      isPressedFilter[index], index)),
-                              child: Text(filtersItem[index ~/ 2][index % 2]),
-                            );
-                          },
+                      MapFilterListview(
+                        characterList: _mapFilterCharacterList,
+                      ),
+                      const SizedBox(width: 10),
+                      // 필터 설정 버튼
+                      InkWell(
+                        onTap: () {
+                          filterScreen(context);
+                        },
+                        child: Container(
+                          width: alignButtonSize,
+                          height: alignButtonSize,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: const Color(0xFFD2D7DD)),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 0,
+                                blurRadius: 2.0,
+                                offset: const Offset(
+                                    0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.format_list_bulleted_rounded,
+                            size: iconSize,
+                            color: Color(0xff6f767f),
+                          ),
                         ),
                       ),
-                      // 제보 버튼 (임시)
-                      SizedBox(
-                        width: alignButtonSize,
-                        height: alignButtonSize,
-                        child: FloatingActionButton(
-                          heroTag: "informbtn",
-                          onPressed: () {
-                            setState(() {
-                              informPressed = !informPressed;
-                              bottomDrawerController.open();
-                            });
-                          },
-                          backgroundColor:
-                              Theme.of(context).colorScheme.background,
+                    ],
+                  ),
+                  const SizedBox(height: padding),
+                  // 제보 버튼
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            informPressed = !informPressed;
+                            bottomDrawerController.open();
+                          });
+                        },
+                        child: Container(
+                          width: alignButtonSize,
+                          height: alignButtonSize + 20,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: const Color(0xFFD2D7DD)),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 0,
+                                blurRadius: 2.0,
+                                offset: const Offset(
+                                    0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -266,8 +283,17 @@ class _MapScreenState extends State<MapScreen>
                       ),
                     ],
                   ),
+
                   SizedBox(
-                    height: mapHeight / 2 - (padding * 6 + alignButtonSize * 3),
+                    height: mapHeight / 2 -
+                        (50 +
+                            50 +
+                            padding +
+                            alignButtonSize +
+                            padding +
+                            alignButtonSize +
+                            20 +
+                            alignButtonSize),
                   ),
 
                   // 제보를 누르면 등장하는 마커
