@@ -54,6 +54,8 @@ class _LoginScreenState extends State<LoginScreen> {
       await storage.write(key: 'sns', value: "google");
       // 읽고 싶을 때는
       // String? id = await storage.read(key: 'userID');
+      Provider.of<IsLoginProvider>(context, listen: false).login();
+      checkLoginState();
     }
   }
 
@@ -69,6 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
       print('id = ${naverUser.account.id}');
       await storage.write(key: 'userID', value: naverUser.account.email);
       await storage.write(key: 'sns', value: "naver");
+      Provider.of<IsLoginProvider>(context, listen: false).login();
+      checkLoginState();
     }
     setState(() {});
   }
