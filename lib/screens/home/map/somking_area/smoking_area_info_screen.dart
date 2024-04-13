@@ -27,10 +27,10 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-           child: Column(
+          child: Column(
             children: [
               Image.network(
-                'https://s3-alpha-sig.figma.com/img/cad7/c4fe/43ae8f3f6705d2bc870f650c659320c5?Expires=1712534400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=i13Cyw-~-yI90u-3GGTbYHp5rwBDj9mKw8OEvCOdljMPzi1ReeXyJ0Xtres~o0Fw-5eb~2N0OCRBRYSf3-lbK3x7BDcV3CPavm~al5FuVroVm~WaGljbmdA2qAGcBY3YCvfHGKQ99NXzTxGtf1gvAoCQi0f2IDi-oDs-YfzpCe67w2Rvm2UxuLPd45kYShyB86AoJughj8oyX9RMntlS9b9q-jeP5J70vOlR8wx6t3C~poSb2w8vkKkNZGYlge9vtSKjedSb7rChtFfFa1D1tkueR1zZKM4uNkHEL91IILguXsOU0AVpBsufW2a6NO3qJQg-XN-Z890cUBy18a9ppQ__',
+                'https://www.sisain.co.kr/news/photo/202203/47046_84952_2317.jpg',
                 fit: BoxFit.cover,
                 width: 390.w,
                 height: 266,
