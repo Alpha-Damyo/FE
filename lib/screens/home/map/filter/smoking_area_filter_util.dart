@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // // "1점 이상"과 같은 버튼
 // class FilterContainer extends StatefulWidget {
@@ -70,7 +69,7 @@ class _FilterListviewState extends State<FilterListview> {
       children: [
         Container(
           width: MediaQuery.of(context).size.width - 40,
-          height: 29,
+          height: 30,
           alignment: Alignment.centerLeft,
           child: ListView.builder(
             itemCount: widget.characterList.length,
