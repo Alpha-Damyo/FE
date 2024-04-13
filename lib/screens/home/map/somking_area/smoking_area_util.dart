@@ -121,8 +121,6 @@ class SAInfoScreenCharacteristic extends StatelessWidget {
 }
 
 List<String> photoUrlList = [
-  'https://s3-alpha-sig.figma.com/img/cad7/c4fe/43ae8f3f6705d2bc870f650c659320c5?Expires=1712534400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=i13Cyw-~-yI90u-3GGTbYHp5rwBDj9mKw8OEvCOdljMPzi1ReeXyJ0Xtres~o0Fw-5eb~2N0OCRBRYSf3-lbK3x7BDcV3CPavm~al5FuVroVm~WaGljbmdA2qAGcBY3YCvfHGKQ99NXzTxGtf1gvAoCQi0f2IDi-oDs-YfzpCe67w2Rvm2UxuLPd45kYShyB86AoJughj8oyX9RMntlS9b9q-jeP5J70vOlR8wx6t3C~poSb2w8vkKkNZGYlge9vtSKjedSb7rChtFfFa1D1tkueR1zZKM4uNkHEL91IILguXsOU0AVpBsufW2a6NO3qJQg-XN-Z890cUBy18a9ppQ__',
-  'https://s3-alpha-sig.figma.com/img/6ef6/5b71/61040b8b151c54b67ac8410e0bac4c19?Expires=1712534400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OoCiJmoWyQPMKE34bthbugti-7hvEW0hPLlkTZg52AoWxAEN1Mnkm1P6NHoaNI97ibkdppK5WHL22CKzNkAvatuj-h32UJQG7OT4pjDnTsa7M7vSlpdM3hYp0vEUUznAImtAvriDl5WfNsxxe2zBdb1~Iw18Gpx82kmapC9PF6-TapEae6m8Dwb8gy6YDxYi3ZaHZ~ezqeTkluiT-h1NR2dR899YocYPi21cluxeeJ4UaC8wbuU9iYvvsX7D2PSXHUGFNrn4Pu6LoT5cwegSCpV0~IacNe2UxghsJ5PZxLqeqvBCIJK0KdhqI16DZ7T81A2nNbwJGKG2SVNs8pbgZw__',
   'https://www.sisain.co.kr/news/photo/202203/47046_84952_2317.jpg',
   'https://mediahub.seoul.go.kr/uploads/mediahub/2023/02/wVVfdlOSDzeCdUziNtMyHjYIvgntUwDm.jpg',
   'https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/2OhT/image/bOXhfr9EO2JubQiJKQhI9JqA3xk.jpg',
