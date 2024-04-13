@@ -23,11 +23,11 @@
     <img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white"/>
 </div>
 
-## 버전
+## 기술 버전
 <img height="25" src="https://img.shields.io/badge/Flutter-3.19.4-blue"> <img height="25" src="https://img.shields.io/badge/Android%20API-34-brightgreen"> <img height="25" src="https://img.shields.io/badge/Android%20SDK-14-brightgreen"> <br>
 
 <img height="25" src="https://img.shields.io/badge/http-1.2.1-blue"> <img height="25" src="https://img.shields.io/badge/go_router-13.2.0-blue"> <img height="25" src="https://img.shields.io/badge/provider-6.1.2-blue"> <br>
-<img height="25" src="https://img.shields.io/badge/permission_handler-11.3.0-blue"> <img height="25" src="https://img.shields.io/badge/flutter_secure_storage-9.2.0-blue"> <br>
+<img height="25" src="https://img.shields.io/badge/permission_handler-11.3.0-blue"> <img height="25" src="https://img.shields.io/badge/flutter_secure_storage-9.0.0-blue"> <br>
 <img height="25" src="https://img.shields.io/badge/flutter_naver_map-1.2.1-brightgreen"> <img height="25" src="https://img.shields.io/badge/geolocator-9.0.0-blue"> <br>
 <img height="25" src="https://img.shields.io/badge/flutter_naver_login-1.8.0-brightgreen"> <img height="25" src="https://img.shields.io/badge/kakao_flutter_sdk_user-1.9.0-yellow"> <img height="25" src="https://img.shields.io/badge/google_sign_in-6.2.1-white"> <br> 
 <img height="25" src="https://img.shields.io/badge/flutter_screenutil-5.9.0-blue"> <img height="25" src="https://img.shields.io/badge/image_picker-1.0.7-blue"> <img height="25" height="25" src="https://img.shields.io/badge/flutter_rating_stars-1.0.3+4-blue"> <br>
