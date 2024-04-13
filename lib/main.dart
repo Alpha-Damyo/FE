@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
+import 'package:damyo/screens/home/challenge/challengedetail_screen.dart';
+import 'package:damyo/screens/home/challenge/challengevote_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
@@ -174,6 +176,21 @@ final GoRouter router = GoRouter(
       path: '/favorite',
       builder: (context, state) {
         return const FavoriteScreen();
+      },
+    ),
+    GoRoute(
+      path: '/details',
+      builder: (context, state) {
+        final title =
+            (state.extra as Map<String, String>)['title'] ?? "Default Title";
+        return ChallengeDetailScreen(title: title);
+      },
+    ),
+    GoRoute(
+      name: 'vote',
+      path: '/vote',
+      builder: (context, state) {
+        return const ChallengeVoteScreen();
       },
     ),
   ],

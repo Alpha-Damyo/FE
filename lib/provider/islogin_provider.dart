@@ -16,7 +16,6 @@ class IsLoginProvider with ChangeNotifier {
 
   void logout() async {
     _isLogin = false;
-    _isFirst = true;
     await storage.deleteAll();
     notifyListeners();
   }
