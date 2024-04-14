@@ -190,7 +190,9 @@ final GoRouter router = GoRouter(
       name: 'vote',
       path: '/vote',
       builder: (context, state) {
-        return const ChallengeVoteScreen();
+        final title =
+            (state.extra as Map<String, String>)['title'] ?? "Default Title";
+        return ChallengeVoteScreen(title: title);
       },
     ),
   ],
