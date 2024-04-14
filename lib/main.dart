@@ -13,6 +13,7 @@ import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/screens/home/statistics/local_statistics.dart';
 import 'package:damyo/screens/home/statistics/period_statistics.dart';
 import 'package:damyo/screens/home/statistics/time_statistics.dart';
+import 'package:damyo/screens/home/statistics/week_statistics.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -200,21 +201,28 @@ final GoRouter router = GoRouter(
       name: 'local_statistics',
       path: '/local_statistics',
       builder: (context, state) {
-        return const LocalStaisticsScreen();
+        return LocalStaisticsScreen(subcategory: state.extra.toString(),);
       },
     ),
     GoRoute(
       name: 'time_statistics',
       path: '/time_statistics',
       builder: (context, state) {
-        return const TimeStaisticsScreen();
+        return TimeStaisticsScreen(subcategory: state.extra.toString(),);
       },
     ),
     GoRoute(
       name: 'period_statistics',
       path: '/period_statistics',
       builder: (context, state) {
-        return const PeriodStaisticsScreen();
+        return PeriodStaisticsScreen(subcategory: state.extra.toString(),);
+      },
+    ),
+    GoRoute(
+      name: 'week_statistics',
+      path: '/week_statistics',
+      builder: (context, state) {
+        return WeekStaisticsScreen(subcategory: state.extra.toString(),);
       },
     ),
   ],

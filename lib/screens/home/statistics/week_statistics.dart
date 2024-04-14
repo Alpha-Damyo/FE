@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
-
-class PeriodStaisticsScreen extends StatefulWidget {
-  const PeriodStaisticsScreen({
+class WeekStaisticsScreen extends StatefulWidget {
+  const WeekStaisticsScreen({
     super.key,
     required this.subcategory,
   });
@@ -12,10 +11,10 @@ class PeriodStaisticsScreen extends StatefulWidget {
   final String subcategory;
 
   @override
-  State<PeriodStaisticsScreen> createState() => _PeriodStaisticsState();
+  State<WeekStaisticsScreen> createState() => _WeekStaisticsState();
 }
 
-class _PeriodStaisticsState extends State<PeriodStaisticsScreen> {
+class _WeekStaisticsState extends State<WeekStaisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
