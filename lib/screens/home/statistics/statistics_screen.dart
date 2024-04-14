@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:damyo/http.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -42,8 +44,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ),
                     onTap: () {
                       // 지역별 통계 상세 페이지로 이동
+                      context.push('/local_statistics');
                       print('지역별 흡연 데이터');
+                      // sendData();
                     },
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   width: 358,
                   height: 469,
@@ -73,9 +78,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ),
                     onTap: () {
                       // 시간대별 통계 상세 페이지로 이동
-
+                      context.push('/time_statistics');
                       print('시간대별 흡연 데이터');
                     },
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   width: 358,
                   height: 469,
@@ -105,6 +111,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ),
                     onTap: () {
                       // 기간별 통계 상세 페이지로 이동
+                      context.push('/period_statistics');
                       print('기간별 흡연 데이터');
                     },
                     borderRadius: BorderRadius.circular(15),
