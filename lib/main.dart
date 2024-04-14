@@ -10,6 +10,9 @@ import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/mypage_screen.dart';
+import 'package:damyo/screens/home/statistics/local_statistics.dart';
+import 'package:damyo/screens/home/statistics/period_statistics.dart';
+import 'package:damyo/screens/home/statistics/time_statistics.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -179,6 +182,7 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+<<<<<<< Updated upstream
       path: '/details',
       builder: (context, state) {
         final title =
@@ -191,6 +195,25 @@ final GoRouter router = GoRouter(
       path: '/vote',
       builder: (context, state) {
         return const ChallengeVoteScreen();
+=======
+      name: 'local_statistics',
+      path: '/local_statistics',
+      builder: (context, state) {
+        return const LocalStaisticsScreen();
+      },
+    ),
+    GoRoute(
+      name: 'time_statistics',
+      path: '/time_statistics',
+      builder: (context, state) {
+        return const TimeStaisticsScreen();
+      },
+    ),GoRoute(
+      name: 'period_statistics',
+      path: '/period_statistics',
+      builder: (context, state) {
+        return const PeriodStaisticsScreen();
+>>>>>>> Stashed changes
       },
     ),
   ],
