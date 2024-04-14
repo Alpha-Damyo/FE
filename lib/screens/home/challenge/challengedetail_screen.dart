@@ -70,7 +70,7 @@ class ChallengeDetailScreen extends StatelessWidget {
             InkWell(
               onTap: () {
                 // Navigate to the ChallengeVoteScreen()
-                GoRouter.of(context).push('/vote');
+                GoRouter.of(context).push('/vote', extra: {'title': title});
               },
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
