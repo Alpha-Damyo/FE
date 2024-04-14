@@ -4,7 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class TimeStaisticsScreen extends StatefulWidget {
-  const TimeStaisticsScreen({super.key});
+  const TimeStaisticsScreen({
+    super.key,
+    required this.subcategory,  
+  });
+
+  final String subcategory;
 
   @override
   State<TimeStaisticsScreen> createState() => _TimeStaisticsState();
@@ -20,12 +25,14 @@ class _TimeStaisticsState extends State<TimeStaisticsScreen> {
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           title: Text(
-            '시간별 흡연 통계',
+            widget.subcategory,
           ),
           centerTitle: true,
         ),
         body: Center(
-          child: Text('Time'),
+          child: Text(
+            widget.subcategory,
+          ),
         ),
       )
     );

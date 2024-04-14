@@ -4,7 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class LocalStaisticsScreen extends StatefulWidget {
-  const LocalStaisticsScreen({super.key});
+  final String subcategory;
+  
+  const LocalStaisticsScreen({
+    super.key,
+    required this.subcategory,
+  });
+
+  
 
   @override
   State<LocalStaisticsScreen> createState() => _LocalStaisticsState();
@@ -20,12 +27,14 @@ class _LocalStaisticsState extends State<LocalStaisticsScreen> {
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           title: Text(
-            '지역별 흡연 통계',
+            widget.subcategory,
           ),
           centerTitle: true,
         ),
         body: Center(
-          child: Text('LOCAL'),
+          child: Text(
+            widget.subcategory,
+          ),
         ),
       )
     );
