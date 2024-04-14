@@ -182,7 +182,6 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-<<<<<<< Updated upstream
       path: '/details',
       builder: (context, state) {
         final title =
@@ -195,7 +194,9 @@ final GoRouter router = GoRouter(
       path: '/vote',
       builder: (context, state) {
         return const ChallengeVoteScreen();
-=======
+      },
+    ),
+    GoRoute(
       name: 'local_statistics',
       path: '/local_statistics',
       builder: (context, state) {
@@ -208,12 +209,12 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         return const TimeStaisticsScreen();
       },
-    ),GoRoute(
+    ),
+    GoRoute(
       name: 'period_statistics',
       path: '/period_statistics',
       builder: (context, state) {
         return const PeriodStaisticsScreen();
->>>>>>> Stashed changes
       },
     ),
   ],
