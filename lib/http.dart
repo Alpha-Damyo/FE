@@ -62,34 +62,3 @@ Future<String> GetAddress(String coords) async {
 //     },
 //   );
 // }
-
-// http://ec2-3-37-0-59.ap-northeast-2.compute.amazonaws.com:8080/auth/signup
-// {
-//     "email" : "abcde@gmail.com",
-//     "name": "hi",
-//     "profileUrl" : "sdfsdf",
-//     "gender" : "male",
-//     "age" : 12
-// }
-
-// test용 지환 - 창연 서버 연결 확인(로그인 관련)
-// Future<void> sendData() async {
-//   //http.post는 리턴값이 Future이기 떄문에 async 함수 내에서 await로 호출할 수 있다.
-//   var test = Uri.parse("http://ec2-3-37-0-59.ap-northeast-2.compute.amazonaws.com:8080/auth/signup",);
-//   http.Response res = await http.post(
-//     test,
-//     headers: {"Content-Type":"application/json"},
-//     body: json.encode({
-//       "email" : "chage@gmail.com",
-//       "name": "hi",
-//       "profileUrl" : "sdfsdf",
-//       "gender" : "male",
-//       "age" : 12
-//     })
-//   );
-//   print(res.body);
-//   //여기서는 응답이 객체로 변환된 res 변수를 사용할 수 있다.
-//   //여기서 res.body를 jsonDecode 함수로 객체로 만들어서 데이터를 처리할 수 있다.
-
-//   return; //작업이 끝났기 때문에 리턴
-// }
