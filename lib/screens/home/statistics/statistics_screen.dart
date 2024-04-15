@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:damyo/http.dart';
+import 'package:damyo/screens/home/statistics/statistics_screen_utill.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -13,6 +16,7 @@ class StatisticsScreen extends StatefulWidget {
 
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
+
   @override
   Widget build(BuildContext context) {
 
@@ -32,126 +36,74 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
+                SizedBox(
+                  height: 20.h,
+                ),
                 // 지역별 흡연 데이터 통계 
-                // Ink 없애려면 Ink - Container로 Inkwell - GestureDetector로
-                Ink(
-                  child: InkWell(
-                    child: Text(
-                      '지역별 흡연 데이터',
-                      textAlign: TextAlign.center,
-                    ),
-                    onTap: () {
-                      // 지역별 통계 상세 페이지로 이동
-                      print('지역별 흡연 데이터');
-                    },
-                  ),
-                  width: 358,
+                Container(
+                  width: 390,
                   height: 469,
-                  // clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignOutside,
-                        color: Color(0xFFEEF1F4),
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      StatistTap(index: 0, category: '시군구별 흡연 통계',),
+                      StatistTap(index: 0, category: '가장 많이 흡연한 구역(개인)',),
+                      StatistTap(index: 0, category: '가장 많이 흡연한 구역(전체)',),
+                      StatistTap(index: 0, category: '지역별 흡연 목록',),
+                    ],
                   ),
                 ),
                 SizedBox(
-                  width: 390,
-                  height: 20,
+                  width: 390.w,
+                  height: 20.h,
                 ),
                 // 시간대별 흡연 데이터 통계
-                Ink(
-                  child: InkWell(
-                    child: Text(
-                      '시간대별 흡연 데이터',
-                      textAlign: TextAlign.center,
-                    ),
-                    onTap: () {
-                      // 시간대별 통계 상세 페이지로 이동
-
-                      print('시간대별 흡연 데이터');
-                    },
-                  ),
-                  width: 358,
+                Container(
+                  width: 390,
                   height: 469,
-                  // clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignOutside,
-                        color: Color(0xFFEEF1F4),
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      StatistTap(index: 1, category: '시간대별 평균 흡연량(개인)',),
+                      StatistTap(index: 1, category: '시간대별 평균 흡연량(전체)',),
+                    ],
                   ),
                 ),
                 SizedBox(
-                  width: 390,
-                  height: 20,
+                  width: 390.w,
+                  height: 20.h,
                 ),
                 // 기간별 흡연 데이터 통계
-                Ink(
-                  child: InkWell(
-                    child: Text(
-                      '기간별 흡연 데이터',
-                      textAlign: TextAlign.center,
-                    ),
-                    onTap: () {
-                      // 기간별 통계 상세 페이지로 이동
-                      print('기간별 흡연 데이터');
-                    },
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  width: 358,
+                Container(
+                  width: 390,
                   height: 469,
-                  // clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignOutside,
-                        color: Color(0xFFEEF1F4),
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      StatistTap(index: 2, category: '기간별 평균 흡연량(개인)',),
+                      StatistTap(index: 2, category: '기간별 평균 흡연량(전체)',),
+                    ],
                   ),
                 ),
                 SizedBox(
-                  width: 390,
-                  height: 20,
+                  width: 390.w,
+                  height: 20.h,
                 ),
-                Ink(
-                  child:InkWell(
-                    onTap: () {
-                      
-                    },
-                    child: Text(
-                      'Test',
-                      textAlign: TextAlign.center,
-                    ),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  width: 358,
+                // 요일별 흡연 데이터 통계
+                Container(
+                  width: 390,
                   height: 469,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignOutside,
-                        color: Color(0xFFEEF1F4),
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      StatistTap(index: 3, category: '요일별 평균 흡연량(개인)',),
+                      StatistTap(index: 3, category: '요일별 평균 흡연량(전체)',),
+                    ],
                   ),
+                ),
+                SizedBox(
+                  width: 390.w,
+                  height: 20.h,
                 ),
               ],
             ),
