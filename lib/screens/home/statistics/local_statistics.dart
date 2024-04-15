@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+
+
+class LocalStaisticsScreen extends StatefulWidget {
+  final String subcategory;
+  
+  const LocalStaisticsScreen({
+    super.key,
+    required this.subcategory,
+  });
+
+  
+
+  @override
+  State<LocalStaisticsScreen> createState() => _LocalStaisticsState();
+}
+
+class _LocalStaisticsState extends State<LocalStaisticsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return ScreenUtilInit(
+      designSize: const Size(390, 1863),
+      builder: (context, child) => Scaffold(
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.white,
+          title: Text(
+            widget.subcategory,
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: Text(
+            widget.subcategory,
+          ),
+        ),
+      )
+    );
+  }
+}
