@@ -75,7 +75,7 @@ Future<String> GetAddress(String coords) async {
 // test용 지환 - 창연 서버 연결 확인(로그인 관련)
 // Future<void> sendData() async {
 //   //http.post는 리턴값이 Future이기 떄문에 async 함수 내에서 await로 호출할 수 있다.
-//   var test = Uri.parse("http://ec2-3-37-0-59.ap-northeast-2.compute.amazonaws.com:8080/auth/signup",);
+// var test = Uri.parse(secretAwsSeverAddress,);
 //   http.Response res = await http.post(
 //     test,
 //     headers: {"Content-Type":"application/json"},
