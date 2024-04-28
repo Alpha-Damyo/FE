@@ -5,6 +5,7 @@ import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/map/search/search_screen.dart';
+import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/mypage_screen.dart';
@@ -100,7 +101,7 @@ Future<void> _getCurrentLocation() async {
 void main() async {
   await _initializeMap();
   _requestPermission();
-  await _getCurrentLocation();
+  // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 
@@ -150,6 +151,9 @@ final GoRouter router = GoRouter(
       name: 'sa_info',
       path: '/sa_info',
       builder: (context, state) => const SmokingAreaInfoScreen(),
+      // routes: [
+
+      // ],
     ),
     GoRoute(
       path: '/',
