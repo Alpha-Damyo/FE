@@ -7,6 +7,7 @@ import 'package:damyo/screens/home/challenge/challengedetail_screen.dart';
 import 'package:damyo/screens/home/challenge/challengevote_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/map/search/search_screen.dart';
+import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/mypage_screen.dart';
@@ -146,21 +147,19 @@ final GoRouter router = GoRouter(
             return const SearchScreen();
           },
         ),
-      ],
-    ),
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-    ),
-    GoRoute(
-      name: 'sa_info',
-      path: '/sa_info',
-      builder: (context, state) => const SmokingAreaInfoScreen(),
-    ),
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-      routes: [
+        GoRoute(
+            name: 'sa_info',
+            path: 'sa_info',
+            builder: (context, state) => const SmokingAreaInfoScreen(),
+            routes: [
+              GoRoute(
+                name: 'write_review',
+                path: 'write_review',
+                builder: (context, state) {
+                  return const WriteReviewScreen();
+                },
+              ),
+            ]),
         GoRoute(
           name: 'login',
           path: 'login',
@@ -173,59 +172,67 @@ final GoRouter router = GoRouter(
             ),
           ],
         ),
+        GoRoute(
+          name: 'favorite',
+          path: 'favorite',
+          builder: (context, state) {
+            return const FavoriteScreen();
+          },
+        ),
+        GoRoute(
+          path: 'details',
+          builder: (context, state) {
+            final title = (state.extra as Map<String, String>)['title'] ??
+                "Default Title";
+            return ChallengeDetailScreen(title: title);
+          },
+        ),
+        GoRoute(
+          name: 'vote',
+          path: 'vote',
+          builder: (context, state) {
+            final title = (state.extra as Map<String, String>)['title'] ??
+                "Default Title";
+            return ChallengeVoteScreen(title: title);
+          },
+        ),
+        GoRoute(
+          name: 'local_statistics',
+          path: 'local_statistics',
+          builder: (context, state) {
+            return LocalStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'time_statistics',
+          path: 'time_statistics',
+          builder: (context, state) {
+            return TimeStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'period_statistics',
+          path: 'period_statistics',
+          builder: (context, state) {
+            return PeriodStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'week_statistics',
+          path: 'week_statistics',
+          builder: (context, state) {
+            return WeekStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
       ],
-    ),
-    GoRoute(
-      name: 'favorite',
-      path: '/favorite',
-      builder: (context, state) {
-        return const FavoriteScreen();
-      },
-    ),
-    GoRoute(
-      path: '/details',
-      builder: (context, state) {
-        final title =
-            (state.extra as Map<String, String>)['title'] ?? "Default Title";
-        return ChallengeDetailScreen(title: title);
-      },
-    ),
-    GoRoute(
-      name: 'vote',
-      path: '/vote',
-      builder: (context, state) {
-        final title =
-            (state.extra as Map<String, String>)['title'] ?? "Default Title";
-        return ChallengeVoteScreen(title: title);
-      },
-    ),
-    GoRoute(
-      name: 'local_statistics',
-      path: '/local_statistics',
-      builder: (context, state) {
-        return LocalStaisticsScreen(subcategory: state.extra.toString(),);
-      },
-    ),
-    GoRoute(
-      name: 'time_statistics',
-      path: '/time_statistics',
-      builder: (context, state) {
-        return TimeStaisticsScreen(subcategory: state.extra.toString(),);
-      },
-    ),
-    GoRoute(
-      name: 'period_statistics',
-      path: '/period_statistics',
-      builder: (context, state) {
-        return PeriodStaisticsScreen(subcategory: state.extra.toString(),);
-      },
-    ),
-    GoRoute(
-      name: 'week_statistics',
-      path: '/week_statistics',
-      builder: (context, state) {
-        return WeekStaisticsScreen(subcategory: state.extra.toString(),);
-      },
     ),
   ],
 );
