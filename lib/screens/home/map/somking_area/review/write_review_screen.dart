@@ -10,17 +10,37 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-const List<Widget> inout = <Widget>[
+const List<Text> inout = <Text>[
   Text('실내'),
   Text('실외'),
 ];
 
-const List<Widget> openclose = <Widget>[
+const List<Text> openclose = <Text>[
   Text('개방'),
   Text('폐쇄'),
 ];
 
-const List<Widget> ox = <Widget>[
+const List<Text> goodBad = <Text>[
+  Text('좋음'),
+  Text('나쁨'),
+];
+
+const List<Text> cleanDirty = <Text>[
+  Text('깨끗함'),
+  Text('더러움'),
+];
+
+const List<Text> complex = <Text>[
+  Text('혼잡함'),
+  Text('한산함'),
+];
+
+const List<Text> bigSmall = <Text>[
+  Text('큼'),
+  Text('작음'),
+];
+
+const List<Text> ox = <Text>[
   Text('O'),
   Text('X'),
 ];
@@ -44,14 +64,28 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   final List<bool> _selectedOpenClose = <bool>[false, false];
   final List<bool> _selectedVentilation = <bool>[false, false];
   final List<bool> _selectedCleanliness = <bool>[false, false];
-  final List<bool> _toggleIsSelected = <bool>[false, false];
+  final List<bool> _selectedIsExist = <bool>[false, false];
+  final List<bool> _selectedSize = <bool>[false, false];
+  final List<bool> _selectedComplex = <bool>[false, false];
+  final List<bool> _selectedHasChair = <bool>[false, false];
+
+  final List<bool> _toggleIsSelected = <bool>[
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
 
   bool activateInformBtn = false;
 
   @override
   Widget build(BuildContext context) {
-    // 이전 지도 페이지에서 좌표를 받아옴
-    final String coords = GoRouterState.of(context).extra! as String;
+    // 이전 지도 페이지에서 이름을 받아옴
+    final String saName = GoRouterState.of(context).extra! as String;
     // 화면을 동적으로 빌드하기 위한 사이즈
 
     return ScreenUtilInit(
@@ -59,14 +93,19 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       builder: (context, child) => Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: Text(
-            '제보',
+            '리뷰 작성',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           centerTitle: true,
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            bottom: 20,
+          ),
           child: Column(
             children: [
               Expanded(
@@ -115,9 +154,20 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      informTextInput('이름', '이름을 입력해주세요', 0),
-                      const SizedBox(height: 20),
-                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "이름",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            saName,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -126,26 +176,44 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                               Text('별점',
                                   style:
                                       TextStyle(fontWeight: FontWeight.w600)),
-                              blueStar(),
                             ],
                           ),
                           ratingStars(),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      informToggle('실내 여부', inout, _selectedInOut, 0),
+                      reviewToggle('실내 여부', inout, _selectedInOut, 0),
                       const SizedBox(height: 20),
-                      informToggle('개방 여부', openclose, _selectedOpenClose, 1),
+                      reviewToggle('개방 여부', openclose, _selectedOpenClose, 1),
+                      const SizedBox(height: 20),
+                      reviewToggle('환기성', goodBad, _selectedVentilation, 2),
+                      const SizedBox(height: 20),
+                      reviewToggle('깨끗함', cleanDirty, _selectedCleanliness, 3),
+                      const SizedBox(height: 20),
+                      reviewToggle('크기', bigSmall, _selectedSize, 4),
+                      const SizedBox(height: 20),
+                      reviewToggle('혼잡도', complex, _selectedComplex, 5),
+                      const SizedBox(height: 20),
+                      reviewToggle('의자가 있음', ox, _selectedHasChair, 6),
+                      const SizedBox(height: 20),
+                      reviewToggle('존재하지 않음', ox, _selectedIsExist, 7),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ),
-              // informToggle('환풍 여부', ox, _selectedVentilation, 2),
-              // informToggle('청결도', ox, _selectedCleanliness, 3),
+              // reviewToggle('환풍 여부', ox, _selectedVentilation, 2),
+              // reviewToggle('청결도', ox, _selectedCleanliness, 3),
               InkWell(
                 onTap: () {
-                  // activateInformBtn ? null : null;
-                  print(_spotInfo[0]);
+                  print('실내 여부: ${_selectedInOut[0]}');
+                  print('개방 여부: ${_selectedOpenClose[0]}');
+                  print('환기 여부: ${_selectedVentilation[0]}');
+                  print('깨끗함: ${_selectedCleanliness[0]}');
+                  print('크기: ${_selectedSize[0]}');
+                  print('혼잡도: ${_selectedComplex[0]}');
+                  print('의자: ${_selectedHasChair[0]}');
+                  print('존재하지 않음: ${_selectedIsExist[0]}');
                 },
                 child: Ink(
                   width: double.infinity,
@@ -215,7 +283,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   // 텍스트를 입력받는 위젯
-  Row informTextInput(String type, String hint, int index) {
+  Row reviewTextInput(String type, String hint, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -237,7 +305,6 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             onChanged: (text) {
               setState(() {
                 _spotInfo[index] = text;
-                checkCanInform();
               });
             },
           ),
@@ -247,14 +314,14 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   // 제보하기 버튼 활성화여부를 판단하는 함수
-  void checkCanInform() {
+  void checkCanReview() {
     for (int i = 0; i < _toggleIsSelected.length; i++) {
       if (!_toggleIsSelected[i]) {
         activateInformBtn = false;
         return;
       }
     }
-    if (_starValue == 0 || _spotInfo[0] == '') {
+    if (_starValue == 0) {
       activateInformBtn = false;
       return;
     }
@@ -272,7 +339,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       onValueChanged: (v) {
         setState(() {
           _starValue = v;
-          checkCanInform();
+          checkCanReview();
         });
       },
       starCount: 5,
@@ -282,8 +349,8 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   // 토글버튼으로 정보를 입력받는 위젯
-  Row informToggle(
-      String type, List<Widget> children, List<bool> isSelected, int i) {
+  Row reviewToggle(
+      String type, List<Text> children, List<bool> isSelected, int i) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -293,7 +360,6 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
               type,
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
-            const blueStar(),
           ],
         ),
         Material(
@@ -305,7 +371,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
               children: [
                 GestureDetector(
                   child: Container(
-                    width: 45.w,
+                    width: children[0].data?.length == 3 ? 55.w : 45.w,
                     height: 27.h,
                     decoration: BoxDecoration(
                       color: isSelected[0]
@@ -323,13 +389,13 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                       isSelected[0] = true;
                       isSelected[1] = false;
                       _toggleIsSelected[i] = true;
-                      checkCanInform();
+                      checkCanReview();
                     });
                   },
                 ),
                 GestureDetector(
                   child: Container(
-                    width: 45.w,
+                    width: children[1].data?.length == 3 ? 55.w : 45.w,
                     height: 27.h,
                     decoration: BoxDecoration(
                       color: isSelected[1]
@@ -347,7 +413,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                       isSelected[0] = false;
                       isSelected[1] = true;
                       _toggleIsSelected[i] = true;
-                      checkCanInform();
+                      checkCanReview();
                     });
                   },
                 )

@@ -101,7 +101,7 @@ Future<void> _getCurrentLocation() async {
 void main() async {
   await _initializeMap();
   _requestPermission();
-  // await _getCurrentLocation();
+  await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 
@@ -141,24 +141,26 @@ final GoRouter router = GoRouter(
             return const SearchScreen();
           },
         ),
-      ],
-    ),
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-    ),
-    GoRoute(
-      name: 'sa_info',
-      path: '/sa_info',
-      builder: (context, state) => const SmokingAreaInfoScreen(),
-      // routes: [
-
-      // ],
-    ),
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-      routes: [
+        GoRoute(
+            name: 'sa_info',
+            path: 'sa_info',
+            builder: (context, state) => const SmokingAreaInfoScreen(),
+            routes: [
+              GoRoute(
+                name: 'write_review',
+                path: 'write_review',
+                builder: (context, state) {
+                  return const WriteReviewScreen();
+                },
+              ),
+            ]),
+        GoRoute(
+          name: 'favorite',
+          path: 'favorite',
+          builder: (context, state) {
+            return const FavoriteScreen();
+          },
+        ),
         GoRoute(
           name: 'login',
           path: 'login',
@@ -172,13 +174,6 @@ final GoRouter router = GoRouter(
           ],
         ),
       ],
-    ),
-    GoRoute(
-      name: 'favorite',
-      path: '/favorite',
-      builder: (context, state) {
-        return const FavoriteScreen();
-      },
     ),
   ],
 );
