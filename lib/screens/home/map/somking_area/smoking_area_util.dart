@@ -25,18 +25,25 @@ class SAInfoScreenStar extends StatelessWidget {
 }
 
 // 즐겨찾기, 공유, 내보내기 버튼
-class SAInfoScreenBtn extends StatelessWidget {
+class SAInfoScreenBtn extends StatefulWidget {
+  final BuildContext context;
+  final IconData icon;
+  final String name;
+  final VoidCallback onPressed;
+
   const SAInfoScreenBtn({
     super.key,
     required this.context,
     required this.icon,
     required this.name,
+    required this.onPressed,
   });
 
-  final BuildContext context;
-  final IconData icon;
-  final String name;
+  @override
+  State<SAInfoScreenBtn> createState() => _SAInfoScreenBtnState();
+}
 
+class _SAInfoScreenBtnState extends State<SAInfoScreenBtn> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -48,9 +55,9 @@ class SAInfoScreenBtn extends StatelessWidget {
               shape: BoxShape.circle, color: Theme.of(context).primaryColor),
           child: FittedBox(
             child: IconButton(
-              onPressed: () {},
+              onPressed: widget.onPressed,
               icon: Icon(
-                icon,
+                widget.icon,
                 color: Colors.white,
                 size: 30,
               ),
@@ -59,7 +66,7 @@ class SAInfoScreenBtn extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         Text(
-          name,
+          widget.name,
           style: TextStyle(
             fontSize: 14,
             color: Theme.of(context).colorScheme.primary,
