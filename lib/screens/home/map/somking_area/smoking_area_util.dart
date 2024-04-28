@@ -31,28 +31,36 @@ class SAInfoScreenBtn extends StatelessWidget {
     required this.context,
     required this.icon,
     required this.name,
+    required this.ontap,
   });
 
   final BuildContext context;
   final IconData icon;
   final String name;
+  final VoidCallback ontap;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle, color: Theme.of(context).primaryColor),
-          child: FittedBox(
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                icon,
-                color: Colors.white,
-                size: 30,
+        InkWell(
+          onTap: () {
+            print("tapped");
+            ontap();
+          },
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle, color: Theme.of(context).primaryColor),
+            child: FittedBox(
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  icon,
+                  color: Colors.white,
+                  size: 30,
+                ),
               ),
             ),
           ),

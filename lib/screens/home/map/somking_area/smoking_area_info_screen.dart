@@ -66,16 +66,22 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                             context: context,
                             icon: Icons.star,
                             name: '즐겨찾기',
+                            ontap: () {},
                           ),
                           SAInfoScreenBtn(
                             context: context,
                             icon: Icons.ios_share,
                             name: '공유',
+                            ontap: () {},
                           ),
                           SAInfoScreenBtn(
-                              context: context,
-                              icon: Icons.rate_review_rounded,
-                              name: '리뷰작성'),
+                            context: context,
+                            icon: Icons.rate_review_rounded,
+                            name: '리뷰작성',
+                            ontap: () {
+                              print(123);
+                            },
+                          ),
                         ],
                       ),
                     ),
