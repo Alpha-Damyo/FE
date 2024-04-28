@@ -25,49 +25,48 @@ class SAInfoScreenStar extends StatelessWidget {
 }
 
 // 즐겨찾기, 공유, 내보내기 버튼
-class SAInfoScreenBtn extends StatelessWidget {
+class SAInfoScreenBtn extends StatefulWidget {
+  final BuildContext context;
+  final IconData icon;
+  final String name;
+  final VoidCallback onPressed;
+
   const SAInfoScreenBtn({
     super.key,
     required this.context,
     required this.icon,
     required this.name,
-    required this.ontap,
+    required this.onPressed,
   });
 
-  final BuildContext context;
-  final IconData icon;
-  final String name;
-  final VoidCallback ontap;
+  @override
+  State<SAInfoScreenBtn> createState() => _SAInfoScreenBtnState();
+}
 
+class _SAInfoScreenBtnState extends State<SAInfoScreenBtn> {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        InkWell(
-          onTap: () {
-            print("tapped");
-            ontap();
-          },
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle, color: Theme.of(context).primaryColor),
-            child: FittedBox(
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 30,
-                ),
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle, color: Theme.of(context).primaryColor),
+          child: FittedBox(
+            child: IconButton(
+              onPressed: widget.onPressed,
+              icon: Icon(
+                widget.icon,
+                color: Colors.white,
+                size: 30,
               ),
             ),
           ),
         ),
         const SizedBox(height: 5),
         Text(
-          name,
+          widget.name,
           style: TextStyle(
             fontSize: 14,
             color: Theme.of(context).colorScheme.primary,
