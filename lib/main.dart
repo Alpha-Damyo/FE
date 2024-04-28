@@ -3,12 +3,18 @@ import 'dart:developer';
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
+import 'package:damyo/screens/home/challenge/challengedetail_screen.dart';
+import 'package:damyo/screens/home/challenge/challengevote_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/mypage_screen.dart';
+import 'package:damyo/screens/home/statistics/local_statistics.dart';
+import 'package:damyo/screens/home/statistics/period_statistics.dart';
+import 'package:damyo/screens/home/statistics/time_statistics.dart';
+import 'package:damyo/screens/home/statistics/week_statistics.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -155,13 +161,6 @@ final GoRouter router = GoRouter(
               ),
             ]),
         GoRoute(
-          name: 'favorite',
-          path: 'favorite',
-          builder: (context, state) {
-            return const FavoriteScreen();
-          },
-        ),
-        GoRoute(
           name: 'login',
           path: 'login',
           builder: (context, state) => const LoginScreen(),
@@ -172,6 +171,66 @@ final GoRouter router = GoRouter(
               builder: (context, state) => const SignupScreen(),
             ),
           ],
+        ),
+        GoRoute(
+          name: 'favorite',
+          path: 'favorite',
+          builder: (context, state) {
+            return const FavoriteScreen();
+          },
+        ),
+        GoRoute(
+          path: 'details',
+          builder: (context, state) {
+            final title = (state.extra as Map<String, String>)['title'] ??
+                "Default Title";
+            return ChallengeDetailScreen(title: title);
+          },
+        ),
+        GoRoute(
+          name: 'vote',
+          path: 'vote',
+          builder: (context, state) {
+            final title = (state.extra as Map<String, String>)['title'] ??
+                "Default Title";
+            return ChallengeVoteScreen(title: title);
+          },
+        ),
+        GoRoute(
+          name: 'local_statistics',
+          path: 'local_statistics',
+          builder: (context, state) {
+            return LocalStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'time_statistics',
+          path: 'time_statistics',
+          builder: (context, state) {
+            return TimeStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'period_statistics',
+          path: 'period_statistics',
+          builder: (context, state) {
+            return PeriodStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'week_statistics',
+          path: 'week_statistics',
+          builder: (context, state) {
+            return WeekStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
         ),
       ],
     ),
