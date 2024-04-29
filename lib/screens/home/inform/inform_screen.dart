@@ -59,6 +59,7 @@ class _InformScreenState extends State<InformScreen> {
       builder: (context, child) => Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: Text(
             '제보',
             style: Theme.of(context).textTheme.titleMedium,
@@ -66,7 +67,7 @@ class _InformScreenState extends State<InformScreen> {
           centerTitle: true,
         ),
         body: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: Column(
             children: [
               Expanded(

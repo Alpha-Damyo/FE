@@ -66,16 +66,23 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                             context: context,
                             icon: Icons.star,
                             name: '즐겨찾기',
+                            onPressed: () {},
                           ),
                           SAInfoScreenBtn(
                             context: context,
                             icon: Icons.ios_share,
                             name: '공유',
+                            onPressed: () {},
                           ),
                           SAInfoScreenBtn(
-                              context: context,
-                              icon: Icons.rate_review_rounded,
-                              name: '리뷰작성'),
+                            context: context,
+                            icon: Icons.rate_review_rounded,
+                            name: '리뷰작성',
+                            onPressed: () {
+                              context.push('/sa_info/write_review',
+                                  extra: '국민대 도서관 $smokingAreaId');
+                            },
+                          ),
                         ],
                       ),
                     ),
