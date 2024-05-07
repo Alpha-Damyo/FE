@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:damyo/http.dart';
+import 'package:damyo/services/http.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
