@@ -1,8 +1,5 @@
 import 'dart:io';
 
-import 'package:damyo/services/get_smoking_area.dart';
-import 'package:damyo/services/http.dart';
-import 'package:damyo/services/inform_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,31 +9,51 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-const List<Widget> inout = <Widget>[
+const List<Text> inout = <Text>[
   Text('실내'),
   Text('실외'),
 ];
 
-const List<Widget> openclose = <Widget>[
+const List<Text> openclose = <Text>[
   Text('개방'),
   Text('폐쇄'),
 ];
 
-const List<Widget> ox = <Widget>[
+const List<Text> goodBad = <Text>[
+  Text('좋음'),
+  Text('나쁨'),
+];
+
+const List<Text> cleanDirty = <Text>[
+  Text('깨끗함'),
+  Text('더러움'),
+];
+
+const List<Text> complex = <Text>[
+  Text('혼잡함'),
+  Text('한산함'),
+];
+
+const List<Text> bigSmall = <Text>[
+  Text('큼'),
+  Text('작음'),
+];
+
+const List<Text> ox = <Text>[
   Text('O'),
   Text('X'),
 ];
 
-class InformScreen extends StatefulWidget {
-  const InformScreen({
+class WriteReviewScreen extends StatefulWidget {
+  const WriteReviewScreen({
     super.key,
   });
 
   @override
-  State<InformScreen> createState() => _InformScreenState();
+  State<WriteReviewScreen> createState() => _WriteReviewScreenState();
 }
 
-class _InformScreenState extends State<InformScreen> {
+class _WriteReviewScreenState extends State<WriteReviewScreen> {
   XFile? _spotImage;
   final ImagePicker picker = ImagePicker();
   // 이름, 설명, 주소 순으로 저장
@@ -46,37 +63,52 @@ class _InformScreenState extends State<InformScreen> {
   final List<bool> _selectedOpenClose = <bool>[false, false];
   final List<bool> _selectedVentilation = <bool>[false, false];
   final List<bool> _selectedCleanliness = <bool>[false, false];
-  final List<bool> _toggleIsSelected = <bool>[false, false];
+  final List<bool> _selectedIsExist = <bool>[false, false];
+  final List<bool> _selectedSize = <bool>[false, false];
+  final List<bool> _selectedComplex = <bool>[false, false];
+  final List<bool> _selectedHasChair = <bool>[false, false];
+
+  final List<bool> _toggleIsSelected = <bool>[
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
 
   bool activateInformBtn = false;
 
   @override
   Widget build(BuildContext context) {
-    // 이전 지도 페이지에서 좌표를 받아옴
-    final String coords = GoRouterState.of(context).extra! as String;
+    // 이전 지도 페이지에서 이름을 받아옴
+    final String saName = GoRouterState.of(context).extra! as String;
     // 화면을 동적으로 빌드하기 위한 사이즈
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        title: Text(
-          '제보',
-          style: Theme.of(context).textTheme.titleMedium,
+    return ScreenUtilInit(
+      designSize: const Size(390, 733),
+      builder: (context, child) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          title: Text(
+            '리뷰 작성',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+        body: Padding(
+          padding: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            bottom: 20,
+          ),
           child: Column(
             children: [
-              SingleChildScrollView(
-                child: Expanded(
+              Expanded(
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       InkWell(
@@ -100,10 +132,7 @@ class _InformScreenState extends State<InformScreen> {
                                       ListTile(
                                           leading:
                                               const Icon(Icons.photo_camera),
-                                          title: const Text(
-                                            '카메라에서 선택',
-                                            style: TextStyle(fontSize: 18),
-                                          ),
+                                          title: const Text('카메라에서 선택'),
                                           onTap: () {
                                             getImage(ImageSource.camera);
                                             Navigator.of(context).pop();
@@ -111,10 +140,7 @@ class _InformScreenState extends State<InformScreen> {
                                       ListTile(
                                         leading:
                                             const Icon(Icons.photo_library),
-                                        title: const Text(
-                                          '갤러리에서 선택',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
+                                        title: const Text('갤러리에서 선택'),
                                         onTap: () {
                                           getImage(ImageSource.gallery);
                                           Navigator.of(context).pop();
@@ -127,38 +153,20 @@ class _InformScreenState extends State<InformScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      informTextInput('이름', '이름을 입력해주세요', 0),
-                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('주소',
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                          // Text('서울특별시 중구 남산동2가 2'),
-                          FutureBuilder(
-                            future: GetAddress(coords),
-                            builder: (
-                              BuildContext context,
-                              AsyncSnapshot snapshot,
-                            ) {
-                              // 데이터가 없을 때
-                              if (snapshot.hasData == false) {
-                                return const Text('...');
-                              } else if (snapshot.hasError) {
-                                return const Text('주소를 불러올 수 없습니다');
-                              } else {
-                                _spotInfo[2] = snapshot.data.toString();
-                                return Text(
-                                  _spotInfo[2],
-                                );
-                              }
-                            },
+                          const Text(
+                            "이름",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            saName,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      informTextInput('상세주소', '상세주소를 입력해주세요', 1),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -167,47 +175,44 @@ class _InformScreenState extends State<InformScreen> {
                               Text('별점',
                                   style:
                                       TextStyle(fontWeight: FontWeight.w600)),
-                              blueStar(),
                             ],
                           ),
                           ratingStars(),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      informToggle('실내 여부', inout, _selectedInOut, 0),
+                      reviewToggle('실내 여부', inout, _selectedInOut, 0),
                       const SizedBox(height: 20),
-                      informToggle('개방 여부', openclose, _selectedOpenClose, 1),
+                      reviewToggle('개방 여부', openclose, _selectedOpenClose, 1),
+                      const SizedBox(height: 20),
+                      reviewToggle('환기성', goodBad, _selectedVentilation, 2),
+                      const SizedBox(height: 20),
+                      reviewToggle('깨끗함', cleanDirty, _selectedCleanliness, 3),
+                      const SizedBox(height: 20),
+                      reviewToggle('크기', bigSmall, _selectedSize, 4),
+                      const SizedBox(height: 20),
+                      reviewToggle('혼잡도', complex, _selectedComplex, 5),
+                      const SizedBox(height: 20),
+                      reviewToggle('의자가 있음', ox, _selectedHasChair, 6),
+                      const SizedBox(height: 20),
+                      reviewToggle('존재하지 않음', ox, _selectedIsExist, 7),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ),
-              // informToggle('환풍 여부', ox, _selectedVentilation, 2),
-              // informToggle('청결도', ox, _selectedCleanliness, 3),
-              const Spacer(),
+              // reviewToggle('환풍 여부', ox, _selectedVentilation, 2),
+              // reviewToggle('청결도', ox, _selectedCleanliness, 3),
               InkWell(
-                onTap: () async {
-                  Map<String, dynamic> informData = {
-                    'name': _spotInfo[0],
-                    'createdAt': DateTime.now().toString().substring(0, 10),
-                    'description': _spotInfo[1],
-                    'latitude': coords.split(',')[1],
-                    'longitude': coords.split(',')[0],
-                    'score': _starValue.toString(),
-                    'opened': _selectedInOut[0].toString(),
-                    'closed': _selectedInOut[1].toString(),
-                    'hygiene': '',
-                    'dirty': '',
-                    'airOut': '',
-                    'indoor': _selectedInOut[0].toString(),
-                    'outdoor': _selectedInOut[1].toString(),
-                    'big': '',
-                    'small': '',
-                    'crowded': '',
-                    'quite': '',
-                    'chair': '',
-                  };
-
-                  await informSmokingArea(informData);
+                onTap: () {
+                  print('실내 여부: ${_selectedInOut[0]}');
+                  print('개방 여부: ${_selectedOpenClose[0]}');
+                  print('환기 여부: ${_selectedVentilation[0]}');
+                  print('깨끗함: ${_selectedCleanliness[0]}');
+                  print('크기: ${_selectedSize[0]}');
+                  print('혼잡도: ${_selectedComplex[0]}');
+                  print('의자: ${_selectedHasChair[0]}');
+                  print('존재하지 않음: ${_selectedIsExist[0]}');
                 },
                 child: Ink(
                   width: double.infinity,
@@ -221,7 +226,7 @@ class _InformScreenState extends State<InformScreen> {
                   child: const Align(
                     alignment: Alignment.center,
                     child: Text(
-                      '제보하기',
+                      '리뷰 작성',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -277,20 +282,15 @@ class _InformScreenState extends State<InformScreen> {
   }
 
   // 텍스트를 입력받는 위젯
-  Row informTextInput(String type, String hint, int index) {
+  Row reviewTextInput(String type, String hint, int index) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(type, style: const TextStyle(fontWeight: FontWeight.w600)),
         index == 0 ? const blueStar() : const Text(""),
-        const SizedBox(width: 50),
+        const SizedBox(width: 120),
         Expanded(
           child: TextField(
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.right,
             decoration: InputDecoration(
               hintText: hint,
               hintTextDirection: TextDirection.rtl,
@@ -304,7 +304,6 @@ class _InformScreenState extends State<InformScreen> {
             onChanged: (text) {
               setState(() {
                 _spotInfo[index] = text;
-                checkCanInform();
               });
             },
           ),
@@ -314,14 +313,14 @@ class _InformScreenState extends State<InformScreen> {
   }
 
   // 제보하기 버튼 활성화여부를 판단하는 함수
-  void checkCanInform() {
+  void checkCanReview() {
     for (int i = 0; i < _toggleIsSelected.length; i++) {
       if (!_toggleIsSelected[i]) {
         activateInformBtn = false;
         return;
       }
     }
-    if (_starValue == 0 || _spotInfo[0] == '') {
+    if (_starValue == 0) {
       activateInformBtn = false;
       return;
     }
@@ -339,7 +338,7 @@ class _InformScreenState extends State<InformScreen> {
       onValueChanged: (v) {
         setState(() {
           _starValue = v;
-          checkCanInform();
+          checkCanReview();
         });
       },
       starCount: 5,
@@ -349,8 +348,8 @@ class _InformScreenState extends State<InformScreen> {
   }
 
   // 토글버튼으로 정보를 입력받는 위젯
-  Row informToggle(
-      String type, List<Widget> children, List<bool> isSelected, int i) {
+  Row reviewToggle(
+      String type, List<Text> children, List<bool> isSelected, int i) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -360,7 +359,6 @@ class _InformScreenState extends State<InformScreen> {
               type,
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
-            const blueStar(),
           ],
         ),
         Material(
@@ -372,7 +370,7 @@ class _InformScreenState extends State<InformScreen> {
               children: [
                 GestureDetector(
                   child: Container(
-                    width: 45.w,
+                    width: children[0].data?.length == 3 ? 55.w : 45.w,
                     height: 27.h,
                     decoration: BoxDecoration(
                       color: isSelected[0]
@@ -390,13 +388,13 @@ class _InformScreenState extends State<InformScreen> {
                       isSelected[0] = true;
                       isSelected[1] = false;
                       _toggleIsSelected[i] = true;
-                      checkCanInform();
+                      checkCanReview();
                     });
                   },
                 ),
                 GestureDetector(
                   child: Container(
-                    width: 45.w,
+                    width: children[1].data?.length == 3 ? 55.w : 45.w,
                     height: 27.h,
                     decoration: BoxDecoration(
                       color: isSelected[1]
@@ -414,7 +412,7 @@ class _InformScreenState extends State<InformScreen> {
                       isSelected[0] = false;
                       isSelected[1] = true;
                       _toggleIsSelected[i] = true;
-                      checkCanInform();
+                      checkCanReview();
                     });
                   },
                 )

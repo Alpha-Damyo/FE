@@ -1,9 +1,20 @@
 import 'dart:developer';
 
 import 'package:damyo/provider/filterlist_provider.dart';
+import 'package:damyo/provider/islogin_provider.dart';
+import 'package:damyo/provider/userInfo_provider.dart';
+import 'package:damyo/screens/home/challenge/challengedetail_screen.dart';
+import 'package:damyo/screens/home/challenge/challengevote_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
-import 'package:damyo/screens/home/filter/filter_screen.dart';
+import 'package:damyo/screens/home/map/search/search_screen.dart';
+import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
+import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
+import 'package:damyo/screens/home/mypage/mypage_screen.dart';
+import 'package:damyo/screens/home/statistics/local_statistics.dart';
+import 'package:damyo/screens/home/statistics/period_statistics.dart';
+import 'package:damyo/screens/home/statistics/time_statistics.dart';
+import 'package:damyo/screens/home/statistics/week_statistics.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -99,26 +110,24 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   _requestPermission();
-  // .dotenv
   // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 
-  runApp(ChangeNotifierProvider(
+  /*runApp(ChangeNotifierProvider(
     create: (context) => FilterList(),
     child: const App(),
-  ));
-  // provider 모델이 여러 개인 경우 List를 통해 제공
-  // runApp(
-  //   MultiProvider(
-  //     providers: [
-  //       ChangeNotifierProvider(create: (context) => FilterList()),
-  //       ChangeNotifierProvider(create: (context) => AnotherModel()),
-  //
-  //     ],
-  //     child: const App(),
-  //   ),
-  // );
+  ));*/
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => FilterList()),
+        ChangeNotifierProvider(create: (context) => IsLoginProvider()),
+        ChangeNotifierProvider(create: (context) => UserInfoProvider()),
+      ],
+      child: const App(),
+    ),
+  );
 }
 
 final GoRouter router = GoRouter(
@@ -134,35 +143,99 @@ final GoRouter router = GoRouter(
             return const InformScreen();
           },
         ),
-      ],
-    ),
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-      routes: [
         GoRoute(
-          name: 'filter',
-          path: 'filter',
+          name: 'search',
+          path: 'search',
           builder: (context, state) {
-            return const FilterScreen();
+            return const SearchScreen();
+          },
+        ),
+        GoRoute(
+            name: 'sa_info',
+            path: 'sa_info',
+            builder: (context, state) => const SmokingAreaInfoScreen(),
+            routes: [
+              GoRoute(
+                name: 'write_review',
+                path: 'write_review',
+                builder: (context, state) {
+                  return const WriteReviewScreen();
+                },
+              ),
+            ]),
+        GoRoute(
+          name: 'login',
+          path: 'login',
+          builder: (context, state) => const LoginScreen(),
+          routes: [
+            GoRoute(
+              name: 'signup',
+              path: 'signup',
+              builder: (context, state) => const SignupScreen(),
+            ),
+          ],
+        ),
+        GoRoute(
+          name: 'favorite',
+          path: 'favorite',
+          builder: (context, state) {
+            return const FavoriteScreen();
+          },
+        ),
+        GoRoute(
+          path: 'details',
+          builder: (context, state) {
+            final title = (state.extra as Map<String, String>)['title'] ??
+                "Default Title";
+            return ChallengeDetailScreen(title: title);
+          },
+        ),
+        GoRoute(
+          name: 'vote',
+          path: 'vote',
+          builder: (context, state) {
+            final title = (state.extra as Map<String, String>)['title'] ??
+                "Default Title";
+            return ChallengeVoteScreen(title: title);
+          },
+        ),
+        GoRoute(
+          name: 'local_statistics',
+          path: 'local_statistics',
+          builder: (context, state) {
+            return LocalStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'time_statistics',
+          path: 'time_statistics',
+          builder: (context, state) {
+            return TimeStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'period_statistics',
+          path: 'period_statistics',
+          builder: (context, state) {
+            return PeriodStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'week_statistics',
+          path: 'week_statistics',
+          builder: (context, state) {
+            return WeekStaisticsScreen(
+              subcategory: state.extra.toString(),
+            );
           },
         ),
       ],
-    ),
-    GoRoute(
-      name: 'sa_info',
-      path: '/sa_info',
-      builder: (context, state) => const SmokingAreaInfoScreen(),
-    ),
-    GoRoute(
-      name: 'login',
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
-    GoRoute(
-      name: 'signup',
-      path: '/signup',
-      builder: (context, state) => const SignupScreen(),
     ),
   ],
 );
@@ -176,32 +249,47 @@ class App extends StatelessWidget {
       routerConfig: router,
       theme: ThemeData(
         fontFamily: 'pretendard',
-        colorScheme: ColorScheme.fromSwatch(
-          backgroundColor: Colors.white,
-          accentColor: const Color(0xff0099fc),
-        ),
+        colorScheme: const ColorScheme(
+            brightness: Brightness.light,
+            primary: Color(0xFF0099FC),
+            onPrimary: Color(0xFFD6ECFA),
+            secondary: Colors.white,
+            onSecondary: Colors.white,
+            error: Colors.white,
+            onError: Colors.white,
+            background: Colors.white,
+            onBackground: Colors.black,
+            surface: Colors.white,
+            onSurface: Colors.black),
         textTheme: const TextTheme(
-          headlineLarge: TextStyle(
-              fontFamily: 'pretendard',
+            headlineLarge: TextStyle(
+                fontFamily: 'pretendard',
+                fontSize: 20,
+                fontWeight: FontWeight.w200),
+            titleLarge: TextStyle(
+                fontFamily: 'pretendard',
+                fontSize: 20,
+                fontWeight: FontWeight.w700),
+            titleMedium: TextStyle(
+                fontFamily: 'pretendard',
+                fontSize: 20,
+                fontWeight: FontWeight.w500),
+            bodyLarge: TextStyle(
               fontSize: 20,
-              fontWeight: FontWeight.w200),
-          titleLarge: TextStyle(
-              fontFamily: 'pretendard',
-              fontSize: 20,
-              fontWeight: FontWeight.w700),
-          titleMedium: TextStyle(
-              fontFamily: 'pretendard',
-              fontSize: 20,
-              fontWeight: FontWeight.w500),
-          bodyLarge: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+              fontWeight: FontWeight.w700,
+            ),
+            bodyMedium: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            bodySmall: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+            displaySmall: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            )),
       ),
     );
   }

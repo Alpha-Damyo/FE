@@ -1,5 +1,9 @@
+import 'package:damyo/provider/islogin_provider.dart';
+import 'package:damyo/provider/userInfo_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -68,6 +72,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
+                      onChanged: (value) async {
+                        // 이름 입력 시 상태 업데이트
+                        Provider.of<UserInfoProvider>(context, listen: false)
+                            .setName(value);
+                      },
                     ),
                   ],
                 ),
@@ -102,6 +111,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
+                      onChanged: (value) {
+                        // 나이 입력 시 상태 업데이트
+                        Provider.of<UserInfoProvider>(context, listen: false)
+                            .setAge(int.parse(value));
+                      },
                     ),
                   ],
                 ),
@@ -131,6 +145,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             onPressed: () {
                               setState(() {
                                 selectedGender = '남성';
+                                Provider.of<UserInfoProvider>(context,
+                                        listen: false)
+                                    .setGender(true);
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -155,6 +172,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             onPressed: () {
                               setState(() {
                                 selectedGender = '여성';
+                                Provider.of<UserInfoProvider>(context,
+                                        listen: false)
+                                    .setGender(false);
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -208,6 +228,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
+                      onChanged: (value) {
+                        // 닉네임 입력 시 상태 업데이트
+                        Provider.of<UserInfoProvider>(context, listen: false)
+                            .setNickname(value);
+                      },
                     ),
                     const SizedBox(height: 8),
                   ],
@@ -217,10 +242,12 @@ class _SignupScreenState extends State<SignupScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // 받은 정보 서버에 보내기
                     // 마이페이지로 이동
-                    GoRouter.of(context).pop();
+                    Provider.of<IsLoginProvider>(context, listen: false)
+                        .checkFirst();
+                    context.go('/');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0099FC),
