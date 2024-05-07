@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:damyo/screens/home/statistics/statistics_screen_utill.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -10,166 +13,129 @@ class StatisticsScreen extends StatefulWidget {
   State<StatisticsScreen> createState() => _StatisticsScreenState();
 }
 
-
 class _StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
-    return  ScreenUtilInit(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Container(
-              width: 390,
-              height: 350,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-              decoration: BoxDecoration(color: Color(0xFF636363)),
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                      Text(
-                          '기간별 흡연량',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'AppleSDGothicNeoB00',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                          ),
+    return ScreenUtilInit(
+      designSize: const Size(390, 1863),
+      builder: (context, child) => Scaffold(
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.white,
+          title: const Text(
+            '제보',
+          ),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20.h,
+                ),
+                // 지역별 흡연 데이터 통계
+                SizedBox(
+                  width: 390,
+                  height: 469,
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      StatistTap(
+                        index: 0,
+                        category: '시군구별 흡연 통계',
                       ),
-                      const SizedBox(height: 16),
-                      Container(
-                          width: 358,
-                          height: 204,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                              color: Color(0xFFDEDEDE),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                              ),
-                          ),
+                      StatistTap(
+                        index: 0,
+                        category: '가장 많이 흡연한 구역(개인)',
                       ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                          width: 358,
-                          child: Text(
-                              '어쩌구 저쩌구 해설 짧은 글  어쩌구 저쩌구 해설 짧은 글   어쩌구 저쩌구 해설 짧은 글    어쩌구 저쩌구 해설 짧은 글   어쩌구 저쩌구 해설 짧은 글 ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: 'AppleSDGothicNeoM00',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                              ),
-                          ),
+                      StatistTap(
+                        index: 0,
+                        category: '가장 많이 흡연한 구역(전체)',
                       ),
-                  ],
-              ),
+                      StatistTap(
+                        index: 0,
+                        category: '지역별 흡연 목록',
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 390.w,
+                  height: 20.h,
+                ),
+                // 시간대별 흡연 데이터 통계
+                SizedBox(
+                  width: 390,
+                  height: 469,
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      StatistTap(
+                        index: 1,
+                        category: '시간대별 평균 흡연량(개인)',
+                      ),
+                      StatistTap(
+                        index: 1,
+                        category: '시간대별 평균 흡연량(전체)',
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 390.w,
+                  height: 20.h,
+                ),
+                // 기간별 흡연 데이터 통계
+                SizedBox(
+                  width: 390,
+                  height: 469,
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      StatistTap(
+                        index: 2,
+                        category: '기간별 평균 흡연량(개인)',
+                      ),
+                      StatistTap(
+                        index: 2,
+                        category: '기간별 평균 흡연량(전체)',
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 390.w,
+                  height: 20.h,
+                ),
+                // 요일별 흡연 데이터 통계
+                SizedBox(
+                  width: 390,
+                  height: 469,
+                  child: PageView(
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      StatistTap(
+                        index: 3,
+                        category: '요일별 평균 흡연량(개인)',
+                      ),
+                      StatistTap(
+                        index: 3,
+                        category: '요일별 평균 흡연량(전체)',
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 390.w,
+                  height: 20.h,
+                ),
+              ],
             ),
-            Container(
-              width: 390,
-              height: 350,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-              decoration: BoxDecoration(color: Color(0xFF383838)),
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                      Text(
-                          '위치별 흡연량',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'AppleSDGothicNeoB00',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                          ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                          width: 358,
-                          height: 204,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                              color: Color(0xFFDEDEDE),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                              ),
-                          ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                          width: 358,
-                          child: Text(
-                              '어쩌구 저쩌구 해설 짧은 글  어쩌구 저쩌구 해설 짧은 글   어쩌구 저쩌구 해설 짧은 글    어쩌구 저쩌구 해설 짧은 글   어쩌구 저쩌구 해설 짧은 글 ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: 'AppleSDGothicNeoM00',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                              ),
-                          ),
-                      ),
-                  ],
-              ),
-            ),
-            Container(
-              width: 390,
-              height: 350,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-              decoration: BoxDecoration(color: Color(0xFF636363)),
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                      Text(
-                          '시간대별 흡연량',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'AppleSDGothicNeoB00',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                          ),
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                          width: 358,
-                          height: 204,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: ShapeDecoration(
-                              color: Color(0xFFDEDEDE),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                              ),
-                          ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                          width: 358,
-                          child: Text(
-                              '어쩌구 저쩌구 해설 짧은 글  어쩌구 저쩌구 해설 짧은 글   어쩌구 저쩌구 해설 짧은 글    어쩌구 저쩌구 해설 짧은 글   어쩌구 저쩌구 해설 짧은 글 ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: 'AppleSDGothicNeoM00',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                              ),
-                          ),
-                      ),
-                  ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
-  );
-    
+    );
   }
 }
