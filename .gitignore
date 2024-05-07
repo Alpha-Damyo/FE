@@ -138,6 +138,8 @@ app.*.symbols
 !.vscode/settings.json
 
 
+.env
+
 # Secret Files
 lib/secret.dart
 android/app/src/main/res/values/strings.xml
