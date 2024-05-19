@@ -3,12 +3,12 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
-import 'package:damyo/screens/home/map/filter/smoking_area_filter_util.dart';
+import 'package:damyo/screens/home/map/filter/smoking_area_filter_listview.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:damyo/screens/home/map/util/map_filter_listview.dart';
-import 'package:damyo/services/get_smoking_area.dart';
+import 'package:damyo/services/get_smoking_area_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -76,8 +76,6 @@ class _MapScreenState extends State<MapScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    getArea();
 
     // 화면을 동적으로 빌드하기 위한 사이즈
     final Size size = MediaQuery.of(context).size;
@@ -164,12 +162,12 @@ class _MapScreenState extends State<MapScreen>
                     }
                   ]
                 };
-                for (var data in smokingAreaMap['smokingAreas']) {
-                  if (data['latitude'] != null && data['longitude'] != null) {
-                    attachOverlay(
-                        data['areaId'], data['latitude'], data['longitude']);
-                  }
-                }
+                // for (var data in smokingAreaMap['smokingAreas']) {
+                //   if (data['latitude'] != null && data['longitude'] != null) {
+                //     attachOverlay(
+                //         data['areaId'], data['latitude'], data['longitude']);
+                //   }
+                // }
                 // final Marker marker = Marker(
                 //   mapController: mapController!,
                 //   nOverlayInfoOverlayPortalController:
@@ -177,8 +175,8 @@ class _MapScreenState extends State<MapScreen>
                 //   onCameraChangeStream: onCameraChangeStreamController.stream,
                 // );
 
-                // attachOverlay("1", 37.65640, 127.11670);
-                // attachOverlay("2", 37.65690, 127.11720);
+                attachOverlay("1", 37.65640, 127.11670);
+                attachOverlay("2", 37.65690, 127.11720);
               },
               onMapTapped: (point, latLng) {
                 smokingAreaSelected = false;
@@ -421,6 +419,7 @@ class _MapScreenState extends State<MapScreen>
   @override
   void initState() {
     super.initState();
+    // getArea();
     onCameraChange();
     onCameraChangeStreamSubscription =
         onCameraChangeStreamController.stream.listen((_) => onCameraChange());
