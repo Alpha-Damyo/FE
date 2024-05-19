@@ -53,13 +53,12 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   final ImagePicker picker = ImagePicker();
   // 이름, 설명, 주소 순으로 저장
   double _starValue = 0;
-
-  final List<dynamic> _tagIndex = [
-    -1,
-    -1,
-    -1,
-    -1,
-    -1,
+  final List<List<bool>> _tagIndex = [
+    [false, false],
+    [false, false],
+    [false, false],
+    [false, false],
+    [false, false],
     [false, false, false],
   ];
 
@@ -95,6 +94,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      const SizedBox(height: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -213,18 +213,15 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            const SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                WriteReviewListview(
-                                    characterList: inout,
-                                    selectedCharacterIndex: _tagIndex[0]),
-                                WriteReviewListview(
-                                    characterList: openclose,
-                                    selectedCharacterIndex: _tagIndex[1]),
-                              ],
-                            )
+                            const SizedBox(height: 20),
+                            selectTagColumn("실내 여부", inout, _tagIndex[0]),
+                            selectTagColumn("개방 여부", openclose, _tagIndex[1]),
+                            // WriteReviewListview(
+                            //     characterList: inout,
+                            //     selectedCharacterIndex: _tagIndex[0]),
+                            // WriteReviewListview(
+                            //     characterList: openclose,
+                            //     selectedCharacterIndex: _tagIndex[1])
                           ],
                         ),
                       ),
@@ -317,7 +314,8 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     );
   }
 
-  Column selectTagColumn(String tagName, List<String> tagList, int tagIndex) {
+  Column selectTagColumn(
+      String tagName, List<String> tagList, List<bool> tagIndex) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
