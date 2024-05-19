@@ -1,6 +1,8 @@
 import 'dart:io';
 
-import 'package:damyo/http.dart';
+import 'package:damyo/services/get_smoking_area.dart';
+import 'package:damyo/services/http.dart';
+import 'package:damyo/services/inform_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -54,24 +56,27 @@ class _InformScreenState extends State<InformScreen> {
     final String coords = GoRouterState.of(context).extra! as String;
     // 화면을 동적으로 빌드하기 위한 사이즈
 
-    return ScreenUtilInit(
-      designSize: const Size(390, 733),
-      builder: (context, child) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          title: Text(
-            '제보',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          centerTitle: true,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        title: Text(
+          '제보',
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        centerTitle: true,
+      ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
           child: Column(
             children: [
-              Expanded(
-                child: SingleChildScrollView(
+              SingleChildScrollView(
+                child: Expanded(
                   child: Column(
                     children: [
                       InkWell(
@@ -95,7 +100,10 @@ class _InformScreenState extends State<InformScreen> {
                                       ListTile(
                                           leading:
                                               const Icon(Icons.photo_camera),
-                                          title: const Text('카메라에서 선택'),
+                                          title: const Text(
+                                            '카메라에서 선택',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
                                           onTap: () {
                                             getImage(ImageSource.camera);
                                             Navigator.of(context).pop();
@@ -103,7 +111,10 @@ class _InformScreenState extends State<InformScreen> {
                                       ListTile(
                                         leading:
                                             const Icon(Icons.photo_library),
-                                        title: const Text('갤러리에서 선택'),
+                                        title: const Text(
+                                          '갤러리에서 선택',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
                                         onTap: () {
                                           getImage(ImageSource.gallery);
                                           Navigator.of(context).pop();
@@ -172,10 +183,31 @@ class _InformScreenState extends State<InformScreen> {
               ),
               // informToggle('환풍 여부', ox, _selectedVentilation, 2),
               // informToggle('청결도', ox, _selectedCleanliness, 3),
+              const Spacer(),
               InkWell(
-                onTap: () {
-                  // activateInformBtn ? null : null;
-                  print(_spotInfo[0]);
+                onTap: () async {
+                  Map<String, dynamic> informData = {
+                    'name': _spotInfo[0],
+                    'createdAt': DateTime.now().toString().substring(0, 10),
+                    'description': _spotInfo[1],
+                    'latitude': coords.split(',')[1],
+                    'longitude': coords.split(',')[0],
+                    'score': _starValue.toString(),
+                    'opened': _selectedInOut[0].toString(),
+                    'closed': _selectedInOut[1].toString(),
+                    'hygiene': '',
+                    'dirty': '',
+                    'airOut': '',
+                    'indoor': _selectedInOut[0].toString(),
+                    'outdoor': _selectedInOut[1].toString(),
+                    'big': '',
+                    'small': '',
+                    'crowded': '',
+                    'quite': '',
+                    'chair': '',
+                  };
+
+                  await informSmokingArea(informData);
                 },
                 child: Ink(
                   width: double.infinity,
@@ -251,9 +283,14 @@ class _InformScreenState extends State<InformScreen> {
       children: [
         Text(type, style: const TextStyle(fontWeight: FontWeight.w600)),
         index == 0 ? const blueStar() : const Text(""),
-        const SizedBox(width: 120),
+        const SizedBox(width: 50),
         Expanded(
           child: TextField(
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.right,
             decoration: InputDecoration(
               hintText: hint,
               hintTextDirection: TextDirection.rtl,

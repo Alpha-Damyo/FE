@@ -1,6 +1,7 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'secret.dart';
+import '../secret.dart';
 
 Future<String> GetAddress(String coords) async {
   const String sourcecrs = 'epsg:4326';
@@ -11,8 +12,8 @@ Future<String> GetAddress(String coords) async {
     "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=$coords&sourcecrs=$sourcecrs&orders=$orders&output=$output",
   );
   var response = await http.get(url, headers: {
-    'X-NCP-APIGW-API-KEY-ID': secretNaverCloudId,
-    'X-NCP-APIGW-API-KEY': secretNaverCloudSecret,
+    'X-NCP-APIGW-API-KEY-ID': dotenv.get('NAVER_CLOUD_ID'),
+    'X-NCP-APIGW-API-KEY': dotenv.get('NAVER_CLOUD_SECRET'),
   });
 
   // 성공
@@ -52,44 +53,3 @@ Future<String> GetAddress(String coords) async {
     return '에러: ${response.statusCode}, 주소를 불러올 수 없습니다.';
   }
 }
-
-// void Inform() async {
-//   var url = Uri.parse('https://jsonplaceholder.typicode.com/posts');
-//   var response = await http.post(
-//     url,
-//     body: {
-
-//     },
-//   );
-// }
-
-// http://ec2-3-37-0-59.ap-northeast-2.compute.amazonaws.com:8080/auth/signup
-// {
-//     "email" : "abcde@gmail.com",
-//     "name": "hi",
-//     "profileUrl" : "sdfsdf",
-//     "gender" : "male",
-//     "age" : 12
-// }
-
-// test용 지환 - 창연 서버 연결 확인(로그인 관련)
-// Future<void> sendData() async {
-//   //http.post는 리턴값이 Future이기 떄문에 async 함수 내에서 await로 호출할 수 있다.
-// var test = Uri.parse(secretAwsSeverAddress,);
-//   http.Response res = await http.post(
-//     test,
-//     headers: {"Content-Type":"application/json"},
-//     body: json.encode({
-//       "email" : "chage@gmail.com",
-//       "name": "hi",
-//       "profileUrl" : "sdfsdf",
-//       "gender" : "male",
-//       "age" : 12
-//     })
-//   );
-//   print(res.body);
-//   //여기서는 응답이 객체로 변환된 res 변수를 사용할 수 있다.
-//   //여기서 res.body를 jsonDecode 함수로 객체로 만들어서 데이터를 처리할 수 있다.
-
-//   return; //작업이 끝났기 때문에 리턴
-// }

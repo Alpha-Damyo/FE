@@ -138,6 +138,8 @@ app.*.symbols
 !.vscode/settings.json
 
 
+.env
+
 # Secret Files
 .env
 lib/secret.dart
