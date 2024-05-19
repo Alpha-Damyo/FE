@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:damyo/services/get_smoking_area.dart';
-import 'package:damyo/services/http.dart';
+import 'package:damyo/services/get_smoking_area_service.dart';
+import 'package:damyo/services/get_address_service.dart';
 import 'package:damyo/services/inform_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

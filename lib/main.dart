@@ -10,7 +10,6 @@ import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
-import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/screens/home/statistics/local_statistics.dart';
 import 'package:damyo/screens/home/statistics/period_statistics.dart';
 import 'package:damyo/screens/home/statistics/time_statistics.dart';
@@ -106,7 +105,6 @@ Future<void> _getCurrentLocation() async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   _requestPermission();
