@@ -138,7 +138,10 @@ app.*.symbols
 !.vscode/settings.json
 
 
+.env
+
 # Secret Files
+.env
 lib/secret.dart
 android/app/src/main/res/values/strings.xml
 android/app/Google-services.json
