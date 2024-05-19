@@ -8,7 +8,7 @@ import 'package:damyo/screens/home/map/ovelay_util.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:damyo/screens/home/map/util/map_filter_listview.dart';
-import 'package:damyo/services/get_smoking_area.dart';
+import 'package:damyo/services/get_smoking_area_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
