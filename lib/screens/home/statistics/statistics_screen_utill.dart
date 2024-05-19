@@ -45,12 +45,12 @@ class _StatistTapState extends State<StatistTap>
 
   //각 페이지 마다 필요한 변수
   //index 3
-  List<bool> _isPeriodtype = [true, false, false];
+  final List<bool> _isPeriodtype = [true, false, false];
   String periodType = '일';
   //index 2
   bool timeCheck = true;
   //index 5
-  List<bool> _isComparetype = [true, false, false];
+  final List<bool> _isComparetype = [true, false, false];
   String compareType = '일';
   bool compareCheck = true;
 
@@ -115,14 +115,14 @@ class _StatistTapState extends State<StatistTap>
                       children: [
                         TextSpan(
                           text: widget.userName,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        TextSpan(
+                        const TextSpan(
                           text: ' ',
                           style: TextStyle(
                             color: Colors.black,
@@ -131,7 +131,7 @@ class _StatistTapState extends State<StatistTap>
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        TextSpan(
+                        const TextSpan(
                           text: '님',
                           style: TextStyle(
                             color: Colors.black,
@@ -145,8 +145,8 @@ class _StatistTapState extends State<StatistTap>
                   ),
                 ),
               ),
-              SizedBox(width: 99),
-              Text(
+              const SizedBox(width: 99),
+              const Text(
                 '라이트 스모커',
                 style: TextStyle(
                   color: Color(0xFF0099FC),
@@ -197,7 +197,7 @@ class _StatistTapState extends State<StatistTap>
   Widget _mostSmokingArea(int rank, String place, int cnt) {
     return InkWell(
       onTap: () {
-        print('$place');
+        print(place);
         print(now.weekday);
       },
       child: Container(
@@ -207,7 +207,7 @@ class _StatistTapState extends State<StatistTap>
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(width: 1, color: Color(0xFFEEF1F4)),
+          border: Border.all(width: 1, color: const Color(0xFFEEF1F4)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -222,7 +222,7 @@ class _StatistTapState extends State<StatistTap>
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,7 +236,7 @@ class _StatistTapState extends State<StatistTap>
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Text(
                   '$cnt 회',
                   style: const TextStyle(
@@ -246,7 +246,7 @@ class _StatistTapState extends State<StatistTap>
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -390,7 +390,7 @@ class _StatistTapState extends State<StatistTap>
               ),
               TabBar(
                 controller: _tabController,
-                tabs: [
+                tabs: const [
                   Tab(text: '지역'),
                   Tab(text: '흡연구역'),
                 ],
@@ -400,7 +400,7 @@ class _StatistTapState extends State<StatistTap>
                   controller: _tabController,
                   children: [
                     _tapContents(),
-                    Center(child: Text('탭 2의 콘텐츠')),
+                    const Center(child: Text('탭 2의 콘텐츠')),
                   ],
                 ),
               ),
@@ -468,8 +468,9 @@ class _StatistTapState extends State<StatistTap>
                       '나',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color:
-                            timeCheck ? Color(0xFF0099FC) : Color(0xFFD1D6DC),
+                        color: timeCheck
+                            ? const Color(0xFF0099FC)
+                            : const Color(0xFFD1D6DC),
                         fontSize: 12,
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
@@ -486,8 +487,9 @@ class _StatistTapState extends State<StatistTap>
                       '전체',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color:
-                            timeCheck ? Color(0xFFD1D6DC) : Color(0xFF0099FC),
+                        color: timeCheck
+                            ? const Color(0xFFD1D6DC)
+                            : const Color(0xFF0099FC),
                         fontSize: 12,
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
@@ -658,12 +660,12 @@ class _StatistTapState extends State<StatistTap>
         gradient: LinearGradient(
           colors: timeCheck
               ? [
-                  Color(0xFFD6ECFA),
-                  Color(0xFF0099FC),
+                  const Color(0xFFD6ECFA),
+                  const Color(0xFF0099FC),
                 ]
               : [
-                  Color(0xFFD2D7DD),
-                  Color(0xFFD2D7DD),
+                  const Color(0xFFD2D7DD),
+                  const Color(0xFFD2D7DD),
                 ],
         ),
         barWidth: 4,
@@ -671,15 +673,15 @@ class _StatistTapState extends State<StatistTap>
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
         spots: [
-          FlSpot(0, 10),
-          FlSpot(3, 12.3),
-          FlSpot(6, 4),
-          FlSpot(9, 3),
-          FlSpot(12, 7),
-          FlSpot(15, 4),
-          FlSpot(18, 10),
-          FlSpot(21, 4),
-          FlSpot(24, 8),
+          const FlSpot(0, 10),
+          const FlSpot(3, 12.3),
+          const FlSpot(6, 4),
+          const FlSpot(9, 3),
+          const FlSpot(12, 7),
+          const FlSpot(15, 4),
+          const FlSpot(18, 10),
+          const FlSpot(21, 4),
+          const FlSpot(24, 8),
         ],
       );
 
@@ -688,12 +690,12 @@ class _StatistTapState extends State<StatistTap>
         gradient: LinearGradient(
           colors: timeCheck
               ? [
-                  Color(0xFFD2D7DD),
-                  Color(0xFFD2D7DD),
+                  const Color(0xFFD2D7DD),
+                  const Color(0xFFD2D7DD),
                 ]
               : [
-                  Color(0xFFD6ECFA),
-                  Color(0xFF0099FC),
+                  const Color(0xFFD6ECFA),
+                  const Color(0xFF0099FC),
                 ],
         ),
         barWidth: 4,
@@ -814,7 +816,7 @@ class _StatistTapState extends State<StatistTap>
                 padding: const EdgeInsets.all(8.0),
                 child: ToggleButtons(
                   disabledColor: Colors.white,
-                  selectedColor: Color(0xFFEEF1F4),
+                  selectedColor: const Color(0xFFEEF1F4),
                   borderRadius: BorderRadius.circular(10),
                   isSelected: _isPeriodtype,
                   onPressed: (int index) {
@@ -850,7 +852,7 @@ class _StatistTapState extends State<StatistTap>
                           horizontal: 16, vertical: 8),
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
-                        color: Color(0xFFEEF1F4),
+                        color: const Color(0xFFEEF1F4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -879,7 +881,7 @@ class _StatistTapState extends State<StatistTap>
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
-                        color: Color(0xFFEEF1F4),
+                        color: const Color(0xFFEEF1F4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -909,7 +911,7 @@ class _StatistTapState extends State<StatistTap>
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
-                        color: Color(0xFFEEF1F4),
+                        color: const Color(0xFFEEF1F4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -1024,16 +1026,16 @@ class _StatistTapState extends State<StatistTap>
             getTitlesWidget: _getWeeksDay,
           ),
         ),
-        leftTitles: AxisTitles(
+        leftTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(
             showTitles: false,
             reservedSize: 30,
           ),
         ),
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
       );
@@ -1200,8 +1202,8 @@ class _StatistTapState extends State<StatistTap>
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color: compareCheck
-                            ? Color(0xFF0099FC)
-                            : Color(0xFFD1D6DC),
+                            ? const Color(0xFF0099FC)
+                            : const Color(0xFFD1D6DC),
                         fontSize: 12,
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
@@ -1219,8 +1221,8 @@ class _StatistTapState extends State<StatistTap>
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         color: compareCheck
-                            ? Color(0xFFD1D6DC)
-                            : Color(0xFF0099FC),
+                            ? const Color(0xFFD1D6DC)
+                            : const Color(0xFF0099FC),
                         fontSize: 12,
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
@@ -1271,7 +1273,7 @@ class _StatistTapState extends State<StatistTap>
                 padding: const EdgeInsets.all(8.0),
                 child: ToggleButtons(
                   disabledColor: Colors.white,
-                  selectedColor: Color(0xFFEEF1F4),
+                  selectedColor: const Color(0xFFEEF1F4),
                   borderRadius: BorderRadius.circular(10),
                   isSelected: _isComparetype,
                   onPressed: (int index) {
@@ -1307,7 +1309,7 @@ class _StatistTapState extends State<StatistTap>
                           horizontal: 16, vertical: 8),
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
-                        color: Color(0xFFEEF1F4),
+                        color: const Color(0xFFEEF1F4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -1336,7 +1338,7 @@ class _StatistTapState extends State<StatistTap>
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
-                        color: Color(0xFFEEF1F4),
+                        color: const Color(0xFFEEF1F4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -1366,7 +1368,7 @@ class _StatistTapState extends State<StatistTap>
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
-                        color: Color(0xFFEEF1F4),
+                        color: const Color(0xFFEEF1F4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -1473,16 +1475,16 @@ class _StatistTapState extends State<StatistTap>
             getTitlesWidget: _getWeeksDayCompare,
           ),
         ),
-        leftTitles: AxisTitles(
+        leftTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(
             showTitles: false,
             reservedSize: 30,
           ),
         ),
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
       );
@@ -1561,17 +1563,18 @@ class _StatistTapState extends State<StatistTap>
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Container(
+              SizedBox(
                 height: 50,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 3,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: EdgeInsets.all(10), // 마지막 아이템에는 패딩을 적용하지 않음.
+                        padding:
+                            const EdgeInsets.all(10), // 마지막 아이템에는 패딩을 적용하지 않음.
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
