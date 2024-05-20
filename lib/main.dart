@@ -10,7 +10,6 @@ import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
-import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/screens/home/statistics/local_statistics.dart';
 import 'package:damyo/screens/home/statistics/period_statistics.dart';
 import 'package:damyo/screens/home/statistics/time_statistics.dart';
@@ -20,6 +19,7 @@ import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -32,7 +32,7 @@ import 'package:provider/provider.dart';
 Future<void> _initializeMap() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NaverMapSdk.instance.initialize(
-      clientId: secretNaverCloudId,
+      clientId: dotenv.get('NAVER_CLOUD_ID'),
       onAuthFailed: (e) => log("인증오류 : $e", name: "onAuthFailed"));
 }
 
@@ -105,9 +105,10 @@ Future<void> _getCurrentLocation() async {
 }
 
 void main() async {
+  await dotenv.load(fileName: ".env");
   await _initializeMap();
   _requestPermission();
-  // await _getCurrentLocation();
+  await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 
