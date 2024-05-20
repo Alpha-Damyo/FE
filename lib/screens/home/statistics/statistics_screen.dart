@@ -11,13 +11,10 @@ class StatisticsScreen extends StatefulWidget {
   State<StatisticsScreen> createState() => _StatisticsScreenState();
 }
 
-
 class _StatisticsScreenState extends State<StatisticsScreen> {
-
   @override
   Widget build(BuildContext context) {
-
-    return  ScreenUtilInit(
+    return ScreenUtilInit(
       designSize: const Size(double.infinity, 1863),
       builder: (context, child) => Scaffold(
         appBar: AppBar(
@@ -37,23 +34,38 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   height: 20.h,
                 ),
                 // 사용자의 정보
-                SizedBox(
-                  child: StatistTap(index: 0, category: '사용자 정보',),
+                const SizedBox(
+                  child: StatistTap(
+                    index: 0,
+                    category: '사용자 정보',
+                  ),
                 ),
                 SizedBox(
                   height: 20.h,
                 ),
-                // 지역별 흡연 데이터 통계 
+                // 지역별 흡연 데이터 통계
                 SizedBox(
                   width: 390,
                   height: 500.h,
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
-                      StatistTap(index: 1, category: '시군구별 흡연 통계',),
-                      StatistTap(index: 1, category: '가장 많이 흡연한 구역(개인)',),
-                      StatistTap(index: 1, category: '가장 많이 흡연한 구역(전체)',),
-                      StatistTap(index: 1, category: '지역별 흡연 목록',),
+                      StatistTap(
+                        index: 1,
+                        category: '시군구별 흡연 통계',
+                      ),
+                      StatistTap(
+                        index: 1,
+                        category: '가장 많이 흡연한 구역(개인)',
+                      ),
+                      StatistTap(
+                        index: 1,
+                        category: '가장 많이 흡연한 구역(전체)',
+                      ),
+                      StatistTap(
+                        index: 1,
+                        category: '지역별 흡연 목록',
+                      ),
                     ],
                   ),
                 ),
@@ -68,7 +80,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
-                      StatistTap(index: 2, category: '시간대별 평균 흡연량',),
+                      StatistTap(
+                        index: 2,
+                        category: '시간대별 평균 흡연량',
+                      ),
                       // StatistTap(index: 1, category: '시간대별 평균 흡연량(전체)',),
                     ],
                   ),
@@ -84,7 +99,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
-                      StatistTap(index: 3, category: '기간별 평균 흡연량(개인)',),
+                      StatistTap(
+                        index: 3,
+                        category: '기간별 평균 흡연량(개인)',
+                      ),
                     ],
                   ),
                 ),
@@ -99,7 +117,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
-                      StatistTap(index: 4, category: '담배값 계산기',),
+                      StatistTap(
+                        index: 4,
+                        category: '담배값 계산기',
+                      ),
                     ],
                   ),
                 ),
@@ -114,7 +135,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
-                      StatistTap(index: 5, category: '평균 흡연량 비교 통계',),
+                      StatistTap(
+                        index: 5,
+                        category: '평균 흡연량 비교 통계',
+                      ),
                     ],
                   ),
                 ),
@@ -127,8 +151,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           ),
         ),
       ),
-      
-  );
-    
+    );
   }
 }

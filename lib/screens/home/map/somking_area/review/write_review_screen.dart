@@ -1,48 +1,42 @@
 import 'dart:io';
 
-import 'package:damyo/http.dart';
+import 'package:damyo/screens/home/map/somking_area/review/write_review_listview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-const List<Text> inout = <Text>[
-  Text('실내'),
-  Text('실외'),
+const List<String> inout = [
+  '실내',
+  '실외',
 ];
 
-const List<Text> openclose = <Text>[
-  Text('개방'),
-  Text('폐쇄'),
+const List<String> openclose = [
+  '개방',
+  '폐쇄',
 ];
 
-const List<Text> goodBad = <Text>[
-  Text('좋음'),
-  Text('나쁨'),
+const List<String> bigSmall = [
+  '흡연실이 커요',
+  '흡연실이 작아요',
 ];
 
-const List<Text> cleanDirty = <Text>[
-  Text('깨끗함'),
-  Text('더러움'),
+const List<String> complex = [
+  '흡연실이 혼잡해요',
+  '흡연실이 한산해요',
 ];
 
-const List<Text> complex = <Text>[
-  Text('혼잡함'),
-  Text('한산함'),
+const List<String> cleanDirty = [
+  '흡연실이 청결해요',
+  '흡연실이 더러워요',
 ];
 
-const List<Text> bigSmall = <Text>[
-  Text('큼'),
-  Text('작음'),
-];
-
-const List<Text> ox = <Text>[
-  Text('O'),
-  Text('X'),
+const List<String> etc = [
+  '의자가 있어요',
+  '환기성이 좋아요',
+  '존재하지 않아요',
 ];
 
 class WriteReviewScreen extends StatefulWidget {
@@ -58,29 +52,17 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   XFile? _spotImage;
   final ImagePicker picker = ImagePicker();
   // 이름, 설명, 주소 순으로 저장
-  final List<String> _spotInfo = ['', '', ''];
   double _starValue = 0;
-  final List<bool> _selectedInOut = <bool>[false, false];
-  final List<bool> _selectedOpenClose = <bool>[false, false];
-  final List<bool> _selectedVentilation = <bool>[false, false];
-  final List<bool> _selectedCleanliness = <bool>[false, false];
-  final List<bool> _selectedIsExist = <bool>[false, false];
-  final List<bool> _selectedSize = <bool>[false, false];
-  final List<bool> _selectedComplex = <bool>[false, false];
-  final List<bool> _selectedHasChair = <bool>[false, false];
-
-  final List<bool> _toggleIsSelected = <bool>[
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
+  final List<List<bool>> _tagIndex = [
+    [false, false],
+    [false, false],
+    [false, false],
+    [false, false],
+    [false, false],
+    [false, false, false],
   ];
 
-  bool activateInformBtn = false;
+  bool activateReviewBtn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -112,15 +94,48 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      const SizedBox(height: 20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                saName,
+                                style: const TextStyle(
+                                  color: Color(0xff0099fc),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const Text(
+                                '에',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            '방문했어요!',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
                       InkWell(
                         child: Container(
                           width: double.infinity,
-                          height: 184.h,
+                          height: 160,
                           alignment: Alignment.center,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          child: informImage(),
+                          child: imageGetter(),
                         ),
                         onTap: () {
                           // getImage(ImageSource.camera);
@@ -154,72 +169,127 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "이름",
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            width: 1,
+                            color: const Color(0xFFE4E7EB),
                           ),
-                          Text(
-                            saName,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Row(
-                            children: [
-                              Text('별점',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                          ratingStars(),
-                        ],
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "만족도를 평가해주세요",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ratingStars()
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 20),
-                      reviewToggle('실내 여부', inout, _selectedInOut, 0),
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            width: 1,
+                            color: const Color(0xFFE4E7EB),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "특징을 골라주세요",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            selectTagColumn("실내 여부", inout, _tagIndex[0]),
+                            selectTagColumn("개방 여부", openclose, _tagIndex[1]),
+                            // WriteReviewListview(
+                            //     characterList: inout,
+                            //     selectedCharacterIndex: _tagIndex[0]),
+                            // WriteReviewListview(
+                            //     characterList: openclose,
+                            //     selectedCharacterIndex: _tagIndex[1])
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 20),
-                      reviewToggle('개방 여부', openclose, _selectedOpenClose, 1),
-                      const SizedBox(height: 20),
-                      reviewToggle('환기성', goodBad, _selectedVentilation, 2),
-                      const SizedBox(height: 20),
-                      reviewToggle('깨끗함', cleanDirty, _selectedCleanliness, 3),
-                      const SizedBox(height: 20),
-                      reviewToggle('크기', bigSmall, _selectedSize, 4),
-                      const SizedBox(height: 20),
-                      reviewToggle('혼잡도', complex, _selectedComplex, 5),
-                      const SizedBox(height: 20),
-                      reviewToggle('의자가 있음', ox, _selectedHasChair, 6),
-                      const SizedBox(height: 20),
-                      reviewToggle('존재하지 않음', ox, _selectedIsExist, 7),
-                      const SizedBox(height: 20),
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            width: 1,
+                            color: const Color(0xFFE4E7EB),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "리뷰할 태그를 선택해주세요",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            selectTagColumn("크기", bigSmall, _tagIndex[2]),
+                            selectTagColumn("혼잡도", complex, _tagIndex[3]),
+                            selectTagColumn("청결도", cleanDirty, _tagIndex[4]),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '기타',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                WriteReviewDuplicateListview(
+                                  characterList: etc,
+                                  selectedCharacterIndex: _tagIndex[5],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              // reviewToggle('환풍 여부', ox, _selectedVentilation, 2),
-              // reviewToggle('청결도', ox, _selectedCleanliness, 3),
+              const SizedBox(height: 20),
               InkWell(
                 onTap: () {
-                  print('실내 여부: ${_selectedInOut[0]}');
-                  print('개방 여부: ${_selectedOpenClose[0]}');
-                  print('환기 여부: ${_selectedVentilation[0]}');
-                  print('깨끗함: ${_selectedCleanliness[0]}');
-                  print('크기: ${_selectedSize[0]}');
-                  print('혼잡도: ${_selectedComplex[0]}');
-                  print('의자: ${_selectedHasChair[0]}');
-                  print('존재하지 않음: ${_selectedIsExist[0]}');
+                  // print('실내 여부: ${_selectedInOut[0]}');
+                  // print('개방 여부: ${_selectedOpenClose[0]}');
+                  // print('환기 여부: ${_selectedVentilation[0]}');
+                  // print('깨끗함: ${_selectedCleanliness[0]}');
+                  // print('크기: ${_selectedSize[0]}');
+                  // print('혼잡도: ${_selectedComplex[0]}');
+                  // print('의자: ${_selectedHasChair[0]}');
+                  // print('존재하지 않음: ${_selectedIsExist[0]}');
                 },
                 child: Ink(
                   width: double.infinity,
                   height: 47.h,
                   decoration: BoxDecoration(
-                    color: activateInformBtn
+                    color: activateReviewBtn
                         ? Colors.blue
                         : const Color(0xffd2d7dd),
                     borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -244,6 +314,26 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     );
   }
 
+  Column selectTagColumn(
+      String tagName, List<String> tagList, List<bool> tagIndex) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tagName,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 10),
+        WriteReviewListview(
+            characterList: tagList, selectedCharacterIndex: tagIndex),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
+
   // 이미지를 가져오는 함수
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
@@ -255,7 +345,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   }
 
   // 이미지를 입력받는 위젯
-  Container informImage() {
+  Container imageGetter() {
     return _spotImage != null
         ? Container(
             alignment: Alignment.center,
@@ -274,58 +364,33 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
               color: Color(0xffeef1f5),
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
-            child: Icon(
-              Icons.camera_alt_rounded,
-              size: 60.w,
-              color: const Color(0xffa9afb7),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.camera_alt_rounded,
+                  size: 60.w,
+                  color: const Color(0xffa9afb7),
+                ),
+                const Text(
+                  '사진을 추가해주세요! (선택)',
+                  style: TextStyle(
+                    color: Color(0xff464D57),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           );
   }
 
-  // 텍스트를 입력받는 위젯
-  Row reviewTextInput(String type, String hint, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(type, style: const TextStyle(fontWeight: FontWeight.w600)),
-        index == 0 ? const blueStar() : const Text(""),
-        const SizedBox(width: 120),
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: hint,
-              hintTextDirection: TextDirection.rtl,
-              hintStyle: const TextStyle(
-                color: Color(0xffd2d7dd),
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-              border: InputBorder.none,
-            ),
-            onChanged: (text) {
-              setState(() {
-                _spotInfo[index] = text;
-              });
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  // 제보하기 버튼 활성화여부를 판단하는 함수
+  // 리뷰 작성 버튼 활성화여부를 판단하는 함수
   void checkCanReview() {
-    for (int i = 0; i < _toggleIsSelected.length; i++) {
-      if (!_toggleIsSelected[i]) {
-        activateInformBtn = false;
-        return;
-      }
-    }
     if (_starValue == 0) {
-      activateInformBtn = false;
+      activateReviewBtn = false;
       return;
     }
-    activateInformBtn = true;
+    activateReviewBtn = true;
   }
 
   // 별점을 입력받는 위젯
@@ -334,6 +399,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
       value: _starValue,
       starBuilder: (index, color) => Icon(
         Icons.star,
+        size: 38,
         color: color,
       ),
       onValueChanged: (v) {
@@ -343,106 +409,9 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
         });
       },
       starCount: 5,
-      starSize: 25,
+      starSize: 38,
+      starColor: Theme.of(context).colorScheme.primary,
       valueLabelVisibility: false,
-    );
-  }
-
-  // 토글버튼으로 정보를 입력받는 위젯
-  Row reviewToggle(
-      String type, List<Text> children, List<bool> isSelected, int i) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Text(
-              type,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-        Material(
-          color: const Color(0xffeef1f5),
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
-          child: Padding(
-            padding: const EdgeInsets.all(3),
-            child: Row(
-              children: [
-                GestureDetector(
-                  child: Container(
-                    width: children[0].data?.length == 3 ? 55.w : 45.w,
-                    height: 27.h,
-                    decoration: BoxDecoration(
-                      color: isSelected[0]
-                          ? Colors.white
-                          : const Color(0xffeef1f5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: children[0],
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      isSelected[0] = true;
-                      isSelected[1] = false;
-                      _toggleIsSelected[i] = true;
-                      checkCanReview();
-                    });
-                  },
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: children[1].data?.length == 3 ? 55.w : 45.w,
-                    height: 27.h,
-                    decoration: BoxDecoration(
-                      color: isSelected[1]
-                          ? Colors.white
-                          : const Color(0xffeef1f5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: children[1],
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      isSelected[0] = false;
-                      isSelected[1] = true;
-                      _toggleIsSelected[i] = true;
-                      checkCanReview();
-                    });
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class blueStar extends StatelessWidget {
-  const blueStar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: const Offset(3, -3),
-      child: const Text(
-        '*',
-        style: TextStyle(
-          color: Colors.blue,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
     );
   }
 }
