@@ -251,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget buildLoginButton({
+  Widget  buildLoginButton({
     required String text,
     required Color backgroundColor,
     required String imageUrl,
