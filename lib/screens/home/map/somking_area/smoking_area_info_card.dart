@@ -1,3 +1,4 @@
+import 'package:damyo/screens/home/map/somking_area/favorites/add_favorite_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -87,7 +88,11 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
   }
 
   void addFavorites() {
-    print("add favorites");
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return AddFavoriteBottomSheet(saName: _smokingAreaId);
+        });
   }
 
   void completeSmoking() {
