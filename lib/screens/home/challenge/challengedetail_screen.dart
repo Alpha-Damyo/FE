@@ -20,6 +20,7 @@ class ChallengeDetailScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.of(context).pop(),
           ),
+          scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
         ),
@@ -91,27 +92,14 @@ class ChallengeDetailScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                left: 360.w,
-                top: 61.h,
-                child: SizedBox(
-                  width: 12.w,
-                  height: 12.h,
-                  child: const Stack(children: []),
-                ),
-              ),
-              Positioned(
-                left: 0.w,
-                top: 376.h,
-                child: Container(
-                  width: 390.w,
-                  height: 624.h,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image:
-                          NetworkImage("https://via.placeholder.com/390x624"),
-                      fit: BoxFit.fill,
-                    ),
+              SizedBox(height: 12.h),
+              Container(
+                width: 390.w,
+                height: 624.h,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage("https://via.placeholder.com/390x624"),
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),
