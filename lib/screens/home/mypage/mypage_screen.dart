@@ -1,8 +1,7 @@
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
-import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -16,364 +15,365 @@ class MypageScreen extends StatefulWidget {
 class _MypageScreenState extends State<MypageScreen> {
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Consumer<IsLoginProvider>(
       builder: (context, isLoginProvider, child) {
-        return SingleChildScrollView(
-          // Scrollable for smaller screens
-          child: Column(
-            children: [
-              Container(
-                width: screenWidth,
-                height: screenHeight *
-                    0.9, // Adjusting height as 90% of screen height
-                clipBehavior: Clip.antiAlias,
-                decoration: const BoxDecoration(color: Color(0xFFF7F8FA)),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      child: Container(
-                        width: screenWidth,
-                        height: screenHeight * 0.1, // Adjusting for top bar
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(color: Colors.white),
-                      ),
-                    ),
-                    Positioned(
-                      left: screenWidth *
-                          0.38, // Centering text based on screen width
-                      top: screenHeight * 0.03,
-                      child: const Text(
-                        '마이 페이지',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w700,
-                          height: 0,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      top: 51,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (isLoginProvider.isLogin)
-                            LoggedPage()
-                          else
-                            LoginPage(),
-                          const SizedBox(height: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 20),
-                            decoration:
-                                const BoxDecoration(color: Colors.white),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    GoRouter.of(context).push('/favorite');
-                                  },
-                                  child: const Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '즐겨찾기 관리',
-                                        style: TextStyle(
-                                          color: Color(0xFF262B32),
-                                          fontSize: 16,
-                                          fontFamily: 'Pretendard',
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      SizedBox(width: 246),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Container(
-                                  width: 358,
-                                  decoration: const ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        strokeAlign:
-                                            BorderSide.strokeAlignCenter,
-                                        color: Color(0xFFEEF1F4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                const SizedBox(
-                                  width: 340,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          child: Text(
-                                            '흡연구역 업데이트',
-                                            style: TextStyle(
-                                              color: Color(0xFF262B32),
-                                              fontSize: 16,
-                                              fontFamily: 'Pretendard',
-                                              fontWeight: FontWeight.w500,
-                                              height: 0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 165),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Container(
-                                  width: 358,
-                                  decoration: const ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        strokeAlign:
-                                            BorderSide.strokeAlignCenter,
-                                        color: Color(0xFFEEF1F4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '업적',
-                                      style: TextStyle(
-                                        color: Color(0xFF262B32),
-                                        fontSize: 16,
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w500,
-                                        height: 0,
-                                      ),
-                                    ),
-                                    SizedBox(width: 306),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                Container(
-                                  width: 358,
-                                  decoration: const ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        strokeAlign:
-                                            BorderSide.strokeAlignCenter,
-                                        color: Color(0xFFEEF1F4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                const SizedBox(
-                                  width: 340,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          child: Text(
-                                            '흡연데이터 초기화',
-                                            style: TextStyle(
-                                              color: Color(0xFF262B32),
-                                              fontSize: 16,
-                                              fontFamily: 'Pretendard',
-                                              fontWeight: FontWeight.w500,
-                                              height: 0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 75),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Container(
-                                  width: 358,
-                                  decoration: const ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        strokeAlign:
-                                            BorderSide.strokeAlignCenter,
-                                        color: Color(0xFFEEF1F4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                  width: 340,
-                                  height: 19,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Expanded(
-                                        child: SizedBox(
-                                          child: Text(
-                                            '푸쉬 알림',
-                                            style: TextStyle(
-                                              color: Color(0xFF262B32),
-                                              fontSize: 16,
-                                              fontFamily: 'Pretendard',
-                                              fontWeight: FontWeight.w500,
-                                              height: 0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 57),
-                                      Container(
-                                        padding: const EdgeInsets.all(3),
-                                        decoration: ShapeDecoration(
-                                          color: const Color(0xFF0099FC),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(18),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              width: 16,
-                                              height: 16,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 5),
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: ShapeDecoration(
-                                                color: const Color(0xFF0099FC),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: 16,
-                                              height: 16,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 5),
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: ShapeDecoration(
-                                                color: Colors.white,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Container(
-                                  width: 358,
-                                  decoration: const ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        strokeAlign:
-                                            BorderSide.strokeAlignCenter,
-                                        color: Color(0xFFEEF1F4),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                const SizedBox(
-                                  width: 340,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          child: Text(
-                                            '앱 버전',
-                                            style: TextStyle(
-                                              color: Color(0xFF262B32),
-                                              fontSize: 16,
-                                              fontFamily: 'Pretendard',
-                                              fontWeight: FontWeight.w500,
-                                              height: 0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 82),
-                                      Text(
-                                        '3.4',
-                                        style: TextStyle(
-                                          color: Color(0xFFA8AFB6),
-                                          fontSize: 14,
-                                          fontFamily: 'Pretendard',
-                                          fontWeight: FontWeight.w400,
-                                          height: 0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+        return ScreenUtilInit(
+          designSize: const Size(390, 667),
+          builder: (context, child) => Scaffold(
+            appBar: AppBar(
+              scrolledUnderElevation: 0,
+              backgroundColor: Colors.white,
+              title: Text(
+                '마이페이지',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.sp,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w700,
+                  height: 0,
                 ),
               ),
-            ],
+              centerTitle: true,
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    width: 390.w,
+                    height: 600.h,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(color: Color(0xFFF7F8FA)),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (isLoginProvider.isLogin)
+                                LoggedPage()
+                              else
+                                LoginPage(),
+                              SizedBox(height: 10.h),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16.w, vertical: 20.h),
+                                decoration:
+                                    const BoxDecoration(color: Colors.white),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () {
+                                        GoRouter.of(context).push('/favorite');
+                                      },
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '즐겨찾기 관리',
+                                            style: TextStyle(
+                                              color: const Color(0xFF262B32),
+                                              fontSize: 16.sp,
+                                              fontFamily: 'Pretendard',
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          SizedBox(width: 246.w),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Container(
+                                      width: 358.w,
+                                      decoration: const ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            strokeAlign:
+                                                BorderSide.strokeAlignCenter,
+                                            color: Color(0xFFEEF1F4),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    SizedBox(
+                                      width: 340.w,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: SizedBox(
+                                              child: Text(
+                                                '흡연구역 업데이트',
+                                                style: TextStyle(
+                                                  color:
+                                                      const Color(0xFF262B32),
+                                                  fontSize: 16.sp,
+                                                  fontFamily: 'Pretendard',
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 165.w),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Container(
+                                      width: 358.w,
+                                      decoration: const ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            strokeAlign:
+                                                BorderSide.strokeAlignCenter,
+                                            color: Color(0xFFEEF1F4),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          '업적',
+                                          style: TextStyle(
+                                            color: const Color(0xFF262B32),
+                                            fontSize: 16.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w500,
+                                            height: 0,
+                                          ),
+                                        ),
+                                        SizedBox(width: 306.w),
+                                      ],
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Container(
+                                      width: 358.w,
+                                      decoration: const ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            strokeAlign:
+                                                BorderSide.strokeAlignCenter,
+                                            color: Color(0xFFEEF1F4),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    SizedBox(
+                                      width: 340.w,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: SizedBox(
+                                              child: Text(
+                                                '흡연데이터 초기화',
+                                                style: TextStyle(
+                                                  color:
+                                                      const Color(0xFF262B32),
+                                                  fontSize: 16.sp,
+                                                  fontFamily: 'Pretendard',
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 75.w),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Container(
+                                      width: 358.w,
+                                      decoration: const ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            strokeAlign:
+                                                BorderSide.strokeAlignCenter,
+                                            color: Color(0xFFEEF1F4),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    SizedBox(
+                                      width: 340.w,
+                                      height: 19.h,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: SizedBox(
+                                              child: Text(
+                                                '푸쉬 알림',
+                                                style: TextStyle(
+                                                  color:
+                                                      const Color(0xFF262B32),
+                                                  fontSize: 16.sp,
+                                                  fontFamily: 'Pretendard',
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 0,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 57.w),
+                                          Container(
+                                            padding: EdgeInsets.all(3.w),
+                                            decoration: ShapeDecoration(
+                                              color: const Color(0xFF0099FC),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(18.r),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  width: 16.w,
+                                                  height: 16.h,
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 10.w,
+                                                      vertical: 5.h),
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: ShapeDecoration(
+                                                    color:
+                                                        const Color(0xFF0099FC),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.r),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: 16.w,
+                                                  height: 16.h,
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 10.w,
+                                                      vertical: 5.h),
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: ShapeDecoration(
+                                                    color: Colors.white,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16.r),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    Container(
+                                      width: 358.w,
+                                      decoration: const ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1,
+                                            strokeAlign:
+                                                BorderSide.strokeAlignCenter,
+                                            color: Color(0xFFEEF1F4),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    SizedBox(
+                                      width: 340.w,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: SizedBox(
+                                              child: Text(
+                                                '앱 버전',
+                                                style: TextStyle(
+                                                  color:
+                                                      const Color(0xFF262B32),
+                                                  fontSize: 16.sp,
+                                                  fontFamily: 'Pretendard',
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 0,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 82.w),
+                                          Text(
+                                            '3.4',
+                                            style: TextStyle(
+                                              color: const Color(0xFFA8AFB6),
+                                              fontSize: 14.sp,
+                                              fontFamily: 'Pretendard',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
@@ -382,11 +382,11 @@ class _MypageScreenState extends State<MypageScreen> {
 
   Widget LoginPage() {
     return Container(
-      padding: const EdgeInsets.only(
-        top: 30,
-        left: 16,
-        right: 16,
-        bottom: 20,
+      padding: EdgeInsets.only(
+        top: 20.h,
+        left: 16.w,
+        right: 16.w,
+        bottom: 20.h,
       ),
       decoration: const BoxDecoration(color: Colors.white),
       child: Column(
@@ -394,7 +394,7 @@ class _MypageScreenState extends State<MypageScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -408,37 +408,35 @@ class _MypageScreenState extends State<MypageScreen> {
                     '로그인 / 회원가입',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w700,
-                      height: 0,
                     ),
                   ),
-                  SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     '담요와 함께 바른 문화를 만들어봐요 ! ',
                     style: TextStyle(
-                      color: Color(0xFF6E767F),
-                      fontSize: 14,
+                      color: const Color(0xFF6E767F),
+                      fontSize: 14.sp,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w400,
-                      height: 0,
                     ),
                   ),
                 ],
               ),
-              SizedBox(width: 148),
+              SizedBox(width: 148.w),
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Container(
-            width: 358,
-            padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 12),
+            width: 358.w,
+            padding: EdgeInsets.symmetric(horizontal: 55.w, vertical: 12.h),
             clipBehavior: Clip.antiAlias,
             decoration: ShapeDecoration(
               color: const Color(0xFFEEF1F4),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
             ),
             child: Row(
@@ -450,14 +448,13 @@ class _MypageScreenState extends State<MypageScreen> {
                   onTap: () {
                     context.push('/login');
                   },
-                  child: const Text(
+                  child: Text(
                     '로그인/회원가입 하러 가기',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w600,
-                      height: 0,
                     ),
                   ),
                 ),
@@ -471,9 +468,9 @@ class _MypageScreenState extends State<MypageScreen> {
 
   Widget LoggedPage() {
     return Container(
-      width: 390,
-      height: 189,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      width: 390.w,
+      height: 189.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
       decoration: const BoxDecoration(color: Colors.white),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -481,7 +478,7 @@ class _MypageScreenState extends State<MypageScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 358,
+            width: 358.w,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -493,12 +490,12 @@ class _MypageScreenState extends State<MypageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      height: 84,
+                      height: 84.h,
                       clipBehavior: Clip.antiAlias,
                       decoration: ShapeDecoration(
                         color: const Color(0xFFDEDEDE),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(50.r),
                         ),
                       ),
                       child: Row(
@@ -507,8 +504,8 @@ class _MypageScreenState extends State<MypageScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            width: 84,
-                            height: 84,
+                            width: 84.w,
+                            height: 84.h,
                             decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: NetworkImage(
@@ -520,7 +517,7 @@ class _MypageScreenState extends State<MypageScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 15),
+                    SizedBox(width: 15.w),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -530,25 +527,24 @@ class _MypageScreenState extends State<MypageScreen> {
                           Provider.of<UserInfoProvider>(context)
                               .name
                               .toString(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w700,
-                            height: 0,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 5.h),
                           clipBehavior: Clip.antiAlias,
                           decoration: ShapeDecoration(
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
                               side: const BorderSide(
                                   width: 1, color: Color(0xFFDEDEDE)),
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(5.r),
                             ),
                           ),
                           child: Row(
@@ -558,12 +554,11 @@ class _MypageScreenState extends State<MypageScreen> {
                             children: [
                               Text(
                                 '바른 문화 기여도: ${Provider.of<UserInfoProvider>(context).score}점',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   fontFamily: 'Pretendard',
                                   fontWeight: FontWeight.w400,
-                                  height: 0,
                                 ),
                               ),
                             ],
@@ -573,19 +568,19 @@ class _MypageScreenState extends State<MypageScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(width: 112),
+                SizedBox(width: 112.w),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           Container(
-            width: 358,
-            padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 12),
+            width: 358.w,
+            padding: EdgeInsets.symmetric(horizontal: 55.w, vertical: 12.h),
             clipBehavior: Clip.antiAlias,
             decoration: ShapeDecoration(
               color: const Color(0xFFEEF1F4),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
             ),
             child: Row(
@@ -598,14 +593,13 @@ class _MypageScreenState extends State<MypageScreen> {
                     Provider.of<IsLoginProvider>(context, listen: false)
                         .logout();
                   },
-                  child: const Text(
+                  child: Text(
                     '로그아웃',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w600,
-                      height: 0,
                     ),
                   ),
                 ),
