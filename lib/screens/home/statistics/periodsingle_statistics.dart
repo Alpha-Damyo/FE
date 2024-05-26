@@ -40,19 +40,22 @@ class _periodSumInfoState extends State<periodSumInfo> {
             ],
           ),
         ),
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              '개수',
-              style: TextStyle(
-                color: Color(0xFFD1D6DC),
-                fontSize: 12,
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                '개수',
+                style: TextStyle(
+                  color: Color(0xFFD1D6DC),
+                  fontSize: 12,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         Expanded(
           child: (periodType == '일')
@@ -76,19 +79,19 @@ class _periodSumInfoState extends State<periodSumInfo> {
                         barGroups: barWeekGroups,
                         gridData: const FlGridData(show: false),
                         alignment: BarChartAlignment.spaceAround,
-                        maxY: 100,
+                        maxY: 20,
                       ),
                     )
                   : BarChart(
                       //월
                       BarChartData(
-                        barTouchData: barDayTouchData,
+                        barTouchData: barMonthTouchData,
                         titlesData: monthTitlesData,
                         borderData: borderData,
-                        barGroups: barDayGroups,
+                        barGroups: barMonthGroups,
                         gridData: const FlGridData(show: false),
                         alignment: BarChartAlignment.spaceAround,
-                        maxY: 500,
+                        maxY: 20,
                       ),
                     ),
         ),
@@ -274,6 +277,32 @@ class _periodSumInfoState extends State<periodSumInfo> {
         ),
       );
 
+  // '주'
+  BarTouchData get barMonthTouchData => BarTouchData(
+        enabled: false,
+        touchTooltipData: BarTouchTooltipData(
+          getTooltipColor: (group) => Colors.transparent,
+          tooltipPadding: EdgeInsets.zero,
+          tooltipMargin: 8,
+          getTooltipItem: (
+            BarChartGroupData group,
+            int groupIndex,
+            BarChartRodData rod,
+            int rodIndex,
+          ) {
+            return BarTooltipItem(
+              rod.toY.round().toString(),
+              TextStyle(
+                color: (now.weekday == group.x.toInt())
+                    ? Colors.cyan
+                    : Colors.grey,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
+        ),
+      );
+
   // '일'로 설정했을 때
   Widget _getDays(double value, TitleMeta meta) {
     const style1 = TextStyle(
@@ -365,6 +394,50 @@ class _periodSumInfoState extends State<periodSumInfo> {
     );
   }
 
+  // '월'로 설정했을 때
+  Widget _getMonths(double value, TitleMeta meta) {
+    const style1 = TextStyle(
+      color: Colors.blue,
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+    const style2 = TextStyle(
+      color: Colors.grey,
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+    String text;
+    bool day = (now.weekday == value.toInt());
+    switch (value.toInt()) {
+      case 1:
+        text = '이번달';
+        break;
+      case 2:
+        text = '1달전';
+        break;
+      case 3:
+        text = '2달전';
+        break;
+      case 4:
+        text = '3달전';
+        break;
+      case 5:
+        text = '4달전';
+        break;
+      case 6:
+        text = '5달전';
+        break;
+      default:
+        text = '';
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      child: Text(text, style: (day) ? style1 : style2),
+    );
+  }
+
   FlTitlesData get dayTitlesData => FlTitlesData(
         show: true,
         bottomTitles: AxisTitles(
@@ -417,7 +490,7 @@ class _periodSumInfoState extends State<periodSumInfo> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            getTitlesWidget: _getWeeks,
+            getTitlesWidget: _getMonths,
           ),
         ),
         leftTitles: const AxisTitles(
@@ -544,6 +617,81 @@ class _periodSumInfoState extends State<periodSumInfo> {
       ];
 
   List<BarChartGroupData> get barWeekGroups => [
+        BarChartGroupData(
+          x: 1,
+          barRods: [
+            BarChartRodData(
+              toY: 8,
+              width: 30,
+              gradient:
+                  (1 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
+            )
+          ],
+          showingTooltipIndicators: [0],
+        ),
+        BarChartGroupData(
+          x: 2,
+          barRods: [
+            BarChartRodData(
+              toY: 10,
+              width: 30,
+              gradient:
+                  (2 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
+            )
+          ],
+          showingTooltipIndicators: [0],
+        ),
+        BarChartGroupData(
+          x: 3,
+          barRods: [
+            BarChartRodData(
+              toY: 14,
+              width: 30,
+              gradient:
+                  (3 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
+            )
+          ],
+          showingTooltipIndicators: [0],
+        ),
+        BarChartGroupData(
+          x: 4,
+          barRods: [
+            BarChartRodData(
+              toY: 15,
+              width: 30,
+              gradient:
+                  (4 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
+            )
+          ],
+          showingTooltipIndicators: [0],
+        ),
+        BarChartGroupData(
+          x: 5,
+          barRods: [
+            BarChartRodData(
+              toY: 13,
+              width: 30,
+              gradient:
+                  (5 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
+            )
+          ],
+          showingTooltipIndicators: [0],
+        ),
+        BarChartGroupData(
+          x: 6,
+          barRods: [
+            BarChartRodData(
+              toY: 10,
+              width: 30,
+              gradient:
+                  (6 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
+            )
+          ],
+          showingTooltipIndicators: [0],
+        ),
+      ];
+
+  List<BarChartGroupData> get barMonthGroups => [
         BarChartGroupData(
           x: 1,
           barRods: [
