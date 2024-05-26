@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddFavoriteBottomSheet extends StatefulWidget {
+  final String saId;
   final String saName;
-  const AddFavoriteBottomSheet({super.key, required this.saName});
+  const AddFavoriteBottomSheet(
+      {super.key, required this.saName, required this.saId});
 
   @override
   State<AddFavoriteBottomSheet> createState() => _AddFavoriteBottomSheetState();
@@ -13,24 +16,49 @@ class AddFavoriteBottomSheet extends StatefulWidget {
 class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
   FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   List<String> favorites = [
+    "새 리스트 만들기",
     "기본",
+  ];
+  List<int> favoritesSize = [
+    0,
+    0,
   ];
 
   int selectedFavorite = 1;
 
   Future<void> getFavorites() async {
     String? stringFavorites = await secureStorage.read(key: 'favoritesList');
-    // String stringFavorites = "즐겨찾기1,즐겨찾기2,";
     if (stringFavorites != null) {
       favorites += stringFavorites.toString().split(',');
       favorites.remove('');
+      for (int i = 0; i < favorites.length; i++) {
+        favoritesSize.add(0);
+      }
     }
+    for (int i = 0; i < favorites.length; i++) {
+      String target = favorites[i];
+      String? targetString =
+          await secureStorage.read(key: 'favoritesList.$target');
+
+      if (targetString != null) {
+        List<String> targetList = targetString.toString().split(',');
+        targetList.remove('');
+
+        favoritesSize[i] += targetList.length;
+      }
+    }
+    setState(() {});
+  }
+
+  Future<void> remove() async {
+    await secureStorage.deleteAll();
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    // remove();
     getFavorites();
   }
 
@@ -59,7 +87,7 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                   Expanded(
                     child: ListView.separated(
                       shrinkWrap: true,
-                      itemCount: favorites.length + 1,
+                      itemCount: favorites.length,
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                           onTap: () {
@@ -82,12 +110,19 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    index == 0
-                                        ? "새 리스트 만들기"
-                                        : favorites[index - 1],
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                  Row(
+                                    children: [
+                                      Text('${favorites[index]} '),
+                                      index > 0
+                                          ? Text(
+                                              favoritesSize[index].toString(),
+                                              style: const TextStyle(
+                                                  color: Color(0xFF6F767F),
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w400),
+                                            )
+                                          : const Text(''),
+                                    ],
                                   ),
                                   Icon(
                                     index == 0
@@ -115,7 +150,40 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                   ),
                   const SizedBox(height: 20),
                   InkWell(
-                    onTap: () {},
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(16.0),
+                    ),
+                    onTap: () async {
+                      String? tmpInfo = await secureStorage.read(
+                          key: 'favoritesList.${favorites[selectedFavorite]}');
+                      if (tmpInfo != null) {
+                        List<String> tmpList = tmpInfo.toString().split(',');
+                        tmpList.remove('');
+                        if (tmpList.contains(widget.saId)) {
+                          // print(tmpList);
+                          // print("이미 추가되어있습니다");
+                          Fluttertoast.showToast(msg: "이미 추가되어있습니다");
+                          // print("12312321321132");
+                        } else {
+                          await secureStorage.write(
+                              key:
+                                  'favoritesList.${favorites[selectedFavorite]}',
+                              value: '$tmpInfo,${widget.saId}');
+                          Fluttertoast.showToast(msg: "추가가 완료되었습니다");
+                          setState(() {
+                            Navigator.of(context).pop();
+                          });
+                        }
+                      } else {
+                        await secureStorage.write(
+                            key: 'favoritesList.${favorites[selectedFavorite]}',
+                            value: widget.saId);
+                        Fluttertoast.showToast(msg: "추가가 완료되었습니다");
+                        setState(() {
+                          Navigator.of(context).pop();
+                        });
+                      }
+                    },
                     child: Ink(
                       width: double.infinity,
                       height: 50,
@@ -168,9 +236,20 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
               child: const Text('취소'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                // String stringFavorites = "즐겨찾기1,즐겨찾기2,";
+                String? tmpFavoritesList =
+                    await secureStorage.read(key: 'favoritesList');
+                tmpFavoritesList ??= '';
+                await secureStorage.write(
+                    key: 'favoritesList',
+                    value: '$tmpFavoritesList,$_enteredText');
+
+                setState(() {
+                  favorites.add(_enteredText);
+                  favoritesSize.add(0);
+                });
                 Navigator.of(context).pop();
-                // 입력된 텍스트를 사용하여 필요한 작업을 수행
               },
               child: const Text('확인'),
             ),

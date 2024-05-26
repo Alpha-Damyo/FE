@@ -91,7 +91,10 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return AddFavoriteBottomSheet(saName: _smokingAreaId);
+          return AddFavoriteBottomSheet(
+            saName: _smokingAreaId,
+            saId: _smokingAreaId,
+          );
         });
   }
 
