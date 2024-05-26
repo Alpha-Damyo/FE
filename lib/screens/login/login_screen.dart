@@ -151,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
       designSize: const Size(390, 667),
       builder: (context, child) => Scaffold(
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           centerTitle: true,
           foregroundColor: Colors.black,
           title: Text('로그인',
