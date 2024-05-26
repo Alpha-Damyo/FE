@@ -74,40 +74,35 @@ class _ChallengeScreenState extends State<ChallengeScreen>
     return ScreenUtilInit(
       designSize: const Size(390, 667),
       builder: (context, child) => Scaffold(
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          backgroundColor: Colors.white,
+          title: Text(
+            '챌린지',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20.sp,
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w700,
+              height: 0,
+            ),
+          ),
+          centerTitle: true,
+        ),
         body: Column(
           children: [
-            Container(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              child: Column(
-                children: [
-                  Positioned(
-                    left: 169.w,
-                    top: 23.h,
-                    child: Text(
-                      '챌린지',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.sp,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  TabBar(
-                    labelColor: Colors.black,
-                    indicatorColor: Colors.black,
-                    indicatorWeight: 3,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    unselectedLabelColor: const Color(0xFF6E767F),
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    controller: _tabController,
-                    tabs: const [
-                      Tab(text: '챌린지'),
-                      Tab(text: '랭킹'),
-                    ],
-                  ),
-                ],
-              ),
+            TabBar(
+              labelColor: Colors.black,
+              indicatorColor: Colors.black,
+              indicatorWeight: 3,
+              indicatorSize: TabBarIndicatorSize.tab,
+              unselectedLabelColor: const Color(0xFF6E767F),
+              overlayColor: MaterialStateProperty.all(Colors.transparent),
+              controller: _tabController,
+              tabs: const [
+                Tab(text: '챌린지'),
+                Tab(text: '랭킹'),
+              ],
             ),
             Expanded(
               child: TabBarView(
@@ -198,10 +193,10 @@ class _ChallengeScreenState extends State<ChallengeScreen>
 
   Widget rankingWidget() {
     return ScreenUtilInit(
-      designSize: const Size(390, 748),
+      designSize: const Size(390, 769),
       builder: (context, child) => Container(
         width: 390.w,
-        height: 748.h,
+        height: 769.h,
         padding: EdgeInsets.only(
           top: 20.h,
         ),
@@ -414,7 +409,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
                                               '1',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 16.sp,
+                                                fontSize: 20.sp,
                                                 fontFamily:
                                                     'AppleSDGothicNeoEB00',
                                                 fontWeight: FontWeight.w400,
@@ -623,7 +618,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: double.infinity,
+          width: 390.w,
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
           decoration: ShapeDecoration(
             color: index == 3 ? const Color(0xFFF7F8FA) : Colors.white,
@@ -717,7 +712,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
                   ),
                 ],
               ),
-              const SizedBox(width: 147),
+              const Spacer(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
                 clipBehavior: Clip.antiAlias,
@@ -726,7 +721,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
                   shape: RoundedRectangleBorder(
                     side:
                         BorderSide(width: 1.w, color: const Color(0xFFEEF1F4)),
-                    borderRadius: BorderRadius.circular(13.r),
+                    borderRadius: BorderRadius.circular(15.r),
                   ),
                 ),
                 child: Row(
@@ -749,7 +744,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
             ],
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
       ],
     );
   }
