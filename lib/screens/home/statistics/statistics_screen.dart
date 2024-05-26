@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:damyo/http.dart';
@@ -15,7 +17,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(double.infinity, 1863),
+      designSize: const Size(390, 1863),
       builder: (context, child) => Scaffold(
         appBar: AppBar(
           scrolledUnderElevation: 0,
@@ -45,8 +47,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 ),
                 // 지역별 흡연 데이터 통계
                 SizedBox(
-                  width: 390,
-                  height: 500.h,
+                  height: 600.h,
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
@@ -69,14 +70,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 390.w,
+                Container(
                   height: 20.h,
+                  color: Colors.grey[200],
                 ),
                 // 시간대별 흡연 데이터 통계(사용자, 전체)
                 SizedBox(
-                  width: 390,
-                  height: 469,
+                  height: 1000.h,
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
@@ -88,32 +88,25 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 390.w,
+                Container(
                   height: 20.h,
+                  color: Colors.grey[200],
                 ),
                 // 기간별 흡연 데이터 통계(사용자)
                 SizedBox(
-                  width: 390,
-                  height: 469,
-                  child: PageView(
-                    scrollDirection: Axis.horizontal,
-                    children: const [
-                      StatistTap(
-                        index: 3,
-                        category: '기간별 평균 흡연량(개인)',
-                      ),
-                    ],
+                  height: 1000.h,
+                  child: const StatistTap(
+                    index: 3,
+                    category: '기간별 평균 흡연량(개인)',
                   ),
                 ),
-                SizedBox(
-                  width: 390.w,
+                Container(
                   height: 20.h,
+                  color: Colors.grey[200],
                 ),
                 // 담배값 계산기
                 SizedBox(
-                  width: 390,
-                  height: 469,
+                  height: 500.h,
                   child: PageView(
                     scrollDirection: Axis.horizontal,
                     children: const [
@@ -124,22 +117,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 390.w,
+                Container(
                   height: 20.h,
+                  color: Colors.grey[200],
                 ),
                 // 평균 흡연량 비교 데이터 통계
                 SizedBox(
-                  width: 390,
-                  height: 469,
-                  child: PageView(
-                    scrollDirection: Axis.horizontal,
-                    children: const [
-                      StatistTap(
-                        index: 5,
-                        category: '평균 흡연량 비교 통계',
-                      ),
-                    ],
+                  height: 1000.h,
+                  child: const StatistTap(
+                    index: 5,
+                    category: '평균 흡연량 비교 통계',
                   ),
                 ),
                 SizedBox(
