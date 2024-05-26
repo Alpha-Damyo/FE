@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChallengeVoteScreen extends StatefulWidget {
   final String title;
@@ -39,31 +40,31 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('챌린지 투표'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+    return ScreenUtilInit(
+      designSize: const Size(390, 667),
+      builder: (context, child) => Scaffold(
+        appBar: AppBar(
+          title: const Text('챌린지 투표'),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
         ),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-      ),
-      backgroundColor: Colors.white,
-      body: RefreshIndicator(
-        onRefresh: _refreshImages,
-        child: Column(
-          children: [
-            _buildTopImage(screenWidth),
-            _buildVotingSection(screenWidth),
-            Expanded(
-              child:
-                  isGridView ? _buildImageGrid(screenWidth) : _buildImageList(),
-            ),
-          ],
+        body: RefreshIndicator(
+          onRefresh: _refreshImages,
+          child: Column(
+            children: [
+              _buildTopImage(),
+              _buildVotingSection(),
+              Expanded(
+                child: isGridView ? _buildImageGrid() : _buildImageList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -87,32 +88,30 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     }
   }
 
-  Widget _buildTopImage(double screenWidth) {
+  Widget _buildTopImage() {
     return Container(
-      width: screenWidth - 16,
-      height: 163,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        image: const DecorationImage(
-          image: NetworkImage("https://via.placeholder.com/358x163"),
+      width: 390.w,
+      height: 163.h,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage("https://via.placeholder.com/390x163"),
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  Widget _buildVotingSection(double screenWidth) {
+  Widget _buildVotingSection() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 15),
+      padding: EdgeInsets.symmetric(vertical: 15.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             '${widget.title} 투표 ',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.black,
-              fontSize: 14,
+              fontSize: 14.sp,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w600,
             ),
@@ -131,16 +130,16 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
             isOldestFirst = !isOldestFirst;
           }),
           child: Text(
-            isOldestFirst ? '오래된 순' : '최신순',
-            style: const TextStyle(
-              color: Color(0xFF6E767F),
-              fontSize: 12,
+            isOldestFirst ? '인기순' : '최신순',
+            style: TextStyle(
+              color: const Color(0xFF6E767F),
+              fontSize: 12.sp,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w400,
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         IconButton(
           icon: Icon(isGridView ? Icons.view_list : Icons.grid_view),
           color: const Color(0xFF6E767F),
@@ -152,7 +151,8 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     );
   }
 
-  Widget _buildImageGrid(double screenWidth) {
+  Widget _buildImageGrid() {
+    final screenWidth = MediaQuery.of(context).size.width;
     int gridCount = screenWidth > 600 ? 4 : 3;
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -206,20 +206,20 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
 
   Widget _buildImageTileForList(ImageInfo imageInfo, int index) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(8.r),
             child: Image.network(
               imageInfo.url,
               width: double.infinity,
-              height: 200,
+              height: 200.h,
               fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -228,8 +228,8 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
                 children: [
                   Text(
                     imageInfo.location,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
                   ),
                   Text('Posted on: ${imageInfo.postDate}'),
                 ],
