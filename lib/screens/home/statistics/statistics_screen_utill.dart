@@ -5,6 +5,7 @@ import 'package:damyo/screens/home/statistics/calculate_statistics.dart';
 import 'package:damyo/screens/home/statistics/periodsingle_statistics.dart';
 import 'package:damyo/screens/home/statistics/local_statistics.dart';
 import 'package:damyo/screens/home/statistics/periodcompare_statistics.dart';
+import 'package:damyo/screens/home/statistics/special_statistics.dart';
 
 class StatistTap extends StatefulWidget {
   const StatistTap({
@@ -53,8 +54,11 @@ class _StatistTapState extends State<StatistTap> {
       case 5:
         // 기간별 평균 흡연량 비교
         return const periodCompareInfo();
+      case 6:
+        return const SpecialDays();
       default:
         return Container();
     }
   }
+
 }

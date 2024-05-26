@@ -42,7 +42,7 @@ class _calculatePriceState extends State<calculatePrice> {
           ),
         ),
         SizedBox(
-          height: 35.h,
+          height: 100.h,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: 3,

@@ -74,18 +74,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   height: 20.h,
                   color: Colors.grey[200],
                 ),
+                const SizedBox(
+                  child: StatistTap(
+                    index: 6,
+                    category: '특정 기간',
+                  ),
+                ),
+                Container(
+                  height: 20.h,
+                  color: Colors.grey[200],
+                ),
                 // 시간대별 흡연 데이터 통계(사용자, 전체)
                 SizedBox(
                   height: 1000.h,
-                  child: PageView(
-                    scrollDirection: Axis.horizontal,
-                    children: const [
-                      StatistTap(
-                        index: 2,
-                        category: '시간대별 평균 흡연량',
-                      ),
-                      // StatistTap(index: 1, category: '시간대별 평균 흡연량(전체)',),
-                    ],
+                  child: const StatistTap(
+                    index: 2,
+                    category: '시간대별 평균 흡연량',
                   ),
                 ),
                 Container(

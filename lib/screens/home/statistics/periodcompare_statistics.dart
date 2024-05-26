@@ -100,10 +100,10 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
               : (compareType == '주')
                   ? BarChart(
                       BarChartData(
-                        barTouchData: barTouchData,
-                        titlesData: titlesData,
+                        barTouchData: _periodCompare,
+                        titlesData: titlesDataCompare,
                         borderData: borderData,
-                        barGroups: barGroups,
+                        barGroups: barGroupsCompare,
                         gridData: const FlGridData(show: false),
                         alignment: BarChartAlignment.spaceAround,
                         maxY: 100,
@@ -113,9 +113,9 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
                       //월
                       BarChartData(
                         barTouchData: _periodCompare,
-                        titlesData: titlesData,
+                        titlesData: titlesDataCompare,
                         borderData: borderData,
-                        barGroups: barGroups,
+                        barGroups: barGroupsCompare,
                         gridData: const FlGridData(show: false),
                         alignment: BarChartAlignment.spaceAround,
                         maxY: 500,
@@ -365,6 +365,8 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
           sideTitles: SideTitles(showTitles: false),
         ),
       );
+
+    
 
   // 일, 주, 월 데이터 받아와서 저장 및 등록
   List<double> UserAver = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7, 9.4];
