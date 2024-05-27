@@ -296,7 +296,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         return ScreenUtilInit(
-          designSize: const Size(360, 600),
+          designSize: const Size(360, 700),
           builder: (context, child) => Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -304,6 +304,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
             children: [
               Container(
                 width: 350.w,
+                color: Colors.white,
                 padding: EdgeInsets.only(right: 20.w),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
