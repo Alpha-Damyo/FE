@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChallengeVoteScreen extends StatefulWidget {
   final String title;
@@ -35,36 +34,36 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
       isLiked: false,
     ),
   );
-  List<bool> likes = List.filled(9, false);
+  List<bool> likes =
+      List.filled(9, false); // Initialize like statuses for images
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(390, 667),
-      builder: (context, child) => Scaffold(
-        appBar: AppBar(
-          title: const Text('챌린지 투표'),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          scrolledUnderElevation: 0,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('챌린지 투표'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
-        body: RefreshIndicator(
-          onRefresh: _refreshImages,
-          child: Column(
-            children: [
-              _buildTopImage(),
-              _buildVotingSection(),
-              Expanded(
-                child: isGridView ? _buildImageGrid() : _buildImageList(),
-              ),
-            ],
-          ),
+        foregroundColor: Colors.black,
+      ),
+      backgroundColor: Colors.white,
+      body: RefreshIndicator(
+        onRefresh: _refreshImages,
+        child: Column(
+          children: [
+            _buildTopImage(screenWidth),
+            _buildVotingSection(screenWidth),
+            Expanded(
+              child:
+                  isGridView ? _buildImageGrid(screenWidth) : _buildImageList(),
+            ),
+          ],
         ),
       ),
     );
@@ -88,46 +87,36 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     }
   }
 
-  void updateImageInfo(ImageInfo updatedInfo) {
-    setState(() {
-      final index =
-          images.indexWhere((element) => element.url == updatedInfo.url);
-      if (index != -1) {
-        images[index] = updatedInfo;
-      }
-    });
-  }
-
-  Widget _buildTopImage() {
+  Widget _buildTopImage(double screenWidth) {
     return Container(
-      width: 390.w,
-      height: 163.h,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage("https://via.placeholder.com/390x163"),
+      width: screenWidth - 16,
+      height: 163,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        image: const DecorationImage(
+          image: NetworkImage("https://via.placeholder.com/358x163"),
           fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  Widget _buildVotingSection() {
+  Widget _buildVotingSection(double screenWidth) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15.h),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(width: 15.w),
           Text(
             '${widget.title} 투표 ',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
-              fontSize: 14.sp,
+              fontSize: 14,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w600,
             ),
           ),
-          const Spacer(),
           _buildSortingOptions(),
         ],
       ),
@@ -142,16 +131,16 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
             isOldestFirst = !isOldestFirst;
           }),
           child: Text(
-            isOldestFirst ? '인기순' : '최신순',
-            style: TextStyle(
-              color: const Color(0xFF6E767F),
-              fontSize: 12.sp,
+            isOldestFirst ? '오래된 순' : '최신순',
+            style: const TextStyle(
+              color: Color(0xFF6E767F),
+              fontSize: 12,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w400,
             ),
           ),
         ),
-        SizedBox(width: 10.w),
+        const SizedBox(width: 10),
         IconButton(
           icon: Icon(isGridView ? Icons.view_list : Icons.grid_view),
           color: const Color(0xFF6E767F),
@@ -163,8 +152,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     );
   }
 
-  Widget _buildImageGrid() {
-    final screenWidth = MediaQuery.of(context).size.width;
+  Widget _buildImageGrid(double screenWidth) {
     int gridCount = screenWidth > 600 ? 4 : 3;
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -190,256 +178,76 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
   }
 
   Widget _buildImageTile(ImageInfo imageInfo, int index) {
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              contentPadding: EdgeInsets.zero,
-              backgroundColor: Colors.white,
-              surfaceTintColor: Colors.transparent,
-              insetPadding: EdgeInsets.all(15.w),
-              content: _buildImageDetailDialog(imageInfo),
-            );
-          },
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFFE4E7EA),
-          image: DecorationImage(
-            image: NetworkImage(imageInfo.url),
-            fit: BoxFit.cover,
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFE4E7EA),
+        image: DecorationImage(
+          image: NetworkImage(imageInfo.url),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          IconButton(
+            icon: Icon(
+                imageInfo.isLiked ? Icons.favorite : Icons.favorite_border),
+            color: imageInfo.isLiked ? Colors.red : Colors.grey,
+            onPressed: () {
+              setState(() {
+                images[index].isLiked = !images[index].isLiked;
+              });
+            },
           ),
-        ),
-        child: Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            IconButton(
-              icon: Icon(
-                  imageInfo.isLiked ? Icons.favorite : Icons.favorite_border),
-              color: imageInfo.isLiked ? Colors.red : Colors.grey,
-              onPressed: () {
-                setState(() {
-                  images[index].isLiked = !images[index].isLiked;
-                });
-              },
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildImageTileForList(ImageInfo imageInfo, int index) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  contentPadding: EdgeInsets.zero,
-                  backgroundColor: Colors.white,
-                  surfaceTintColor: Colors.transparent,
-                  insetPadding: EdgeInsets.all(15.w),
-                  content: _buildImageDetailDialog(imageInfo),
-                );
-              },
-            );
-          },
-          child: Image.network(
-            imageInfo.url,
-            width: 390.w,
-            height: 200.h,
-            fit: BoxFit.cover,
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+              imageInfo.url,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        SizedBox(height: 10.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(width: 10.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  imageInfo.location,
-                  style:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-                ),
-                Text('게시일: ${imageInfo.postDate}'),
-              ],
-            ),
-            const Spacer(),
-            IconButton(
-              icon: Icon(
-                  imageInfo.isLiked ? Icons.favorite : Icons.favorite_border),
-              color: imageInfo.isLiked ? Colors.red : Colors.grey,
-              onPressed: () {
-                setState(() {
-                  images[index].isLiked = !images[index].isLiked;
-                });
-              },
-            ),
-          ],
-        ),
-        SizedBox(height: 15.h),
-      ],
-    );
-  }
-
-  Widget _buildImageDetailDialog(ImageInfo imageInfo) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return ScreenUtilInit(
-          designSize: const Size(360, 700),
-          builder: (context, child) => Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: 350.w,
-                color: Colors.white,
-                padding: EdgeInsets.only(right: 20.w),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.w, vertical: 10.h),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            clipBehavior: Clip.antiAlias,
-                            decoration: ShapeDecoration(
-                              color: const Color(0xFFDEDEDE),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50.r),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 33.w,
-                                  height: 27.h,
-                                  decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://via.placeholder.com/33x33"),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            '하동이',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14.sp,
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        setState(() {});
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 360.w,
-                height: 450.h,
-                clipBehavior: Clip.antiAlias,
-                decoration: const BoxDecoration(color: Color(0xFF636363)),
-                child: Container(
-                  width: 393.w,
-                  height: 523.h,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image:
-                          NetworkImage("https://via.placeholder.com/360x450"),
-                      fit: BoxFit.fill,
-                    ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    imageInfo.location,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  child: Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      IconButton(
-                        icon: Icon(imageInfo.isLiked
-                            ? Icons.favorite
-                            : Icons.favorite_border),
-                        color: imageInfo.isLiked ? Colors.red : Colors.grey,
-                        onPressed: () {
-                          setState(() {
-                            imageInfo.isLiked = !imageInfo.isLiked;
-                          });
-                          updateImageInfo(imageInfo);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+                  Text('Posted on: ${imageInfo.postDate}'),
+                ],
               ),
-              SizedBox(height: 8.h),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '게시일 : ${imageInfo.postDate}',
-                      style: TextStyle(
-                        color: const Color(0xFF33383E),
-                        fontSize: 12.sp,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      '장소 : ${imageInfo.location}',
-                      style: TextStyle(
-                        color: const Color(0xFF33383E),
-                        fontSize: 12.sp,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
-                      ),
-                    ),
-                    SizedBox(height: 10.h),
-                  ],
-                ),
+              IconButton(
+                icon: Icon(
+                    imageInfo.isLiked ? Icons.favorite : Icons.favorite_border),
+                color: imageInfo.isLiked ? Colors.red : Colors.grey,
+                onPressed: () {
+                  setState(() {
+                    images[index].isLiked = !images[index].isLiked;
+                  });
+                },
               ),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
