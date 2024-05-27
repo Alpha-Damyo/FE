@@ -108,7 +108,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   _requestPermission();
-  await _getCurrentLocation();
+  // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 
