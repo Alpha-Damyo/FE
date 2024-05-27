@@ -3,19 +3,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 
-class TimeStaisticsScreen extends StatefulWidget {
-  const TimeStaisticsScreen({
+class PeriodStaisticsScreen extends StatefulWidget {
+  const PeriodStaisticsScreen({
     super.key,
-    required this.subcategory,  
+    required this.subcategory,
   });
 
   final String subcategory;
 
   @override
-  State<TimeStaisticsScreen> createState() => _TimeStaisticsState();
+  State<PeriodStaisticsScreen> createState() => _PeriodStaisticsState();
 }
 
-class _TimeStaisticsState extends State<TimeStaisticsScreen> {
+class _PeriodStaisticsState extends State<PeriodStaisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
