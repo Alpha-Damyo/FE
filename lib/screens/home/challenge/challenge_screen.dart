@@ -641,9 +641,10 @@ class _ChallengeScreenState extends State<ChallengeScreen>
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: const Color(0xFFD1D6DC),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(39.r),
-                      ),
+                      shape: CircleBorder(),
+                      // RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(39.r),
+                      // ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
