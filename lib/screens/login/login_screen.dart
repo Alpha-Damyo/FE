@@ -1,16 +1,11 @@
-import 'dart:ffi';
-
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import 'package:damyo/screens/signup/signup_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
@@ -152,100 +147,104 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        foregroundColor: Colors.black,
-        title: const Text('로그인',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 28,
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w700)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            GoRouter.of(context).pop();
-          },
+    return ScreenUtilInit(
+      designSize: const Size(390, 667),
+      builder: (context, child) => Scaffold(
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          centerTitle: true,
+          foregroundColor: Colors.black,
+          title: Text('로그인',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 28.sp,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w700)),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              GoRouter.of(context).pop();
+            },
+          ),
         ),
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 89),
-            Container(
-              width: 158,
-              height: 161,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image:
-                            NetworkImage("https://via.placeholder.com/150x150"),
-                        fit: BoxFit.fill,
+        body: Container(
+          width: 390.w,
+          height: 600.h,
+          color: Colors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 89.h),
+              Container(
+                width: 158.w,
+                height: 161.h,
+                padding: EdgeInsets.all(4.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 150.w,
+                      height: 150.h,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(
+                              "https://via.placeholder.com/150x150"),
+                          fit: BoxFit.fill,
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 15.h),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 15.h),
+                  Text(
+                    '담요의 재미있는 서비스와 혜택을 누려보세요 !',
+                    style: TextStyle(
+                      color: const Color(0xFF6E767F),
+                      fontSize: 14.sp,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 15),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 15),
-                Text(
-                  '담요의 재미있는 서비스와 혜택을 누려보세요 !',
-                  style: TextStyle(
-                    color: Color(0xFF6E767F),
-                    fontSize: 14,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                  ),
+              SizedBox(height: 60.h),
+              GestureDetector(
+                onTap: signInWithGoogle,
+                child: buildLoginButton(
+                  text: '    구글로 계속하기',
+                  backgroundColor: Colors.white,
+                  imageUrl: "https://via.placeholder.com/20x20",
                 ),
-              ],
-            ),
-            const SizedBox(height: 60),
-            GestureDetector(
-              onTap: signInWithGoogle,
-              child: buildLoginButton(
-                text: '    구글로 계속하기',
-                backgroundColor: Colors.white,
-                imageUrl: "https://via.placeholder.com/20x20",
               ),
-            ),
-            const SizedBox(height: 15),
-            GestureDetector(
-              onTap: signInWithKakao,
-              child: buildLoginButton(
-                text: '카카오로 계속하기',
-                backgroundColor: const Color(0xFFF9E000),
-                imageUrl: "https://via.placeholder.com/23x24",
+              SizedBox(height: 15.h),
+              GestureDetector(
+                onTap: signInWithKakao,
+                child: buildLoginButton(
+                  text: '카카오로 계속하기',
+                  backgroundColor: const Color(0xFFF9E000),
+                  imageUrl: "https://via.placeholder.com/23x24",
+                ),
               ),
-            ),
-            const SizedBox(height: 15),
-            GestureDetector(
-              onTap: signInWithNaver,
-              child: buildLoginButton(
-                text: '네이버로 계속하기',
-                backgroundColor: const Color(0xFF00C73C),
-                imageUrl: "https://via.placeholder.com/28x28",
+              SizedBox(height: 15.h),
+              GestureDetector(
+                onTap: signInWithNaver,
+                child: buildLoginButton(
+                  text: '네이버로 계속하기',
+                  backgroundColor: const Color(0xFF00C73C),
+                  imageUrl: "https://via.placeholder.com/28x28",
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -257,30 +256,30 @@ class _LoginScreenState extends State<LoginScreen> {
     required String imageUrl,
   }) {
     return Container(
-      width: 240,
-      height: 50,
+      width: 240.w,
+      height: 50.h,
       decoration: BoxDecoration(
         color: backgroundColor,
         border: Border.all(
           color: Colors.black,
           width: 0.1,
         ),
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(25.r),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 24,
-            height: 24,
-            padding: const EdgeInsets.all(2),
+            width: 24.w,
+            height: 24.h,
+            padding: EdgeInsets.all(2.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
             child: Container(
-              width: 20,
-              height: 20,
+              width: 20.w,
+              height: 20.h,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(imageUrl),
@@ -289,12 +288,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: 6.w),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.black,
-              fontSize: 14,
+              fontSize: 14.sp,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w700,
             ),
