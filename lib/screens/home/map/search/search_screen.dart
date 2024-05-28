@@ -45,17 +45,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   Transform.translate(
                     offset: const Offset(0, 2),
-                    child: Container(
-                      child: InkWell(
-                        onTap: () {
-                          if (MediaQuery.of(context).viewInsets.bottom > 0) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          } else {
-                            context.pop();
-                          }
-                        },
-                        child: const Icon(Icons.arrow_back_ios),
-                      ),
+                    child: InkWell(
+                      onTap: () {
+                        if (MediaQuery.of(context).viewInsets.bottom > 0) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        } else {
+                          context.pop();
+                        }
+                      },
+                      child: const Icon(Icons.arrow_back_ios),
                     ),
                   ),
                   const SizedBox(width: 10),

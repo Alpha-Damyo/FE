@@ -70,8 +70,7 @@ class _InformScreenState extends State<InformScreen> {
           FocusScope.of(context).unfocus();
         },
         child: Padding(
-          padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Expanded(
@@ -85,7 +84,7 @@ class _InformScreenState extends State<InformScreen> {
                         InkWell(
                           child: Container(
                             width: double.infinity,
-                            height: 184.h,
+                            height: 184,
                             alignment: Alignment.center,
                             decoration: const BoxDecoration(
                               borderRadius:
@@ -187,6 +186,7 @@ class _InformScreenState extends State<InformScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
               InkWell(
                 onTap: () async {
                   Map<String, dynamic> informData = {
@@ -214,12 +214,12 @@ class _InformScreenState extends State<InformScreen> {
                 },
                 child: Ink(
                   width: double.infinity,
-                  height: 47.h,
+                  height: 47,
                   decoration: BoxDecoration(
                     color: activateInformBtn
                         ? Colors.blue
                         : const Color(0xffd2d7dd),
-                    borderRadius: const BorderRadius.all(Radius.circular(16)),
+                    borderRadius: const BorderRadius.all(Radius.circular(26)),
                   ),
                   child: const Align(
                     alignment: Alignment.center,
@@ -376,8 +376,8 @@ class _InformScreenState extends State<InformScreen> {
               children: [
                 GestureDetector(
                   child: Container(
-                    width: 45.w,
-                    height: 27.h,
+                    width: 45,
+                    height: 27,
                     decoration: BoxDecoration(
                       color: isSelected[0]
                           ? Colors.white
@@ -400,8 +400,8 @@ class _InformScreenState extends State<InformScreen> {
                 ),
                 GestureDetector(
                   child: Container(
-                    width: 45.w,
-                    height: 27.h,
+                    width: 45,
+                    height: 27,
                     decoration: BoxDecoration(
                       color: isSelected[1]
                           ? Colors.white
