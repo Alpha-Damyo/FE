@@ -10,16 +10,13 @@ import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
-import 'package:damyo/screens/home/statistics/statistics_info/local_statistics.dart';
-import 'package:damyo/screens/home/statistics/statistics_info/periodsingle_statistics.dart';
-import 'package:damyo/screens/home/statistics/statistics_info/time_statistics.dart';
-import 'package:damyo/screens/home/statistics/statistics_info/periodcompare_statistics.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -105,10 +102,12 @@ Future<void> _getCurrentLocation() async {
 }
 
 void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   _requestPermission();
-  // await _getCurrentLocation();
+  await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 
@@ -116,6 +115,7 @@ void main() async {
     create: (context) => FilterList(),
     child: const App(),
   ));*/
+  FlutterNativeSplash.remove();
   runApp(
     MultiProvider(
       providers: [
