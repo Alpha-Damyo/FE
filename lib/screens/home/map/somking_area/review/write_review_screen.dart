@@ -70,245 +70,241 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     final String saName = GoRouterState.of(context).extra! as String;
     // 화면을 동적으로 빌드하기 위한 사이즈
 
-    return ScreenUtilInit(
-      designSize: const Size(390, 733),
-      builder: (context, child) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          title: Text(
-            '리뷰 작성',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          centerTitle: true,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        title: Text(
+          '리뷰 작성',
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(
-            left: 20,
-            right: 20,
-            bottom: 20,
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: 16,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              saName,
+                              style: const TextStyle(
+                                color: Color(0xff0099fc),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const Text(
+                              '에',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Text(
+                          '방문했어요!',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      child: Container(
+                        width: double.infinity,
+                        height: 160,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: imageGetter(),
+                      ),
+                      onTap: () {
+                        // getImage(ImageSource.camera);
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext bc) {
+                              return SafeArea(
+                                child: Wrap(
+                                  children: <Widget>[
+                                    ListTile(
+                                        leading: const Icon(Icons.photo_camera),
+                                        title: const Text('카메라에서 선택'),
+                                        onTap: () {
+                                          getImage(ImageSource.camera);
+                                          Navigator.of(context).pop();
+                                        }),
+                                    ListTile(
+                                      leading: const Icon(Icons.photo_library),
+                                      title: const Text('갤러리에서 선택'),
+                                      onTap: () {
+                                        getImage(ImageSource.gallery);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          width: 1,
+                          color: const Color(0xFFE4E7EB),
+                        ),
+                      ),
+                      child: Column(
                         children: [
-                          Row(
+                          const Text(
+                            "만족도를 평가해주세요",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ratingStars()
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          width: 1,
+                          color: const Color(0xFFE4E7EB),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "특징을 골라주세요",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          selectTagColumn("실내 여부", inout, _tagIndex[0]),
+                          selectTagColumn("개방 여부", openclose, _tagIndex[1]),
+                          // WriteReviewListview(
+                          //     characterList: inout,
+                          //     selectedCharacterIndex: _tagIndex[0]),
+                          // WriteReviewListview(
+                          //     characterList: openclose,
+                          //     selectedCharacterIndex: _tagIndex[1])
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          width: 1,
+                          color: const Color(0xFFE4E7EB),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            "리뷰할 태그를 선택해주세요",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          selectTagColumn("크기", bigSmall, _tagIndex[2]),
+                          selectTagColumn("혼잡도", complex, _tagIndex[3]),
+                          selectTagColumn("청결도", cleanDirty, _tagIndex[4]),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                saName,
-                                style: const TextStyle(
-                                  color: Color(0xff0099fc),
-                                  fontSize: 24,
+                              const Text(
+                                '기타',
+                                style: TextStyle(
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              const Text(
-                                '에',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                              const SizedBox(height: 10),
+                              WriteReviewDuplicateListview(
+                                characterList: etc,
+                                selectedCharacterIndex: _tagIndex[5],
                               ),
                             ],
                           ),
-                          const Text(
-                            '방문했어요!',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      InkWell(
-                        child: Container(
-                          width: double.infinity,
-                          height: 160,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: imageGetter(),
-                        ),
-                        onTap: () {
-                          // getImage(ImageSource.camera);
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext bc) {
-                                return SafeArea(
-                                  child: Wrap(
-                                    children: <Widget>[
-                                      ListTile(
-                                          leading:
-                                              const Icon(Icons.photo_camera),
-                                          title: const Text('카메라에서 선택'),
-                                          onTap: () {
-                                            getImage(ImageSource.camera);
-                                            Navigator.of(context).pop();
-                                          }),
-                                      ListTile(
-                                        leading:
-                                            const Icon(Icons.photo_library),
-                                        title: const Text('갤러리에서 선택'),
-                                        onTap: () {
-                                          getImage(ImageSource.gallery);
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              });
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            width: 1,
-                            color: const Color(0xFFE4E7EB),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "만족도를 평가해주세요",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            ratingStars()
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            width: 1,
-                            color: const Color(0xFFE4E7EB),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "특징을 골라주세요",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            selectTagColumn("실내 여부", inout, _tagIndex[0]),
-                            selectTagColumn("개방 여부", openclose, _tagIndex[1]),
-                            // WriteReviewListview(
-                            //     characterList: inout,
-                            //     selectedCharacterIndex: _tagIndex[0]),
-                            // WriteReviewListview(
-                            //     characterList: openclose,
-                            //     selectedCharacterIndex: _tagIndex[1])
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            width: 1,
-                            color: const Color(0xFFE4E7EB),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "리뷰할 태그를 선택해주세요",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            selectTagColumn("크기", bigSmall, _tagIndex[2]),
-                            selectTagColumn("혼잡도", complex, _tagIndex[3]),
-                            selectTagColumn("청결도", cleanDirty, _tagIndex[4]),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  '기타',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                WriteReviewDuplicateListview(
-                                  characterList: etc,
-                                  selectedCharacterIndex: _tagIndex[5],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
-              InkWell(
-                onTap: () {
-                  // print('실내 여부: ${_selectedInOut[0]}');
-                  // print('개방 여부: ${_selectedOpenClose[0]}');
-                  // print('환기 여부: ${_selectedVentilation[0]}');
-                  // print('깨끗함: ${_selectedCleanliness[0]}');
-                  // print('크기: ${_selectedSize[0]}');
-                  // print('혼잡도: ${_selectedComplex[0]}');
-                  // print('의자: ${_selectedHasChair[0]}');
-                  // print('존재하지 않음: ${_selectedIsExist[0]}');
-                },
-                child: Ink(
-                  width: double.infinity,
-                  height: 47.h,
-                  decoration: BoxDecoration(
-                    color: activateReviewBtn
-                        ? Colors.blue
-                        : const Color(0xffd2d7dd),
-                    borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '리뷰 작성',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+            ),
+            const SizedBox(height: 20),
+            InkWell(
+              borderRadius: const BorderRadius.all(Radius.circular(26)),
+              onTap: () {
+                // print('실내 여부: ${_selectedInOut[0]}');
+                // print('개방 여부: ${_selectedOpenClose[0]}');
+                // print('환기 여부: ${_selectedVentilation[0]}');
+                // print('깨끗함: ${_selectedCleanliness[0]}');
+                // print('크기: ${_selectedSize[0]}');
+                // print('혼잡도: ${_selectedComplex[0]}');
+                // print('의자: ${_selectedHasChair[0]}');
+                // print('존재하지 않음: ${_selectedIsExist[0]}');
+              },
+              child: Ink(
+                width: double.infinity,
+                height: 47,
+                decoration: BoxDecoration(
+                  color: activateReviewBtn
+                      ? Theme.of(context).colorScheme.primary
+                      : const Color(0xffd2d7dd),
+                  borderRadius: const BorderRadius.all(Radius.circular(26)),
+                ),
+                child: const Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    '리뷰 작성',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
