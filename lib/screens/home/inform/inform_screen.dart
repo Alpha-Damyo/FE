@@ -271,10 +271,10 @@ class _InformScreenState extends State<InformScreen> {
               color: Color(0xffeef1f5),
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
-            child: Icon(
+            child: const Icon(
               Icons.camera_alt_rounded,
-              size: 60.w,
-              color: const Color(0xffa9afb7),
+              size: 60,
+              color: Color(0xffa9afb7),
             ),
           );
   }
