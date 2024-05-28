@@ -15,6 +15,7 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final String smokingAreaId = GoRouterState.of(context).extra! as String;
+    const double padding = 16;
     return ScreenUtilInit(
       designSize: const Size(390, 1112),
       builder: (context, child) => Scaffold(
@@ -36,7 +37,7 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                 height: 266,
               ),
               Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(padding),
                 child: Column(
                   children: [
                     Text(
@@ -91,7 +92,7 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
               ),
               const SAInfoScreenGrayContainer(),
               const Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(padding),
                 child: Column(
                   children: [
                     SizedBox(height: 5),
@@ -127,7 +128,7 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
               ),
               const SAInfoScreenGrayContainer(),
               Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(padding),
                 child: Column(
                   children: [
                     const Row(
