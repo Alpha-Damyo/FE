@@ -72,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.military_tech),
           ),
           BottomNavigationBarItem(
+
             label: '마이페이지',
             icon: Icon(Icons.person),
           ),
