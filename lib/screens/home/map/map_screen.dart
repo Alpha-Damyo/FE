@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
+import 'package:damyo/models/sa_basic_model.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter_listview.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
@@ -71,6 +72,7 @@ class _MapScreenState extends State<MapScreen>
   bool smokingAreaSelected = false;
   BottomDrawerController bottomDrawerController = BottomDrawerController();
   String smokingAreaId = '';
+  String smokingAreaName = '';
   Map<String, dynamic> smokingAreaMap = {};
 
   @override
@@ -174,8 +176,8 @@ class _MapScreenState extends State<MapScreen>
               //   onCameraChangeStream: onCameraChangeStreamController.stream,
               // );
 
-              attachOverlay("1", 37.65640, 127.11670);
-              attachOverlay("2", 37.65690, 127.11720);
+              attachOverlay(SaBasicModel(1, "국민대 도서관 1", 37.65640, 127.11670));
+              attachOverlay(SaBasicModel(2, "국민대 도서관 2", 37.65690, 127.11720));
             },
             onMapTapped: (point, latLng) {
               smokingAreaSelected = false;
@@ -381,6 +383,7 @@ class _MapScreenState extends State<MapScreen>
                 maintainState: true,
                 child: SmokingAreaInfoCard(
                   smokingAreaId: smokingAreaId,
+                  smokingAreaName: smokingAreaName,
                 ),
               ),
             ),
@@ -390,14 +393,15 @@ class _MapScreenState extends State<MapScreen>
     );
   }
 
-  void attachOverlay(String id, double lat, double lng) async {
+  void attachOverlay(SaBasicModel sa) async {
     final cameraPosition = mapController!.nowCameraPosition;
     final marker = NMarker(
-      id: id,
-      position: NLatLng(lat, lng),
+      id: sa.id.toString(),
+      position: NLatLng(sa.longitude, sa.latitude),
     );
     marker.setOnTapListener((overlay) async {
-      smokingAreaId = id;
+      smokingAreaId = sa.id.toString();
+      smokingAreaName = sa.name;
       smokingAreaSelected = true;
     });
     mapController!.addOverlay(marker);

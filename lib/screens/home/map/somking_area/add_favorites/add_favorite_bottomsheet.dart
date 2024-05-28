@@ -38,7 +38,7 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
     for (int i = 0; i < favorites.length; i++) {
       String target = favorites[i];
       String? targetString =
-          await secureStorage.read(key: 'favoritesList.$target');
+          await secureStorage.read(key: 'favoritesList.id.$target');
 
       if (targetString != null) {
         List<String> targetList = targetString.toString().split(',');
@@ -80,7 +80,7 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
               child: Column(
                 children: [
                   Text(
-                    "국민대 도서관 ${widget.saName}",
+                    widget.saName,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 30),
@@ -154,30 +154,43 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                       Radius.circular(16.0),
                     ),
                     onTap: () async {
-                      String? tmpInfo = await secureStorage.read(
-                          key: 'favoritesList.${favorites[selectedFavorite]}');
-                      if (tmpInfo != null) {
-                        List<String> tmpList = tmpInfo.toString().split(',');
+                      String? tmpIdInfo = await secureStorage.read(
+                          key:
+                              'favoritesList.id.${favorites[selectedFavorite]}');
+                      String? tmpNameInfo = await secureStorage.read(
+                          key:
+                              'favoritesList.name.${favorites[selectedFavorite]}');
+                      if (tmpIdInfo != null) {
+                        List<String> tmpList = tmpIdInfo.toString().split(',');
+
                         tmpList.remove('');
+
                         if (tmpList.contains(widget.saId)) {
-                          // print(tmpList);
-                          // print("이미 추가되어있습니다");
                           Fluttertoast.showToast(msg: "이미 추가되어있습니다");
-                          // print("12312321321132");
                         } else {
                           await secureStorage.write(
                               key:
-                                  'favoritesList.${favorites[selectedFavorite]}',
-                              value: '$tmpInfo,${widget.saId}');
+                                  'favoritesList.id.${favorites[selectedFavorite]}',
+                              value: '$tmpIdInfo,${widget.saId}');
+                          await secureStorage.write(
+                              key:
+                                  'favoritesList.name.${favorites[selectedFavorite]}',
+                              value: '$tmpNameInfo,${widget.saName}');
                           Fluttertoast.showToast(msg: "추가가 완료되었습니다");
+
                           setState(() {
                             Navigator.of(context).pop();
                           });
                         }
                       } else {
                         await secureStorage.write(
-                            key: 'favoritesList.${favorites[selectedFavorite]}',
+                            key:
+                                'favoritesList.id.${favorites[selectedFavorite]}',
                             value: widget.saId);
+                        await secureStorage.write(
+                            key:
+                                'favoritesList.name.${favorites[selectedFavorite]}',
+                            value: widget.saName);
                         Fluttertoast.showToast(msg: "추가가 완료되었습니다");
                         setState(() {
                           Navigator.of(context).pop();
