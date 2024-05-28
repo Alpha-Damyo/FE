@@ -52,7 +52,8 @@ dependencies:
   fl_chart: ^0.67.0
   fluttertoast: ^8.2.5
   intl: ^0.17.0
-  
+  flutter_native_splash: ^2.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -129,3 +130,14 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.otf
           weight: 900
+
+flutter_native_splash:
+  image: assets/images/splash_screen.png
+  color: "#ffffff"
+  android: true
+  ios: true
+  android_gravity: fill
+  ios_content_mode: bottom
+  android_12:
+    image: assets/images/splash_screen.png
+    color: "#ffffff"
