@@ -1,12 +1,14 @@
-import 'package:damyo/screens/home/map/somking_area/favorites/add_favorite_bottomsheet.dart';
+import 'package:damyo/screens/home/map/somking_area/add_favorites/add_favorite_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SmokingAreaInfoCard extends StatefulWidget {
   final String smokingAreaId;
+  final String smokingAreaName;
   const SmokingAreaInfoCard({
     super.key,
     required this.smokingAreaId,
+    required this.smokingAreaName,
   });
 
   @override
@@ -15,6 +17,7 @@ class SmokingAreaInfoCard extends StatefulWidget {
 
 class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
   String get _smokingAreaId => widget.smokingAreaId;
+  String get _smokingAreaName => widget.smokingAreaName;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -42,7 +45,7 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
                   Row(
                     children: [
                       const Icon(Icons.location_on_sharp),
-                      Text(" 국민대 도서관 $_smokingAreaId",
+                      Text(" $_smokingAreaName",
                           style: Theme.of(context).textTheme.bodyLarge),
                     ],
                   ),
@@ -92,7 +95,7 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
         context: context,
         builder: (context) {
           return AddFavoriteBottomSheet(
-            saName: _smokingAreaId,
+            saName: _smokingAreaName,
             saId: _smokingAreaId,
           );
         });
