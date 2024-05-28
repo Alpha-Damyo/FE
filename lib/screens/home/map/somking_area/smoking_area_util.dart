@@ -152,7 +152,9 @@ class SAInfoScreenPhotos extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: photoUrlList.map((url) {
             return Padding(
-              padding: const EdgeInsets.only(right: 10.0),
+              padding: EdgeInsets.only(
+                  right:
+                      url == photoUrlList[photoUrlList.length - 1] ? 0 : 10.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
