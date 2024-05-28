@@ -59,9 +59,8 @@ class _InformScreenState extends State<InformScreen> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Text(
+        title: const Text(
           '제보',
-          style: Theme.of(context).textTheme.titleMedium,
         ),
         centerTitle: true,
       ),
