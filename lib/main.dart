@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -86,20 +86,20 @@ void _requestPermission() async {
 // 사용자의 현재 위치를 받아오는 함수
 double userLatitude = 37.56660;
 double userLongitude = 126.97900;
-Future<void> _getCurrentLocation() async {
-  LocationPermission permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-  }
-  try {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    userLatitude = position.latitude;
-    userLongitude = position.longitude;
-  } catch (e) {
-    print(e);
-  }
-}
+// Future<void> _getCurrentLocation() async {
+//   LocationPermission permission = await Geolocator.checkPermission();
+//   if (permission == LocationPermission.denied) {
+//     permission = await Geolocator.requestPermission();
+//   }
+//   try {
+//     Position position = await Geolocator.getCurrentPosition(
+//         desiredAccuracy: LocationAccuracy.high);
+//     userLatitude = position.latitude;
+//     userLongitude = position.longitude;
+//   } catch (e) {
+//     print(e);
+//   }
+// }
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -107,7 +107,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   _requestPermission();
-  await _getCurrentLocation();
+  // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
 

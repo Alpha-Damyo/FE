@@ -20,6 +20,37 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:damyo/provider/filterlist_provider.dart';
 
+// 지도  핵심 worker
+NaverMapController? mapController;
+
+bool isCameraMoved = false;
+bool smokingAreaSelected = false;
+String smokingAreaId = '';
+String smokingAreaName = '';
+
+void moveCameraByPosition(double lat, double lng) {
+  mapController!
+      .updateCamera(NCameraUpdate.scrollAndZoomTo(target: NLatLng(lat, lng)));
+}
+
+void moveCameraByFavorite(int id, String name) {
+  isCameraMoved = false;
+  // id를 통해서 즐겨찾기 기본 정보를 받아와야 함.
+  mapController!.clearOverlays();
+
+  NMarker marker =
+      NMarker(id: "test", position: const NLatLng(37.65640, 127.11670));
+
+  marker.setOnTapListener((overlay) async {
+    smokingAreaId = id.toString();
+    smokingAreaName = name;
+    smokingAreaSelected = true;
+  });
+  moveCameraByPosition(37.65640, 127.11670);
+  mapController!.addOverlay(marker);
+  marker.performClick();
+}
+
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
@@ -33,8 +64,6 @@ class _MapScreenState extends State<MapScreen>
   @override
   bool get wantKeepAlive => true;
 
-  // 지도  핵심 worker
-  NaverMapController? mapController;
   final onCameraChangeStreamController = StreamController<void>.broadcast();
   StreamSubscription<void>? onCameraChangeStreamSubscription;
   final NInfoOverlayPortalController nOverlayInfoOverlayPortalController =
@@ -69,10 +98,8 @@ class _MapScreenState extends State<MapScreen>
     '의자가 있는',
   ];
 
-  bool smokingAreaSelected = false;
   BottomDrawerController bottomDrawerController = BottomDrawerController();
-  String smokingAreaId = '';
-  String smokingAreaName = '';
+
   Map<String, dynamic> smokingAreaMap = {};
 
   @override
@@ -185,6 +212,7 @@ class _MapScreenState extends State<MapScreen>
             },
             onCameraChange: (reason, animated) {
               onCameraChangeStreamController.sink.add(null);
+              isCameraMoved = true;
             },
           ),
           Padding(
@@ -288,6 +316,7 @@ class _MapScreenState extends State<MapScreen>
                           print(smokingAreaMap);
                           informPressed = !informPressed;
                           bottomDrawerController.open();
+                          // moveCameraByPosition(1, 2);
                         });
                       },
                       child: Container(
@@ -326,6 +355,56 @@ class _MapScreenState extends State<MapScreen>
                     ),
                   ],
                 ),
+                const SizedBox(height: padding),
+                // 즐겨찾기 버튼
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          print(smokingAreaMap);
+                          informPressed = !informPressed;
+                          bottomDrawerController.open();
+                          // moveCameraByPosition(1, 2);
+                        });
+                      },
+                      child: Container(
+                        width: alignButtonSize,
+                        height: alignButtonSize + 20,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xFFD2D7DD)),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 0,
+                              blurRadius: 2.0,
+                              offset: const Offset(
+                                  0, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.star_border_rounded,
+                              size: iconSize,
+                              color: Color(0xff6f767f),
+                            ),
+                            Text(
+                              '저장',
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xff6f767f)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
                 SizedBox(
                   height: mapHeight / 2 -
@@ -334,6 +413,8 @@ class _MapScreenState extends State<MapScreen>
                           padding +
                           alignButtonSize +
                           padding +
+                          alignButtonSize +
+                          20 +
                           alignButtonSize +
                           20 +
                           alignButtonSize),

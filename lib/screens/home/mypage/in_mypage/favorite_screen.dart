@@ -1,5 +1,8 @@
+import 'package:damyo/screens/home/home_screen.dart';
+import 'package:damyo/screens/home/map/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({super.key});
@@ -67,11 +70,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               } else if (snapshot.hasError) {
                 return const Text("Error");
               } else {
-                // print(favorites);
-                // print(favoritesDetail);
-                // print(favoritesDetail[0]);
-                // print(favoritesDetail[0][0]);
-                // print(favoritesDetail[0][0][1]);
                 return SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -123,8 +121,32 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   ),
                   children: [
                     for (int j = 0; j < favoritesDetail[index].length; j++)
-                      if (favoritesDetail[index][j][1] != null)
-                        Text(favoritesDetail[index][j][1])
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    context.go('/');
+                                    screenIndex = 0;
+                                    homePageController.jumpToPage(0);
+                                    moveCameraByFavorite(
+                                        int.parse(favoritesDetail[index][j][0]),
+                                        favoritesDetail[index][j][1]);
+                                  });
+                                },
+                                child: Text(favoritesDetail[index][j][1]),
+                              ),
+                            ),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                          ],
+                        ),
+                      )
                   ],
                 ),
               ),
