@@ -34,7 +34,6 @@ void moveCameraByPosition(double lat, double lng) {
 }
 
 void moveCameraByFavorite(int id, String name) {
-  isCameraMoved = false;
   // id를 통해서 즐겨찾기 기본 정보를 받아와야 함.
   mapController!.clearOverlays();
 
@@ -363,10 +362,7 @@ class _MapScreenState extends State<MapScreen>
                     InkWell(
                       onTap: () {
                         setState(() {
-                          print(smokingAreaMap);
-                          informPressed = !informPressed;
-                          bottomDrawerController.open();
-                          // moveCameraByPosition(1, 2);
+                          context.push('/favorite');
                         });
                       },
                       child: Container(
