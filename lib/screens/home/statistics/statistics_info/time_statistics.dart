@@ -18,9 +18,9 @@ class _timeAverInfoState extends State<timeAverInfo> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.only(top: 20.h, left: 16.w),
-          child: const Row(
+        const Padding(
+          padding: EdgeInsets.only(top: 20, left: 16),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(

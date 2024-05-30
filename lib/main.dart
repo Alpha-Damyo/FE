@@ -10,9 +10,11 @@ import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
+import 'package:damyo/screens/home/mypage/in_mypage/achievement_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/special_statistics_util.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -181,6 +183,13 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
+          name: 'achievement',
+          path: 'achievement',
+          builder: (context, state) {
+            return const AchievementScreen();
+          },
+        ),
+        GoRoute(
           path: 'details',
           builder: (context, state) {
             final title = (state.extra as Map<String, String>)['title'] ??
@@ -195,6 +204,13 @@ final GoRouter router = GoRouter(
             final title = (state.extra as Map<String, String>)['title'] ??
                 "Default Title";
             return ChallengeVoteScreen(title: title);
+          },
+        ),
+        GoRoute(
+          name: 'special_day',
+          path: 'special_day',
+          builder: (context, state) {
+            return const specialDayutil();
           },
         ),
       ],
