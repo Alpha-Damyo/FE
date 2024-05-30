@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:damyo/screens/home/statistics/statistics_screen_utill.dart';
 import 'package:damyo/services/get_date_statics_service.dart';
+import 'package:intl/intl.dart';
+import '';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -31,7 +33,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               children: [
                 ElevatedButton(
                     onPressed: () async {
-                      await getDateStatics();
+                      // await getDateStatics();
+                      print(DateFormat('HH').format(DateTime.now()).runtimeType);
                     },
                     child: Text('test')),
                 SizedBox(
