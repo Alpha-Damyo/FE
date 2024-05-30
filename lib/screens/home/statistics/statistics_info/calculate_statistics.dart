@@ -29,9 +29,9 @@ class _calculatePriceState extends State<calculatePrice> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.only(top: 20.h, left: 16.w),
-          child: const Text(
+        const Padding(
+          padding: EdgeInsets.only(top: 20, left: 16),
+          child: Text(
             '나의 담배가격 계산해보기',
             style: TextStyle(
               color: Colors.black,
@@ -61,8 +61,8 @@ class _calculatePriceState extends State<calculatePrice> {
                     },
                     child: Container(
                       height: 29.h,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 15.w,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
                       ),
                       decoration: BoxDecoration(
                         color: _selectedIndex == index
@@ -152,7 +152,7 @@ class _calculatePriceState extends State<calculatePrice> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

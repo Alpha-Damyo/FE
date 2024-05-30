@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:async';
 
 //index 5
 final List<bool> _isComparetype = [true, false, false];
@@ -19,13 +19,23 @@ class periodCompareInfo extends StatefulWidget {
 }
 
 class _periodCompareInfoState extends State<periodCompareInfo> {
+  bool _isLoading = false;
+
+  Future<void> _loadData(int term) async {
+    Timer(Duration(milliseconds: term), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   //기간별 평균 흡연량 비교
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.only(top: 25.h, left: 16.w),
+        const Padding(
+          padding: EdgeInsets.only(top: 25, left: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -84,50 +94,63 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
             ),
           ],
         ),
-        Expanded(
-          child: (compareType == '일')
-              ? BarChart(
-                  BarChartData(
-                    barTouchData: _periodCompare,
-                    titlesData: titlesDataCompare,
-                    borderData: borderData,
-                    barGroups: barGroupsCompare,
-                    gridData: const FlGridData(show: false),
-                    alignment: BarChartAlignment.spaceAround,
-                    maxY: 20,
+        _isLoading
+            ? const Expanded(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 50.0, // 원하는 너비
+                    height: 50.0, // 원하는 높이
+                    child: CircularProgressIndicator(),
                   ),
-                )
-              : (compareType == '주')
-                  ? BarChart(
-                      BarChartData(
-                        barTouchData: _periodCompare,
-                        titlesData: titlesDataCompare,
-                        borderData: borderData,
-                        barGroups: barGroupsCompare,
-                        gridData: const FlGridData(show: false),
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: 100,
-                      ),
-                    )
-                  : BarChart(
-                      //월
-                      BarChartData(
-                        barTouchData: _periodCompare,
-                        titlesData: titlesDataCompare,
-                        borderData: borderData,
-                        barGroups: barGroupsCompare,
-                        gridData: const FlGridData(show: false),
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: 500,
-                      ),
-                    ),
-        ),
+                ),
+              )
+            : Expanded(
+                child: (compareType == '일')
+                    ? BarChart(
+                        BarChartData(
+                          barTouchData: _periodCompare,
+                          titlesData: daytitlesCompare,
+                          borderData: borderData,
+                          barGroups: barDaysCompare,
+                          gridData: gridData,
+                          alignment: BarChartAlignment.spaceAround,
+                          maxY: 20,
+                        ),
+                      )
+                    : (compareType == '주')
+                        ? BarChart(
+                            BarChartData(
+                              barTouchData: _periodCompare,
+                              titlesData: weektitlesCompare,
+                              borderData: borderData,
+                              barGroups: barWeeksCompare,
+                              gridData: gridData,
+                              alignment: BarChartAlignment.spaceAround,
+                              maxY: 20,
+                            ),
+                          )
+                        : BarChart(
+                            //월
+                            BarChartData(
+                              barTouchData: _periodCompare,
+                              titlesData: monthtitlesCompare,
+                              borderData: borderData,
+                              barGroups: barMonthsCompare,
+                              gridData: gridData,
+                              alignment: BarChartAlignment.spaceAround,
+                              maxY: 20,
+                            ),
+                          ),
+              ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: ToggleButtons(
             disabledColor: Colors.white,
             selectedColor: const Color(0xFFEEF1F4),
+            fillColor: const Color(0xFFEEF1F4),
             borderRadius: BorderRadius.circular(10),
+            renderBorder: false,
             isSelected: _isComparetype,
             onPressed: (int index) {
               setState(() {
@@ -152,21 +175,16 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
                       break;
                   }
                 }
+                _isLoading = true;
+                _loadData(500);
               });
             },
             children: [
               Container(
-                width: 61,
+                width: 60,
                 height: 30,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFEEF1F4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -186,16 +204,9 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
                 ),
               ),
               Container(
-                width: 61,
+                width: 60,
                 height: 30,
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFEEF1F4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -216,16 +227,9 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
                 ),
               ),
               Container(
-                width: 61,
+                width: 60,
                 height: 30,
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                clipBehavior: Clip.antiAlias,
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFEEF1F4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -252,31 +256,14 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
     );
   }
 
-  FlTitlesData get titlesData => FlTitlesData(
-        show: true,
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 30,
-            getTitlesWidget: _getWeeksDay,
-          ),
-        ),
-        leftTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: const AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: false,
-            reservedSize: 30,
-          ),
-        ),
-        rightTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-      );
-
   FlBorderData get borderData => FlBorderData(
         show: false,
+      );
+
+  FlGridData get gridData => const FlGridData(
+        show: true,
+        drawHorizontalLine: true,
+        drawVerticalLine: false,
       );
 
   BarTouchData get _periodCompare => BarTouchData(
@@ -303,7 +290,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
       );
 
   // '일'로 설정했을 때
-  Widget _getWeeksDayCompare(double value, TitleMeta meta) {
+  Widget _getDayCompare(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Colors.black,
       fontWeight: FontWeight.bold,
@@ -343,17 +330,129 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
     );
   }
 
-  FlTitlesData get titlesDataCompare => FlTitlesData(
+  // '주'로 설정했을 때
+  Widget _getWeekCompare(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '이번주';
+        break;
+      case 1:
+        text = '1주전';
+        break;
+      case 2:
+        text = '2주전';
+        break;
+      case 3:
+        text = '3주전';
+        break;
+      case 4:
+        text = '4주전';
+        break;
+      case 5:
+        text = '5주전';
+        break;
+      default:
+        text = '';
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      child: Text(text, style: style),
+    );
+  }
+
+  // '월'로 설정했을 때
+  Widget _getMonthCompare(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '이번달';
+        break;
+      case 1:
+        text = '1달전';
+        break;
+      case 2:
+        text = '2달전';
+        break;
+      case 3:
+        text = '3달전';
+        break;
+      case 4:
+        text = '4달전';
+        break;
+      case 5:
+        text = '5달전';
+        break;
+      default:
+        text = '';
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      child: Text(text, style: style),
+    );
+  }
+
+  SideTitles leftTitles() => SideTitles(
+        getTitlesWidget: leftTitleWidgets,
+        showTitles: true,
+        interval: 1,
+        reservedSize: 20,
+      );
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 10,
+    );
+    int text;
+    switch (value.toInt()) {
+      case 5:
+        text = 5;
+        break;
+      case 10:
+        text = 10;
+        break;
+      case 15:
+        text = 15;
+        break;
+      case 20:
+        text = 20;
+        break;
+      case 25:
+        text = 25;
+        break;
+      default:
+        return Container();
+    }
+
+    return Text('$text', style: style, textAlign: TextAlign.center);
+  }
+
+  FlTitlesData get daytitlesCompare => FlTitlesData(
         show: true,
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 30,
-            getTitlesWidget: _getWeeksDayCompare,
+            getTitlesWidget: _getDayCompare,
           ),
         ),
-        leftTitles: const AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
+        leftTitles: AxisTitles(
+          sideTitles: leftTitles(),
         ),
         topTitles: const AxisTitles(
           sideTitles: SideTitles(
@@ -366,15 +465,73 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
         ),
       );
 
-    
+  FlTitlesData get weektitlesCompare => FlTitlesData(
+        show: true,
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            getTitlesWidget: _getWeekCompare,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: leftTitles(),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+            reservedSize: 30,
+          ),
+        ),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+      );
+
+  FlTitlesData get monthtitlesCompare => FlTitlesData(
+        show: true,
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            getTitlesWidget: _getMonthCompare,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: leftTitles(),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+            reservedSize: 30,
+          ),
+        ),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+      );
 
   // 일, 주, 월 데이터 받아와서 저장 및 등록
-  List<double> UserAver = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7, 9.4];
-  List<double> EveryAver = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7, 13.4];
+  List<double> UserAverDay = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7, 9.4];
+  List<double> EveryAverDay = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7, 13.4];
 
-  List<BarChartGroupData> get barGroupsCompare => [
-        for (int i = 0; i < UserAver.length; i++)
-          makeGroupData(i, UserAver[i], EveryAver[i], compareCheck)
+  List<double> UserAverWeek = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7];
+  List<double> EveryAverWeek = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7];
+
+  List<double> UserAverMonth = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7];
+  List<double> EveryAverMonth = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7];
+
+  List<BarChartGroupData> get barDaysCompare => [
+        for (int i = 0; i < UserAverDay.length; i++)
+          makeGroupData(i, UserAverDay[i], EveryAverDay[i], compareCheck)
+      ];
+  List<BarChartGroupData> get barWeeksCompare => [
+        for (int i = 0; i < UserAverWeek.length; i++)
+          makeGroupData(i, UserAverWeek[i], EveryAverWeek[i], compareCheck)
+      ];
+  List<BarChartGroupData> get barMonthsCompare => [
+        for (int i = 0; i < UserAverMonth.length; i++)
+          makeGroupData(i, UserAverMonth[i], EveryAverMonth[i], compareCheck)
       ];
 
   BarChartGroupData makeGroupData(
@@ -397,78 +554,6 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
     );
   }
 
-  BarTouchData get barTouchData => BarTouchData(
-        enabled: false,
-        touchTooltipData: BarTouchTooltipData(
-          getTooltipColor: (group) => Colors.transparent,
-          tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 8,
-          getTooltipItem: (
-            BarChartGroupData group,
-            int groupIndex,
-            BarChartRodData rod,
-            int rodIndex,
-          ) {
-            return BarTooltipItem(
-              rod.toY.round().toString(),
-              TextStyle(
-                color: (now.weekday == group.x.toInt())
-                    ? Colors.cyan
-                    : Colors.grey,
-                fontWeight: FontWeight.bold,
-              ),
-            );
-          },
-        ),
-      );
-
-  // '일'로 설정했을 때
-  Widget _getWeeksDay(double value, TitleMeta meta) {
-    const style1 = TextStyle(
-      color: Colors.blue,
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
-    );
-    const style2 = TextStyle(
-      color: Colors.grey,
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
-    );
-    String text;
-    bool day = (now.weekday == value.toInt());
-    switch (value.toInt()) {
-      case 1:
-        text = '월';
-        break;
-      case 2:
-        text = '화';
-        break;
-      case 3:
-        text = '수';
-        break;
-      case 4:
-        text = '목';
-        break;
-      case 5:
-        text = '금';
-        break;
-      case 6:
-        text = '토';
-        break;
-      case 7:
-        text = '일';
-        break;
-      default:
-        text = '';
-        break;
-    }
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 4,
-      child: Text(text, style: (day) ? style1 : style2),
-    );
-  }
-
   LinearGradient get _barsGradientBlue => const LinearGradient(
         colors: [
           Colors.blue,
@@ -487,90 +572,5 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
         end: Alignment.topCenter,
       );
 
-  List<BarChartGroupData> get barGroups => [
-        BarChartGroupData(
-          x: 1,
-          barRods: [
-            BarChartRodData(
-              toY: 8,
-              width: 30,
-              gradient:
-                  (1 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              width: 30,
-              gradient:
-                  (2 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-              toY: 14,
-              width: 30,
-              gradient:
-                  (3 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 4,
-          barRods: [
-            BarChartRodData(
-              toY: 15,
-              width: 30,
-              gradient:
-                  (4 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              toY: 13,
-              width: 30,
-              gradient:
-                  (5 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 6,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              width: 30,
-              gradient:
-                  (6 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 7,
-          barRods: [
-            BarChartRodData(
-              toY: 16,
-              width: 30,
-              gradient:
-                  (7 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-      ];
+  
 }
