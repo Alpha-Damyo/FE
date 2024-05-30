@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:damyo/screens/home/statistics/userinfo_statistics.dart';
-import 'package:damyo/screens/home/statistics/time_statistics.dart';
-import 'package:damyo/screens/home/statistics/calculate_statistics.dart';
-import 'package:damyo/screens/home/statistics/periodsingle_statistics.dart';
-import 'package:damyo/screens/home/statistics/local_statistics.dart';
-import 'package:damyo/screens/home/statistics/periodcompare_statistics.dart';
-import 'package:damyo/screens/home/statistics/special_statistics.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/userinfo_statistics.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/time_statistics.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/calculate_statistics.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/periodsingle_statistics.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/local_statistics.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/periodcompare_statistics.dart';
+import 'package:damyo/screens/home/statistics/statistics_info/special_statistics.dart';
 
 class StatistTap extends StatefulWidget {
   const StatistTap({
@@ -47,7 +47,7 @@ class _StatistTapState extends State<StatistTap> {
         return const timeAverInfo();
       case 3:
         // 기간별 통계 화면(개인 총 흡연량)
-        return const periodSumInfo();
+        return const periodSingleInfo();
       case 4:
         // 담배값 계산기
         return const calculatePrice();
@@ -55,6 +55,7 @@ class _StatistTapState extends State<StatistTap> {
         // 기간별 평균 흡연량 비교
         return const periodCompareInfo();
       case 6:
+        // 특정 기간에 대한 페이지
         return const SpecialDays();
       default:
         return Container();

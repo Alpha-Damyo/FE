@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:damyo/http.dart';
 import 'package:damyo/screens/home/statistics/statistics_screen_utill.dart';
+import 'package:damyo/services/get_date_statics_service.dart';
+import 'package:intl/intl.dart';
+import '';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -23,7 +22,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           title: const Text(
-            '제보',
+            '통계',
           ),
           centerTitle: true,
         ),
@@ -32,6 +31,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
+                ElevatedButton(
+                    onPressed: () async {
+                      // await getDateStatics();
+                      print(DateFormat('HH').format(DateTime.now()).runtimeType);
+                    },
+                    child: Text('test')),
                 SizedBox(
                   height: 20.h,
                 ),
@@ -48,26 +53,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 // 지역별 흡연 데이터 통계
                 SizedBox(
                   height: 600.h,
-                  child: PageView(
-                    scrollDirection: Axis.horizontal,
-                    children: const [
-                      StatistTap(
-                        index: 1,
-                        category: '시군구별 흡연 통계',
-                      ),
-                      StatistTap(
-                        index: 1,
-                        category: '가장 많이 흡연한 구역(개인)',
-                      ),
-                      StatistTap(
-                        index: 1,
-                        category: '가장 많이 흡연한 구역(전체)',
-                      ),
-                      StatistTap(
-                        index: 1,
-                        category: '지역별 흡연 목록',
-                      ),
-                    ],
+                  child: const StatistTap(
+                    index: 1,
+                    category: '시군구별 흡연 통계',
                   ),
                 ),
                 Container(

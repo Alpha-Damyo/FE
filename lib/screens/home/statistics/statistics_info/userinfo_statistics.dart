@@ -17,11 +17,11 @@ class _userInfoState extends State<userInfo> {
   // 사용자 정보 위젯
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
-        top: 25.h,
-        left: 16.w,
-        right: 16.w,
-        bottom: 20.h,
+      padding: const  EdgeInsets.only(
+        top: 25,
+        left: 16,
+        right: 16,
+        bottom: 20,
       ),
       //그라데이션
       decoration: const BoxDecoration(
