@@ -18,7 +18,7 @@ Future<Map<String, dynamic>> getDateStatics() async {
     print(jsonMap);
     return jsonMap;
   } else {
-    print(response);
+    print(utf8.decode(response.bodyBytes));
     throw Exception("Failed to date statics");
   }
 }

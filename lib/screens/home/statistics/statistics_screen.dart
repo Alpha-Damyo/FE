@@ -20,7 +20,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           title: const Text(
-            '제보',
+            '통계',
           ),
           centerTitle: true,
         ),
