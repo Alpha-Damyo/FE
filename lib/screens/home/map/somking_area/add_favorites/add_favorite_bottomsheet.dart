@@ -1,3 +1,4 @@
+import 'package:damyo/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -15,51 +16,21 @@ class AddFavoriteBottomSheet extends StatefulWidget {
 
 class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
   FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-  List<String> favorites = [
-    "새 리스트 만들기",
-    "기본",
-  ];
-  List<int> favoritesSize = [
-    0,
-    0,
-  ];
+  final List<String> _favorites = List.from(favorites);
+  final List<List<dynamic>> _favoritesDetail = List.from(favoritesDetail);
 
   int selectedFavorite = 1;
-
-  Future<void> getFavorites() async {
-    String? stringFavorites = await secureStorage.read(key: 'favoritesList');
-    if (stringFavorites != null) {
-      favorites += stringFavorites.toString().split(',');
-      favorites.remove('');
-      for (int i = 0; i < favorites.length; i++) {
-        favoritesSize.add(0);
-      }
-    }
-    for (int i = 0; i < favorites.length; i++) {
-      String target = favorites[i];
-      String? targetString =
-          await secureStorage.read(key: 'favoritesList.id.$target');
-
-      if (targetString != null) {
-        List<String> targetList = targetString.toString().split(',');
-        targetList.remove('');
-
-        favoritesSize[i] += targetList.length;
-      }
-    }
-    setState(() {});
-  }
-
-  Future<void> remove() async {
-    await secureStorage.deleteAll();
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // remove();
-    getFavorites();
+    // secureStorage.deleteAll();
+    _favorites.insert(0, '새 리스트 만들기');
+    List<List<dynamic>> tmpList = [];
+    _favoritesDetail.insert(0, tmpList);
+
+    print(_favoritesDetail);
   }
 
   @override
@@ -87,7 +58,7 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                   Expanded(
                     child: ListView.separated(
                       shrinkWrap: true,
-                      itemCount: favorites.length,
+                      itemCount: _favorites.length,
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                           onTap: () {
@@ -112,10 +83,12 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text('${favorites[index]} '),
+                                      Text('${_favorites[index]} '),
                                       index > 0
                                           ? Text(
-                                              favoritesSize[index].toString(),
+                                              _favoritesDetail[index]
+                                                  .length
+                                                  .toString(),
                                               style: const TextStyle(
                                                   color: Color(0xFF6F767F),
                                                   fontSize: 14,
@@ -156,10 +129,10 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                     onTap: () async {
                       String? tmpIdInfo = await secureStorage.read(
                           key:
-                              'favoritesList.id.${favorites[selectedFavorite]}');
+                              'favoritesList.id.${_favorites[selectedFavorite]}');
                       String? tmpNameInfo = await secureStorage.read(
                           key:
-                              'favoritesList.name.${favorites[selectedFavorite]}');
+                              'favoritesList.name.${_favorites[selectedFavorite]}');
                       if (tmpIdInfo != null) {
                         List<String> tmpList = tmpIdInfo.toString().split(',');
 
@@ -170,12 +143,15 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                         } else {
                           await secureStorage.write(
                               key:
-                                  'favoritesList.id.${favorites[selectedFavorite]}',
+                                  'favoritesList.id.${_favorites[selectedFavorite]}',
                               value: '$tmpIdInfo,${widget.saId}');
                           await secureStorage.write(
                               key:
-                                  'favoritesList.name.${favorites[selectedFavorite]}',
+                                  'favoritesList.name.${_favorites[selectedFavorite]}',
                               value: '$tmpNameInfo,${widget.saName}');
+
+                          favoritesDetail[selectedFavorite - 1]
+                              .add([widget.saId, widget.saName]);
                           Fluttertoast.showToast(msg: "추가가 완료되었습니다");
 
                           setState(() {
@@ -185,12 +161,15 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                       } else {
                         await secureStorage.write(
                             key:
-                                'favoritesList.id.${favorites[selectedFavorite]}',
+                                'favoritesList.id.${_favorites[selectedFavorite]}',
                             value: widget.saId);
                         await secureStorage.write(
                             key:
-                                'favoritesList.name.${favorites[selectedFavorite]}',
+                                'favoritesList.name.${_favorites[selectedFavorite]}',
                             value: widget.saName);
+
+                        favoritesDetail[selectedFavorite - 1]
+                            .add([widget.saId, widget.saName]);
                         Fluttertoast.showToast(msg: "추가가 완료되었습니다");
                         setState(() {
                           Navigator.of(context).pop();
@@ -259,8 +238,11 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                     value: '$tmpFavoritesList,$_enteredText');
 
                 setState(() {
+                  _favorites.add(_enteredText);
                   favorites.add(_enteredText);
-                  favoritesSize.add(0);
+                  List<List<dynamic>> tmpList = [];
+                  _favoritesDetail.add(tmpList);
+                  favoritesDetail.add(tmpList);
                 });
                 Navigator.of(context).pop();
               },

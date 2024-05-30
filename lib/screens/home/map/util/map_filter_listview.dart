@@ -25,7 +25,7 @@ class _MapFilterListviewState extends State<MapFilterListview> {
         itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.only(
-              right: index == widget.characterList.length - 1 ? 3 : 10,
+              right: index == widget.characterList.length - 1 ? 5 : 10,
               bottom: 5,
             ), // 마지막 아이템에는 패딩을 적용하지 않음.
             child: GestureDetector(
