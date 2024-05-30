@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,12 +15,33 @@ class userInfo extends StatefulWidget {
   State<userInfo> createState() => _userInfoState();
 }
 
-class _userInfoState extends State<userInfo> {
+class _userInfoState extends State<userInfo>
+    with SingleTickerProviderStateMixin {
+  late ScrollController _controller;
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    _controller = ScrollController();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5), // 애니메이션 지속 시간 설정
+    )..repeat();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   // 사용자 정보 위젯
   Widget build(BuildContext context) {
     return Container(
-      padding: const  EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 25,
         left: 16,
         right: 16,
@@ -97,9 +120,11 @@ class _userInfoState extends State<userInfo> {
                 ),
               ),
               const SizedBox(height: 10),
-              SizedBox(
+              Container(
+                width: 390,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _mostSmokingArea(1, '국민대 도서관', 23129),
@@ -135,7 +160,7 @@ class _userInfoState extends State<userInfo> {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 '$rank등',
@@ -147,8 +172,7 @@ class _userInfoState extends State<userInfo> {
                 ),
               ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     place,
@@ -171,9 +195,12 @@ class _userInfoState extends State<userInfo> {
                   ),
                   const SizedBox(height: 6),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       _buildTag('실외'),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       _buildTag('개방형'),
                     ],
                   ),

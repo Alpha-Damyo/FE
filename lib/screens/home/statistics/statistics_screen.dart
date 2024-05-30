@@ -33,8 +33,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               children: [
                 ElevatedButton(
                     onPressed: () async {
-                      // await getDateStatics();
-                      print(DateFormat('HH').format(DateTime.now()).runtimeType);
+                      await getDateStatics();
                     },
                     child: Text('test')),
                 SizedBox(
