@@ -5,6 +5,10 @@ import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/screens/home/statistics/statistics_screen.dart';
 import 'package:flutter/material.dart';
 
+// 페이지 인덱스
+int screenIndex = 0;
+final homePageController = PageController();
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -13,11 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final pageController = PageController();
-
-  // 페이지 인덱스
-  int _screenIndex = 0;
-
   // 사용될 화면들
   final List<Widget> _screens = [
     const MapScreen(),
@@ -29,13 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 화면을 이동시킬 함수
   void _onTap(int index) {
-    pageController.jumpToPage(index);
+    homePageController.jumpToPage(index);
   }
 
   // 페이지를 업데이트하는 함수
   void _onPageChanged(int index) {
     setState(() {
-      _screenIndex = index;
+      screenIndex = index;
     });
   }
 
@@ -45,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: PageView(
-        controller: pageController,
+        controller: homePageController,
         onPageChanged: _onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
         children: _screens, // 슬라이딩으로 화면넘기기 X
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed, // 탭 고정
         onTap: _onTap,
-        currentIndex: _screenIndex,
+        currentIndex: screenIndex,
         items: const [
           BottomNavigationBarItem(
             label: '맵',

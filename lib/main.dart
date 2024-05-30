@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -103,6 +104,45 @@ Future<void> _getCurrentLocation() async {
   }
 }
 
+// 즐겨찾기 받아오기
+var favorites = [
+  "기본",
+];
+var favoritesDetail = [];
+bool addFavorite = false;
+
+Future<void> getFavorites() async {
+  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  String? stringFavorites = await secureStorage.read(key: 'favoritesList');
+  if (stringFavorites != null) {
+    favorites += stringFavorites.toString().split(',');
+    favorites.remove('');
+  }
+  for (int i = 0; i < favorites.length; i++) {
+    String target = favorites[i];
+    String? targetIdString =
+        await secureStorage.read(key: 'favoritesList.id.$target');
+
+    if (targetIdString != null) {
+      List<String> targetIdList = targetIdString.toString().split(',');
+      targetIdList.remove('');
+      String? targetNameString =
+          await secureStorage.read(key: 'favoritesList.name.$target');
+      List<String> targetNameList = targetNameString.toString().split(',');
+
+      var tmpList = [];
+
+      for (int j = 0; j < targetIdList.length; j++) {
+        tmpList.add([targetIdList[j], targetNameList[j]]);
+      }
+
+      favoritesDetail.add(tmpList);
+    } else {
+      favoritesDetail.add([]);
+    }
+  }
+}
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -112,6 +152,7 @@ void main() async {
   await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
+  await getFavorites();
 
   /*runApp(ChangeNotifierProvider(
     create: (context) => FilterList(),
@@ -235,8 +276,6 @@ class App extends StatelessWidget {
             onSecondary: Colors.white,
             error: Colors.white,
             onError: Colors.white,
-            background: Colors.white,
-            onBackground: Colors.black,
             surface: Colors.white,
             onSurface: Colors.black),
         textTheme: const TextTheme(

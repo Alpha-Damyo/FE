@@ -61,5 +61,4 @@ class _StatistTapState extends State<StatistTap> {
         return Container();
     }
   }
-
 }
