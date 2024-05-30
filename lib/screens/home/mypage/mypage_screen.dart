@@ -151,24 +151,32 @@ class _MypageScreenState extends State<MypageScreen> {
                                       ),
                                     ),
                                     SizedBox(height: 20.h),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          '업적',
-                                          style: TextStyle(
-                                            color: const Color(0xFF262B32),
-                                            fontSize: 16.sp,
-                                            fontFamily: 'Pretendard',
-                                            fontWeight: FontWeight.w500,
-                                            height: 0,
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () {
+                                        GoRouter.of(context)
+                                            .push('/achievement');
+                                      },
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '업적',
+                                            style: TextStyle(
+                                              color: const Color(0xFF262B32),
+                                              fontSize: 16.sp,
+                                              fontFamily: 'Pretendard',
+                                              fontWeight: FontWeight.w500,
+                                              height: 0,
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 306.w),
-                                      ],
+                                          SizedBox(width: 306.w),
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(height: 20.h),
                                     Container(
