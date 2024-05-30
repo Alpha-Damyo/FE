@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 // 날짜 정보를 가져오기 위해
 DateTime now = DateTime.now();
@@ -97,7 +98,6 @@ class _userInfoState extends State<userInfo> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,68 +117,70 @@ class _userInfoState extends State<userInfo> {
 
   // 많이 방문한 흡연구역
   Widget _mostSmokingArea(int rank, String place, int cnt) {
-    return InkWell(
-      onTap: () {
-        print(place);
-        print(now.weekday);
-      },
-      child: Container(
-        width: 120,
-        height: 120,
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(width: 1, color: const Color(0xFFEEF1F4)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              '$rank등',
-              style: const TextStyle(
-                color: Color(0xFF0099FC),
-                fontSize: 12,
-                fontFamily: 'Pretendard',
-                fontWeight: FontWeight.w500,
+    return Center(
+      child: InkWell(
+        onTap: () {
+          print(place);
+          print(now.weekday);
+          context.push('/sa_info', extra: '1');
+        },
+        child: Container(
+          width: 120,
+          height: 120,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(width: 1, color: const Color(0xFFEEF1F4)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                '$rank등',
+                style: const TextStyle(
+                  color: Color(0xFF0099FC),
+                  fontSize: 12,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  place,
-                  style: const TextStyle(
-                    color: Color(0xFF10151B),
-                    fontSize: 14,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    place,
+                    style: const TextStyle(
+                      color: Color(0xFF10151B),
+                      fontSize: 14,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  '$cnt 회',
-                  style: const TextStyle(
-                    color: Color(0xFF6E767F),
-                    fontSize: 10,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
+                  const SizedBox(height: 4),
+                  Text(
+                    '$cnt 회',
+                    style: const TextStyle(
+                      color: Color(0xFF6E767F),
+                      fontSize: 10,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildTag('실외'),
-                    _buildTag('개방형'),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildTag('실외'),
+                      _buildTag('개방형'),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
