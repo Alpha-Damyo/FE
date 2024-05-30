@@ -140,9 +140,14 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                 child: Text(favoritesDetail[index][j][1]),
                               ),
                             ),
-                            const Icon(
-                              Icons.star,
-                              color: Colors.yellow,
+                            IconButton(
+                              icon: const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
+                              onPressed: () {
+                                _showDeleteDialog(favorites[index]);
+                              },
                             ),
                           ],
                         ),
@@ -155,6 +160,38 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         ),
         const SizedBox(height: 16),
       ],
+    );
+  }
+
+  void _showDeleteDialog(String target) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            "정말 삭제하시겠습니까?",
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('취소'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                String? targetNameString =
+                    await secureStorage.read(key: 'favoritesList.name.$target');
+                print("///////////////////////////////////////////////////");
+                debugPrint(targetNameString);
+              },
+              child: const Text('확인'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
