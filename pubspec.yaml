@@ -113,10 +113,7 @@ flutter:
     - .env
     - assets/icons/
 
-<<<<<<< HEAD
-  
-=======
->>>>>>> 4e44a10e804ad9d5f2f170b91eda476929cdb2b4
+    
   fonts:
     - family: pretendard
       fonts:
