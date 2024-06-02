@@ -23,8 +23,12 @@ SaBasicModel infoCardBasicModel =
     SaBasicModel('id', 'name', 0, 0, 'address', 0);
 
 void moveCameraByPosition(double lat, double lng) {
-  mapController!
-      .updateCamera(NCameraUpdate.scrollAndZoomTo(target: NLatLng(lat, lng)));
+  mapController!.updateCamera(
+    NCameraUpdate.scrollAndZoomTo(
+      target: NLatLng(lat, lng),
+      zoom: 15,
+    ),
+  );
 }
 
 void moveCameraByFavorite(String id, String name) async {
@@ -47,7 +51,8 @@ void moveCameraByFavorite(String id, String name) async {
     infoCardBasicModel = favoriteSaBasicModel;
     smokingAreaSelected = true;
   });
-  moveCameraByPosition(37.65640, 127.11670);
+  moveCameraByPosition(
+      favoriteSaBasicModel.latitude, favoriteSaBasicModel.longitude);
   mapController!.addOverlay(marker);
   marker.performClick();
 }

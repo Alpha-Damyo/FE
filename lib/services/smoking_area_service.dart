@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:damyo/models/smoking_area/sa_detail_model.dart';
 import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/models/smoking_area/sa_inform_model.dart';
 import 'package:damyo/models/smoking_area/sa_search_model.dart';
@@ -50,7 +51,7 @@ class SmokingAreaService {
       return responseDecode['smokingAreas'];
     } else {
       print(responseDecode);
-      throw Exception("failed search");
+      throw Exception("fail search");
     }
   }
 
@@ -63,11 +64,28 @@ class SmokingAreaService {
 
     var responseDecode = jsonDecode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
-      print("success searched");
+      print("success search");
       return SaBasicModel.fromJson(responseDecode);
     } else {
       print(responseDecode);
-      throw Exception("failed search");
+      throw Exception("fail search");
+    }
+  }
+
+  // 흡연구역 id로 상세정보 받아오기
+  static Future<SaDetailModel> getDetailModelById(String id) async {
+    final baseUrl = dotenv.get('BASE_URL');
+    var url = Uri.parse('$baseUrl/area/details/$id');
+
+    var response = await http.get(url);
+
+    var responseDecode = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode == 200) {
+      print("success search");
+      return SaDetailModel.fromJson(responseDecode);
+    } else {
+      print(responseDecode);
+      throw Exception("fail search");
     }
   }
 
@@ -102,11 +120,11 @@ class SmokingAreaService {
 
     var responseDecode = jsonDecode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
-      print("success informed");
+      print("success inform");
       return true;
     } else {
       print(responseDecode);
-      throw Exception("failed inform");
+      throw Exception("fail inform");
     }
   }
 }
