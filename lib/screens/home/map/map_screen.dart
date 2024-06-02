@@ -3,11 +3,13 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
-import 'package:damyo/models/sa_basic_model.dart';
+import 'package:damyo/models/smoking_area/sa_basic_model.dart';
+import 'package:damyo/models/smoking_area/sa_search_model.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:damyo/screens/home/map/util/map_filter_listview.dart';
+import 'package:damyo/services/smoking_area_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:go_router/go_router.dart';
@@ -17,27 +19,40 @@ NaverMapController? mapController;
 
 bool isCameraMoved = false;
 bool smokingAreaSelected = false;
-String smokingAreaId = '';
-String smokingAreaName = '';
+SaBasicModel infoCardBasicModel =
+    SaBasicModel('id', 'name', 0, 0, 'address', 0);
 
 void moveCameraByPosition(double lat, double lng) {
-  mapController!
-      .updateCamera(NCameraUpdate.scrollAndZoomTo(target: NLatLng(lat, lng)));
+  mapController!.updateCamera(
+    NCameraUpdate.scrollAndZoomTo(
+      target: NLatLng(lat, lng),
+      zoom: 15,
+    ),
+  );
 }
 
-void moveCameraByFavorite(int id, String name) {
-  // id를 통해서 즐겨찾기 기본 정보를 받아와야 함.
+void moveCameraByFavorite(String id, String name) async {
+  // 기존의 마커들 지우기
   mapController!.clearOverlays();
 
-  NMarker marker =
-      NMarker(id: "test", position: const NLatLng(37.65640, 127.11670));
+  // 아이디를 통해 정보를 받아옴
+  SaBasicModel favoriteSaBasicModel =
+      await SmokingAreaService.getBasicModelById(id);
+
+  NMarker marker = NMarker(
+    id: favoriteSaBasicModel.id,
+    position: NLatLng(
+      favoriteSaBasicModel.latitude,
+      favoriteSaBasicModel.longitude,
+    ),
+  );
 
   marker.setOnTapListener((overlay) async {
-    smokingAreaId = id.toString();
-    smokingAreaName = name;
+    infoCardBasicModel = favoriteSaBasicModel;
     smokingAreaSelected = true;
   });
-  moveCameraByPosition(37.65640, 127.11670);
+  moveCameraByPosition(
+      favoriteSaBasicModel.latitude, favoriteSaBasicModel.longitude);
   mapController!.addOverlay(marker);
   marker.performClick();
 }
@@ -80,6 +95,7 @@ class _MapScreenState extends State<MapScreen>
   }
 
   // 필터 목록
+
   final List<String> _mapFilterCharacterList = [
     '실외',
     '개방된',
@@ -101,6 +117,7 @@ class _MapScreenState extends State<MapScreen>
     const double searchWidth = double.infinity;
     const double iconSize = 25;
     final double mapHeight = size.height - kBottomNavigationBarHeight;
+    final double mapWidth = size.width;
 
     // NaverMapController 객체의 비동기 작업 완료를 나타내는 Completer 생성
     final Completer<NaverMapController> mapControllerCompleter = Completer();
@@ -126,8 +143,10 @@ class _MapScreenState extends State<MapScreen>
                   .complete(controller); // Completer에 지도 컨트롤러 완료 신호 전송
               log("onMapReady", name: "onMapReady");
 
-              attachOverlay(SaBasicModel(1, "국민대 도서관 1", 37.65640, 127.11670));
-              attachOverlay(SaBasicModel(2, "국민대 도서관 2", 37.65690, 127.11720));
+              await updateMap(userLatitude, userLongitude);
+              // attachOverlay(SaBasicModel(
+              //     '1', "국민대 도서관 1", 37.65640, 127.11670, "2323", 5));
+              // attachOverlay(SaBasicModel(2, "국민대 도서관 2", 37.65690, 127.11720));
             },
             onMapTapped: (point, latLng) {
               smokingAreaSelected = false;
@@ -135,7 +154,6 @@ class _MapScreenState extends State<MapScreen>
             },
             onCameraChange: (reason, animated) {
               onCameraChangeStreamController.sink.add(null);
-              isCameraMoved = true;
             },
           ),
           Padding(
@@ -229,17 +247,65 @@ class _MapScreenState extends State<MapScreen>
                   ],
                 ),
                 const SizedBox(height: padding),
-                // 제보 버튼
+                // 이 위치에서 재탐색, 제보 버튼
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Visibility(
+                      visible: isCameraMoved,
+                      child: InkWell(
+                        onTap: () async {
+                          await updateMap(_nowCameraPosition!.target.latitude,
+                              _nowCameraPosition!.target.longitude);
+                          isCameraMoved = false;
+                        },
+                        child: Container(
+                          width: 146,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: const Color(0xFFD2D7DD)),
+                            borderRadius: BorderRadius.circular(36),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 0,
+                                blurRadius: 2.0,
+                                offset: const Offset(
+                                    0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(
+                                Icons.refresh_rounded,
+                                color: Color(0xFF0099FC),
+                                size: 20,
+                              ),
+                              Text(
+                                "이 위치에서 재탐색",
+                                style: TextStyle(
+                                  color: Color(0xFF0099FC),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        width: mapWidth / 2 - padding - alignButtonSize - 73),
                     InkWell(
                       onTap: () {
                         setState(() {
                           print(smokingAreaMap);
                           informPressed = !informPressed;
                           bottomDrawerController.open();
-                          // moveCameraByPosition(1, 2);
                         });
                       },
                       child: Container(
@@ -383,8 +449,7 @@ class _MapScreenState extends State<MapScreen>
                 maintainAnimation: true,
                 maintainState: true,
                 child: SmokingAreaInfoCard(
-                  smokingAreaId: smokingAreaId,
-                  smokingAreaName: smokingAreaName,
+                  saBasicModel: infoCardBasicModel,
                 ),
               ),
             ),
@@ -394,14 +459,37 @@ class _MapScreenState extends State<MapScreen>
     );
   }
 
+  Future<void> updateMap(double lat, double lng) async {
+    mapController!.clearOverlays();
+    SaSearchModel saSearchModel = SaSearchModel(
+      latitude: lat,
+      longitude: lng,
+      range: 0.01,
+    );
+
+    List<dynamic> smokingAreaList =
+        await SmokingAreaService.searchSmokingArea(saSearchModel);
+
+    for (int i = 0; i < smokingAreaList.length; i++) {
+      SaBasicModel updateSaBasicModel = SaBasicModel(
+        smokingAreaList[i]['areaId'],
+        smokingAreaList[i]['name'],
+        smokingAreaList[i]['latitude'],
+        smokingAreaList[i]['longitude'],
+        smokingAreaList[i]['address'],
+        smokingAreaList[i]['score'],
+      );
+      attachOverlay(updateSaBasicModel);
+    }
+  }
+
   void attachOverlay(SaBasicModel sa) async {
     final marker = NMarker(
       id: sa.id.toString(),
-      position: NLatLng(sa.longitude, sa.latitude),
+      position: NLatLng(sa.latitude, sa.longitude),
     );
     marker.setOnTapListener((overlay) async {
-      smokingAreaId = sa.id.toString();
-      smokingAreaName = sa.name;
+      infoCardBasicModel = sa;
       smokingAreaSelected = true;
     });
     mapController!.addOverlay(marker);
@@ -409,6 +497,8 @@ class _MapScreenState extends State<MapScreen>
 
   void onCameraChange() async {
     _nowCameraPosition = mapController?.nowCameraPosition;
+    isCameraMoved = true;
+
     if (mounted) setState(() {});
   }
 
