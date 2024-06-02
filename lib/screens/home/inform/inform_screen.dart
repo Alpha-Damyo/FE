@@ -1,14 +1,11 @@
 import 'dart:io';
 
-import 'package:damyo/services/get_smoking_area_service.dart';
+import 'package:damyo/models/sa_inform_model.dart';
 import 'package:damyo/services/get_address_service.dart';
-import 'package:damyo/services/inform_service.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:damyo/services/smoking_area_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -188,28 +185,27 @@ class _InformScreenState extends State<InformScreen> {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () async {
-                  Map<String, dynamic> informData = {
-                    'name': _spotInfo[0],
-                    'createdAt': DateTime.now().toString().substring(0, 10),
-                    'description': _spotInfo[1],
-                    'latitude': coords.split(',')[1],
-                    'longitude': coords.split(',')[0],
-                    'score': _starValue.toString(),
-                    'opened': _selectedInOut[0].toString(),
-                    'closed': _selectedInOut[1].toString(),
-                    'hygiene': '',
-                    'dirty': '',
-                    'airOut': '',
-                    'indoor': _selectedInOut[0].toString(),
-                    'outdoor': _selectedInOut[1].toString(),
-                    'big': '',
-                    'small': '',
-                    'crowded': '',
-                    'quite': '',
-                    'chair': '',
-                  };
+                  SaInformModel saInformModel = SaInformModel(
+                      _spotInfo[2],
+                      _spotInfo[0],
+                      _spotInfo[1],
+                      double.parse(coords.split(',')[1]),
+                      double.parse(coords.split(',')[0]),
+                      _starValue,
+                      _selectedOpenClose[0],
+                      _selectedOpenClose[1],
+                      _selectedInOut[0],
+                      _selectedInOut[1],
+                      '');
 
-                  await informSmokingArea(informData);
+                  bool isSuccess =
+                      await SmokingAreaService.informSmokingArea(saInformModel);
+                  if (isSuccess) {
+                    Fluttertoast.showToast(msg: "제보가 완료되었습니다.");
+                    context.pop();
+                  } else {
+                    Fluttertoast.showToast(msg: "제보에 실패하였습니다.");
+                  }
                 },
                 child: Ink(
                   width: double.infinity,
