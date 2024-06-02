@@ -5,9 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class localInfo extends StatefulWidget {
   const localInfo({
     super.key,
-    required this.GuInfo,
+    required this.RegionInfo,
   });
-  final statRegionModel? GuInfo;
+  final statRegionModel? RegionInfo;
 
   @override
   State<localInfo> createState() => _localInfoState();
@@ -18,18 +18,18 @@ class _localInfoState extends State<localInfo>
   late TabController _tabController;
   List<dynamic>? _GuList, _areaList;
 
-  void setRegionInfo(){
+  void setRegionInfo() {
     setState(() {
-      _GuList = widget.GuInfo?.allRegion;
-      _areaList = widget.GuInfo?.areaTop;
+      _GuList = widget.RegionInfo?.allRegion;
+      _areaList = widget.RegionInfo?.areaTop;
     });
   }
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    setRegionInfo();
     super.initState();
-    print(widget.GuInfo?.areaTop[0].runtimeType);
   }
 
   @override
@@ -96,74 +96,80 @@ class _localInfoState extends State<localInfo>
 
   // 가장 인기있는 흡연구역(지역)
   Widget _tapContentsGu() {
+    if (_GuList == null || _GuList!.isEmpty) {
+      return const Center(child: Text('No Data Available'));
+    }
     return Column(
-      children: [
-        _Gu(widget.GuInfo?.allRegion[0], 0),
-        _Gu(widget.GuInfo?.allRegion[1], 1),
-        _Gu(widget.GuInfo?.allRegion[2], 2),
-      ],
-    );
+        children: List.generate(
+      _GuList!.length,
+      (index) {
+        return _Gu(_GuList?[index], index);
+      },
+    ));
   }
 
   // 가장 인기있는 흡연구역(흡연구역)
   Widget _tapContentsSmokeArea() {
+    if (_areaList != null || _areaList!.isEmpty) {
+      return const Center(child: Text('No Data Available'));
+    }
     return Column(
-      children: [
-        _Gu(widget.GuInfo?.allRegion[0], 0),
-        _Gu(widget.GuInfo?.allRegion[1], 1),
-        _Gu(widget.GuInfo?.allRegion[2], 2),
-      ],
-    );
+        children: List.generate(
+      _GuList!.length,
+      (index) {
+        return _Gu(_GuList?[index], index);
+      },
+    ));
   }
 }
 
-  Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
-    return Container(
-      height: 50,
-      child: Row(
-        // mainAxisSize: MainAxisSize.min,
-        // mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            '${rank + 1}등',
-            style: const TextStyle(
-              color: Color(0xFF0099FC),
-              fontSize: 12,
-              fontFamily: 'Pretendard',
-              fontWeight: FontWeight.w500,
+Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
+  String key = _GuInfo.keys.first;
+  dynamic value = _GuInfo[key];
+  return Container(
+    height: 50,
+    child: Row(
+      // mainAxisSize: MainAxisSize.min,
+      // mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          '${rank + 1}등',
+          style: const TextStyle(
+            color: Color(0xFF0099FC),
+            fontSize: 12,
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$key구',
+              style: const TextStyle(
+                color: Color(0xFF10151B),
+                fontSize: 14,
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${_GuInfo.keys}',
-                style: const TextStyle(
-                  color: Color(0xFF10151B),
-                  fontSize: 14,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w600,
-                ),
+            Text(
+              '$value회',
+              style: const TextStyle(
+                color: Color(0xFF454D56),
+                fontSize: 12,
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w400,
               ),
-              Text(
-                '${_GuInfo.values}회',
-                style: const TextStyle(
-                  color: Color(0xFF454D56),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}

@@ -45,7 +45,7 @@ class _StatistTapState extends State<StatistTap> {
         return const userInfo();
       case 1:
         // 지역별 통계 화면
-        return localInfo(GuInfo: widget.statInfo);
+        return localInfo(RegionInfo: widget.statInfo); // 80프로
       case 2:
         // 시간대별 평균 흡연량
         return const timeAverInfo();
