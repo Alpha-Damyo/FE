@@ -7,21 +7,26 @@ import 'package:damyo/screens/home/statistics/statistics_info/local_statistics.d
 import 'package:damyo/screens/home/statistics/statistics_info/periodcompare_statistics.dart';
 import 'package:damyo/screens/home/statistics/statistics_info/special_statistics.dart';
 
+
 class StatistTap extends StatefulWidget {
   const StatistTap({
     super.key,
     required this.index,
     required this.category,
+    required this.statInfo,
   });
 
   final int index;
   final String category;
+  final dynamic statInfo;
 
   @override
   State<StatistTap> createState() => _StatistTapState();
 }
 
 class _StatistTapState extends State<StatistTap> {
+  
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +46,7 @@ class _StatistTapState extends State<StatistTap> {
         return const userInfo();
       case 1:
         // 지역별 통계 화면
-        return const localInfo();
+        return localInfo(GuInfo: widget.statInfo);
       case 2:
         // 시간대별 평균 흡연량
         return const timeAverInfo();
@@ -61,5 +66,4 @@ class _StatistTapState extends State<StatistTap> {
         return Container();
     }
   }
-
 }

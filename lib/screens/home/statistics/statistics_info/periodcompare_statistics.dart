@@ -351,12 +351,6 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
       case 3:
         text = '3주전';
         break;
-      case 4:
-        text = '4주전';
-        break;
-      case 5:
-        text = '5주전';
-        break;
       default:
         text = '';
         break;
@@ -515,8 +509,8 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
   List<double> UserAverDay = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7, 9.4];
   List<double> EveryAverDay = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7, 13.4];
 
-  List<double> UserAverWeek = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7];
-  List<double> EveryAverWeek = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7];
+  List<double> UserAverWeek = [12.2, 9.0, 3.4, 10.3];
+  List<double> EveryAverWeek = [11.2, 19.0, 6.4, 17.3];
 
   List<double> UserAverMonth = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7];
   List<double> EveryAverMonth = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7];

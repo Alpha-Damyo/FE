@@ -1,10 +1,13 @@
+import 'package:damyo/models/stat_region_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class localInfo extends StatefulWidget {
   const localInfo({
     super.key,
+    required this.GuInfo,
   });
+  final statRegionModel? GuInfo;
 
   @override
   State<localInfo> createState() => _localInfoState();
@@ -13,11 +16,20 @@ class localInfo extends StatefulWidget {
 class _localInfoState extends State<localInfo>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  List<dynamic>? _GuList, _areaList;
+
+  void setRegionInfo(){
+    setState(() {
+      _GuList = widget.GuInfo?.allRegion;
+      _areaList = widget.GuInfo?.areaTop;
+    });
+  }
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
+    print(widget.GuInfo?.areaTop[0].runtimeType);
   }
 
   @override
@@ -86,168 +98,9 @@ class _localInfoState extends State<localInfo>
   Widget _tapContentsGu() {
     return Column(
       children: [
-        Container(
-          height: 50,
-          // decoration: BoxDecoration(
-          //   border: Border.all(
-          //     width: 1.0,
-          //   ),
-          // ),
-          child: const Row(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '1등',
-                style: TextStyle(
-                  color: Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '광진구',
-                    style: TextStyle(
-                      color: Color(0xFF10151B),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                  Text(
-                    '23,948 회',
-                    style: TextStyle(
-                      color: Color(0xFF454D56),
-                      fontSize: 12,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: 50,
-          // decoration: BoxDecoration(
-          //   border: Border.all(
-          //     width: 1.0,
-          //   ),
-          // ),
-          child: const Row(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '1등',
-                style: TextStyle(
-                  color: Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '광진구',
-                    style: TextStyle(
-                      color: Color(0xFF10151B),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                  Text(
-                    '23,948 회',
-                    style: TextStyle(
-                      color: Color(0xFF454D56),
-                      fontSize: 12,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: 50,
-          // decoration: BoxDecoration(
-          //   border: Border.all(
-          //     width: 1.0,
-          //   ),
-          // ),
-          child: const Row(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '1등',
-                style: TextStyle(
-                  color: Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '광진구',
-                    style: TextStyle(
-                      color: Color(0xFF10151B),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                  Text(
-                    '23,948 회',
-                    style: TextStyle(
-                      color: Color(0xFF454D56),
-                      fontSize: 12,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        _Gu(widget.GuInfo?.allRegion[0], 0),
+        _Gu(widget.GuInfo?.allRegion[1], 1),
+        _Gu(widget.GuInfo?.allRegion[2], 2),
       ],
     );
   }
@@ -256,169 +109,61 @@ class _localInfoState extends State<localInfo>
   Widget _tapContentsSmokeArea() {
     return Column(
       children: [
-        Container(
-          height: 50,
-          // decoration: BoxDecoration(
-          //   border: Border.all(
-          //     width: 1.0,
-          //   ),
-          // ),
-          child: const Row(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '1등',
-                style: TextStyle(
-                  color: Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '광진구',
-                    style: TextStyle(
-                      color: Color(0xFF10151B),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                  Text(
-                    '23,948 회',
-                    style: TextStyle(
-                      color: Color(0xFF454D56),
-                      fontSize: 12,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: 50,
-          // decoration: BoxDecoration(
-          //   border: Border.all(
-          //     width: 1.0,
-          //   ),
-          // ),
-          child: const Row(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '1등',
-                style: TextStyle(
-                  color: Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '광진구',
-                    style: TextStyle(
-                      color: Color(0xFF10151B),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                  Text(
-                    '23,948 회',
-                    style: TextStyle(
-                      color: Color(0xFF454D56),
-                      fontSize: 12,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: 50,
-          // decoration: BoxDecoration(
-          //   border: Border.all(
-          //     width: 1.0,
-          //   ),
-          // ),
-          child: const Row(
-            // mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '1등',
-                style: TextStyle(
-                  color: Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '광진구',
-                    style: TextStyle(
-                      color: Color(0xFF10151B),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                    ),
-                  ),
-                  Text(
-                    '23,948 회',
-                    style: TextStyle(
-                      color: Color(0xFF454D56),
-                      fontSize: 12,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w400,
-                      height: 0,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        _Gu(widget.GuInfo?.allRegion[0], 0),
+        _Gu(widget.GuInfo?.allRegion[1], 1),
+        _Gu(widget.GuInfo?.allRegion[2], 2),
       ],
     );
   }
 }
+
+  Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
+    return Container(
+      height: 50,
+      child: Row(
+        // mainAxisSize: MainAxisSize.min,
+        // mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '${rank + 1}등',
+            style: const TextStyle(
+              color: Color(0xFF0099FC),
+              fontSize: 12,
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${_GuInfo.keys}',
+                style: const TextStyle(
+                  color: Color(0xFF10151B),
+                  fontSize: 14,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                '${_GuInfo.values}회',
+                style: const TextStyle(
+                  color: Color(0xFF454D56),
+                  fontSize: 12,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  

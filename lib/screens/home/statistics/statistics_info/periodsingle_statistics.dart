@@ -316,7 +316,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       fontSize: 14,
     );
     String text;
-    bool day = (now.weekday == value.toInt());
+    bool thisday = (now.weekday == value.toInt());
     switch (value.toInt()) {
       case 1:
         text = '월';
@@ -346,7 +346,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
-      child: Text(text, style: (day) ? style1 : style2),
+      child: Text(text, style: (thisday) ? style1 : style2),
     );
   }
 
@@ -363,7 +363,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       fontSize: 14,
     );
     String text;
-    bool day = (1 == value.toInt());
+    bool thisweek = (1 == value.toInt());
     switch (value.toInt()) {
       case 1:
         text = '이번주';
@@ -377,12 +377,6 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       case 4:
         text = '3주전';
         break;
-      case 5:
-        text = '4주전';
-        break;
-      case 6:
-        text = '5주전';
-        break;
       default:
         text = '';
         break;
@@ -390,7 +384,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
-      child: Text(text, style: (day) ? style1 : style2),
+      child: Text(text, style: (thisweek) ? style1 : style2),
     );
   }
 
@@ -407,7 +401,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       fontSize: 14,
     );
     String text;
-    bool day = (1 == value.toInt());
+    bool thismonth = (1 == value.toInt());
     switch (value.toInt()) {
       case 1:
         text = '이번달';
@@ -434,7 +428,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
-      child: Text(text, style: (day) ? style1 : style2),
+      child: Text(text, style: (thismonth) ? style1 : style2),
     );
   }
 
@@ -655,28 +649,6 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
           barRods: [
             BarChartRodData(
               toY: 15,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              toY: 13,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 6,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
               width: 30,
               gradient: _barsGradientGrey,
             )
