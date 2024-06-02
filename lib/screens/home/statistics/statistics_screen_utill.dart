@@ -7,7 +7,6 @@ import 'package:damyo/screens/home/statistics/statistics_info/local_statistics.d
 import 'package:damyo/screens/home/statistics/statistics_info/periodcompare_statistics.dart';
 import 'package:damyo/screens/home/statistics/statistics_info/special_statistics.dart';
 
-
 class StatistTap extends StatefulWidget {
   const StatistTap({
     super.key,
