@@ -1,15 +1,10 @@
 import 'dart:io';
 
 import 'package:damyo/models/sa_inform_model.dart';
-import 'package:damyo/services/get_smoking_area_service.dart';
 import 'package:damyo/services/get_address_service.dart';
-import 'package:damyo/services/inform_service.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:damyo/services/smoking_area_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -203,7 +198,8 @@ class _InformScreenState extends State<InformScreen> {
                       _selectedInOut[1],
                       '');
 
-                  bool isSuccess = await informSmokingArea(saInformModel);
+                  bool isSuccess =
+                      await SmokingAreaService.informSmokingArea(saInformModel);
                   if (isSuccess) {
                     Fluttertoast.showToast(msg: "제보가 완료되었습니다.");
                     context.pop();
