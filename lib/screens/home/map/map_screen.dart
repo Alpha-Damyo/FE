@@ -5,20 +5,12 @@ import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:damyo/main.dart';
 import 'package:damyo/models/sa_basic_model.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
-import 'package:damyo/screens/home/map/filter/smoking_area_filter_listview.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:damyo/screens/home/map/util/map_filter_listview.dart';
-import 'package:damyo/services/get_smoking_area_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:provider/provider.dart';
-import 'package:damyo/provider/filterlist_provider.dart';
 
 // 지도  핵심 worker
 NaverMapController? mapController;
@@ -72,10 +64,9 @@ class _MapScreenState extends State<MapScreen>
   NCameraPosition? _nowCameraPosition;
   final int _animationMill = 300;
 
+  Map<String, dynamic> smokingAreaMap = {};
   // 흡연 구역을 받아옴
-  void getArea() async {
-    smokingAreaMap = await getSmokingArea();
-  }
+  void getArea() async {}
 
   // 제보 버튼이 눌렀는지 여부
   bool informPressed = false;
@@ -98,8 +89,6 @@ class _MapScreenState extends State<MapScreen>
   ];
 
   BottomDrawerController bottomDrawerController = BottomDrawerController();
-
-  Map<String, dynamic> smokingAreaMap = {};
 
   @override
   Widget build(BuildContext context) {
@@ -136,71 +125,6 @@ class _MapScreenState extends State<MapScreen>
               mapControllerCompleter
                   .complete(controller); // Completer에 지도 컨트롤러 완료 신호 전송
               log("onMapReady", name: "onMapReady");
-              // 마커를 지도 위에 추가
-              var tmp = {
-                "smokingAreas": [
-                  {
-                    "areaId": "area1",
-                    "name": "국민대",
-                    "latitude": null,
-                    "longitude": null,
-                    "address": "길음",
-                    "createdAt": "2023-05-16T06:48:57.450179",
-                    "status": true,
-                    "description": null,
-                    "score": null,
-                    "opened": null,
-                    "closed": null,
-                    "hygiene": null,
-                    "dirty": null,
-                    "air_out": null,
-                    "no_exist": null,
-                    "indoor": null,
-                    "outdoor": null,
-                    "big": null,
-                    "small": null,
-                    "crowded": null,
-                    "quite": null,
-                    "chair": null
-                  },
-                  {
-                    "areaId": "area2",
-                    "name": "고려대",
-                    "latitude": null,
-                    "longitude": null,
-                    "address": "길음",
-                    "createdAt": "2023-05-16T06:48:57.450179",
-                    "status": true,
-                    "description": null,
-                    "score": null,
-                    "opened": null,
-                    "closed": null,
-                    "hygiene": null,
-                    "dirty": null,
-                    "air_out": null,
-                    "no_exist": null,
-                    "indoor": null,
-                    "outdoor": null,
-                    "big": null,
-                    "small": null,
-                    "crowded": null,
-                    "quite": null,
-                    "chair": null
-                  }
-                ]
-              };
-              // for (var data in smokingAreaMap['smokingAreas']) {
-              //   if (data['latitude'] != null && data['longitude'] != null) {
-              //     attachOverlay(
-              //         data['areaId'], data['latitude'], data['longitude']);
-              //   }
-              // }
-              // final Marker marker = Marker(
-              //   mapController: mapController!,
-              //   nOverlayInfoOverlayPortalController:
-              //       nOverlayInfoOverlayPortalController,
-              //   onCameraChangeStream: onCameraChangeStreamController.stream,
-              // );
 
               attachOverlay(SaBasicModel(1, "국민대 도서관 1", 37.65640, 127.11670));
               attachOverlay(SaBasicModel(2, "국민대 도서관 2", 37.65690, 127.11720));
@@ -471,7 +395,6 @@ class _MapScreenState extends State<MapScreen>
   }
 
   void attachOverlay(SaBasicModel sa) async {
-    final cameraPosition = mapController!.nowCameraPosition;
     final marker = NMarker(
       id: sa.id.toString(),
       position: NLatLng(sa.longitude, sa.latitude),
