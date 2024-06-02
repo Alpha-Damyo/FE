@@ -1,14 +1,13 @@
+import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/screens/home/map/somking_area/add_favorites/add_favorite_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SmokingAreaInfoCard extends StatefulWidget {
-  final String smokingAreaId;
-  final String smokingAreaName;
+  final SaBasicModel saBasicModel;
   const SmokingAreaInfoCard({
     super.key,
-    required this.smokingAreaId,
-    required this.smokingAreaName,
+    required this.saBasicModel,
   });
 
   @override
@@ -16,8 +15,11 @@ class SmokingAreaInfoCard extends StatefulWidget {
 }
 
 class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
-  String get _smokingAreaId => widget.smokingAreaId;
-  String get _smokingAreaName => widget.smokingAreaName;
+  String get _smokingAreaId => widget.saBasicModel.id;
+  String get _smokingAreaName => widget.saBasicModel.name;
+  String get _smokingAreaAddress => widget.saBasicModel.address;
+  double get _smokingAreaScore => widget.saBasicModel.score;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -29,7 +31,7 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
         alignment: Alignment.center,
         height: 180,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: const Color(0xffd2d7dd)),
         ),
@@ -49,7 +51,7 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
                           style: Theme.of(context).textTheme.bodyLarge),
                     ],
                   ),
-                  const Text("상세주소: 서울특별시 성북구 정릉로 77"),
+                  Text("주소: $_smokingAreaAddress"),
                 ],
               ),
               // const Text(""),
@@ -57,18 +59,18 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Column(
+                  Column(
                     children: [
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star_rate_rounded,
                             color: Color(0xffffc226),
                           ),
-                          Text("3.7"),
+                          Text("$_smokingAreaScore"),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 3,
                       )
                     ],

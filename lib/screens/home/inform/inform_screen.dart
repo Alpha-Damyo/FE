@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:damyo/models/sa_inform_model.dart';
+import 'package:damyo/models/smoking_area/sa_inform_model.dart';
 import 'package:damyo/services/get_address_service.dart';
 import 'package:damyo/services/smoking_area_service.dart';
 import 'package:flutter/material.dart';
@@ -196,7 +196,7 @@ class _InformScreenState extends State<InformScreen> {
                       _selectedOpenClose[1],
                       _selectedInOut[0],
                       _selectedInOut[1],
-                      '');
+                      null);
 
                   bool isSuccess =
                       await SmokingAreaService.informSmokingArea(saInformModel);
