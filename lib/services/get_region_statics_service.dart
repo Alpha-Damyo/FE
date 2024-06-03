@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 Future<statRegionModel> getRegionStatics() async {
   final baseUrl = dotenv.get('BASE_URL');
-  var url = Uri.parse('$baseUrl/api/data/regionStatics');
+  var url = Uri.parse('$baseUrl/data/regionStatics');
   var response = await http.get(
     url,
   );

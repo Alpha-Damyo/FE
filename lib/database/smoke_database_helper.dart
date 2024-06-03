@@ -77,7 +77,7 @@ class SmokeDatabaseHelper {
       String column) async {
     final db = await database;
     return await db.rawQuery(
-      'SELECT $column, name, COUNT($column) as count FROM smokeInfo GROUP BY $column HAVING COUNT($column) > 1 ORDER BY $column ASC',
+      'SELECT $column, name, COUNT($column) as count FROM smokeInfo GROUP BY $column HAVING COUNT($column) > 1 ORDER BY COUNT($column) DESC',
     );
   }
 

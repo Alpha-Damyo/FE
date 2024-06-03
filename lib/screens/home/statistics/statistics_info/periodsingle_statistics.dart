@@ -125,7 +125,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
                           barGroups: barDayGroups,
                           gridData: const FlGridData(show: false),
                           alignment: BarChartAlignment.spaceAround,
-                          maxY: 15,
+                          maxY: 30,
                         ),
                       )
                     : (periodType == '주')

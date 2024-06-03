@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:damyo/database/smoke_database_helper.dart';
 
+
+DateTime now = DateTime.now();
 class SmokingAreaInfoCard extends StatefulWidget {
   final SaBasicModel saBasicModel;
   const SmokingAreaInfoCard({
@@ -20,6 +22,8 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
   String get _smokingAreaName => widget.saBasicModel.name;
   String get _smokingAreaAddress => widget.saBasicModel.address;
   double get _smokingAreaScore => widget.saBasicModel.score;
+
+  SmokeDatabaseHelper smokeDB = SmokeDatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +121,7 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
         ),
         onPressed: () async{
           func();
-          await smokeDB.insertSmokeInfo(widget.smokingAreaId, widget.smokingAreaName, now);
+          await smokeDB.insertSmokeInfo(widget.saBasicModel.id, widget.saBasicModel.name, now);
         },
         child: Text(
           name,

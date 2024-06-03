@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 Future<statDateModel> getDateStatics() async {
   final baseUrl = dotenv.get('BASE_URL');
-  var url = Uri.parse('$baseUrl/api/data/dateStatics');
+  var url = Uri.parse('$baseUrl/data/dateStatics');
   var response = await http.get(
     url,
   );

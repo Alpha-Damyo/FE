@@ -38,6 +38,7 @@ class _userInfoState extends State<userInfo>
     final _smokeDB = await widget.userDB.getSmokeInfoGroupedByColumn('id');
     setState(() {
       smokePlace = _smokeDB;
+      print(smokePlace);
     });
   }
 
@@ -208,6 +209,7 @@ class _userInfoState extends State<userInfo>
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w600,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Text(
