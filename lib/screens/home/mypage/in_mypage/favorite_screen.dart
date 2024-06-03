@@ -149,7 +149,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                     screenIndex = 0;
                                     homePageController.jumpToPage(0);
                                     moveCameraByFavorite(
-                                        int.parse(favoritesDetail[index][j][0]),
+                                        favoritesDetail[index][j][0],
                                         favoritesDetail[index][j][1]);
                                   });
                                 },
