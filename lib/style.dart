@@ -9,5 +9,6 @@ Text textFormat(String text, double fontsize, var color, FontWeight fontWeight){
       fontWeight: fontWeight,
       color: color,
     ),
+    textScaler: TextScaler.noScaling,
   );
 }
