@@ -1,3 +1,4 @@
+import 'package:damyo/models/stat_date_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:async';
@@ -12,7 +13,10 @@ DateTime now = DateTime.now();
 class periodCompareInfo extends StatefulWidget {
   const periodCompareInfo({
     super.key,
+    required this.everyInfo,
   });
+
+  final statDateModel everyInfo;
 
   @override
   State<periodCompareInfo> createState() => _periodCompareInfoState();
@@ -20,6 +24,21 @@ class periodCompareInfo extends StatefulWidget {
 
 class _periodCompareInfoState extends State<periodCompareInfo> {
   bool _isLoading = false;
+  List<dynamic>? everyDayWeek, everyWeeks, everyMonths;
+
+  void setEveryInfo() {
+    setState(() {
+      everyDayWeek = widget.everyInfo.dayWeek;
+      everyWeeks = widget.everyInfo.weeks;
+      everyMonths = widget.everyInfo.months;
+    });
+  }
+
+  @override
+  void initState() {
+    setEveryInfo();
+    super.initState();
+  }
 
   Future<void> _loadData(int term) async {
     Timer(Duration(milliseconds: term), () {
@@ -263,6 +282,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
   FlGridData get gridData => const FlGridData(
         show: true,
         drawHorizontalLine: true,
+        horizontalInterval: 5,
         drawVerticalLine: false,
       );
 
@@ -280,8 +300,8 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
           ) {
             return BarTooltipItem(
               rod.toY.round().toString(),
-              TextStyle(
-                color: (compareCheck) ? Colors.cyan : Colors.grey,
+              const TextStyle(
+                color: Colors.cyan,
                 fontWeight: FontWeight.bold,
               ),
             );
@@ -351,12 +371,6 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
       case 3:
         text = '3주전';
         break;
-      case 4:
-        text = '4주전';
-        break;
-      case 5:
-        text = '5주전';
-        break;
       default:
         text = '';
         break;
@@ -409,7 +423,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
         showTitles: true,
-        interval: 1,
+        interval: 5,
         reservedSize: 20,
       );
 
@@ -418,26 +432,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
       fontWeight: FontWeight.bold,
       fontSize: 10,
     );
-    int text;
-    switch (value.toInt()) {
-      case 5:
-        text = 5;
-        break;
-      case 10:
-        text = 10;
-        break;
-      case 15:
-        text = 15;
-        break;
-      case 20:
-        text = 20;
-        break;
-      case 25:
-        text = 25;
-        break;
-      default:
-        return Container();
-    }
+    int text = value.toInt();
 
     return Text('$text', style: style, textAlign: TextAlign.center);
   }
@@ -513,25 +508,21 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
 
   // 일, 주, 월 데이터 받아와서 저장 및 등록
   List<double> UserAverDay = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7, 9.4];
-  List<double> EveryAverDay = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7, 13.4];
-
-  List<double> UserAverWeek = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7];
-  List<double> EveryAverWeek = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7];
-
+  List<double> UserAverWeek = [12.2, 9.0, 3.4, 10.3];
   List<double> UserAverMonth = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7];
-  List<double> EveryAverMonth = [11.2, 19.0, 6.4, 17.3, 9.8, 18.7];
 
   List<BarChartGroupData> get barDaysCompare => [
         for (int i = 0; i < UserAverDay.length; i++)
-          makeGroupData(i, UserAverDay[i], EveryAverDay[i], compareCheck)
+          makeGroupData(i, UserAverDay[i], everyDayWeek?[i + 1], compareCheck)
       ];
   List<BarChartGroupData> get barWeeksCompare => [
         for (int i = 0; i < UserAverWeek.length; i++)
-          makeGroupData(i, UserAverWeek[i], EveryAverWeek[i], compareCheck)
+          makeGroupData(i, UserAverWeek[i], everyWeeks?[4 - i], compareCheck)
       ];
   List<BarChartGroupData> get barMonthsCompare => [
         for (int i = 0; i < UserAverMonth.length; i++)
-          makeGroupData(i, UserAverMonth[i], EveryAverMonth[i], compareCheck)
+          makeGroupData(i, UserAverMonth[i],
+              everyMonths?[(now.month + 12 - i) % 12], compareCheck)
       ];
 
   BarChartGroupData makeGroupData(
@@ -541,16 +532,17 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
       x: x,
       barRods: [
         BarChartRodData(
-          toY: y1,
+          toY: (y1 == 0) ? 0.4 : y1,
           width: 15,
           gradient: (compareCheck) ? _barsGradientBlue : _barsGradientGrey,
         ),
         BarChartRodData(
-          toY: y2,
+          toY: (y2 == 0) ? 0.4 : y2,
           width: 15,
           gradient: (compareCheck) ? _barsGradientGrey : _barsGradientBlue,
         ),
       ],
+      showingTooltipIndicators: (compareCheck) ? [0] : [1],
     );
   }
 
@@ -571,6 +563,4 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
         begin: Alignment.bottomCenter,
         end: Alignment.topCenter,
       );
-
-  
 }
