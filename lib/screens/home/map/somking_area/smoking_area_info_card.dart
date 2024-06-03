@@ -1,6 +1,7 @@
 import 'package:damyo/screens/home/map/somking_area/add_favorites/add_favorite_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:damyo/database/smoke_database_helper.dart';
 
 class SmokingAreaInfoCard extends StatefulWidget {
   final String smokingAreaId;
@@ -18,6 +19,10 @@ class SmokingAreaInfoCard extends StatefulWidget {
 class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
   String get _smokingAreaId => widget.smokingAreaId;
   String get _smokingAreaName => widget.smokingAreaName;
+  
+  final SmokeDatabaseHelper smokeDB = SmokeDatabaseHelper();
+  DateTime now = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -112,8 +117,9 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
           minimumSize: const Size(35, 35),
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        onPressed: () {
+        onPressed: () async{
           func();
+          await smokeDB.insertSmokeInfo(widget.smokingAreaId, widget.smokingAreaName, now);
         },
         child: Text(
           name,

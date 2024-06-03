@@ -1,13 +1,11 @@
-import 'package:damyo/services/get_region_statics_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:damyo/screens/home/statistics/statistics_screen_utill.dart';
 import 'package:damyo/services/get_date_statics_service.dart';
-import 'package:intl/intl.dart';
-import 'package:damyo/models/stat_date_model.dart';
-import 'package:damyo/services/get_date_statics_service.dart';
-import 'package:damyo/models/stat_region_model.dart';
 import 'package:damyo/services/get_region_statics_service.dart';
+import 'package:damyo/models/stat_date_model.dart';
+import 'package:damyo/models/stat_region_model.dart';
+import 'package:damyo/database/smoke_database_helper.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -19,6 +17,9 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen> {
   statDateModel? statDateInfo;
   statRegionModel? statRegionInfo;
+
+  SmokeDatabaseHelper smokeDB = SmokeDatabaseHelper();
+  List<Map<String, dynamic>> userSmokeList = [];
 
   Future<void> getStatics() async {
     try {
@@ -60,7 +61,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               children: [
                 ElevatedButton(
                     onPressed: () async {
-                      await getDateStatics();
+                      print(userSmokeList);
                     },
                     child: Text('test1')),
                 ElevatedButton(
@@ -72,12 +73,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   height: 20.h,
                 ),
                 // 사용자의 정보
-                const SizedBox(
+                SizedBox(
                   height: 400,
                   child: StatistTap(
                     index: 0,
                     category: '사용자 정보',
-                    statInfo: null,
+                    statInfo: smokeDB,
                   ),
                 ),
                 SizedBox(
@@ -118,7 +119,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         child: StatistTap(
                           index: 2,
                           category: '시간대별 평균 흡연량',
-                          statInfo: statDateInfo,
+                          statInfo: statDateInfo?.time,
                         ),
                       ),
                 Container(
@@ -126,16 +127,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   color: Colors.grey[200],
                 ),
                 // 기간별 흡연 데이터 통계(사용자)
-                statDateInfo == null
-                    ? const CircularProgressIndicator() // 로딩 중에는 로딩 인디케이터를 표시
-                    : SizedBox(
-                        height: 1000.h,
-                        child: StatistTap(
-                          index: 3,
-                          category: '기간별 평균 흡연량(개인)',
-                          statInfo: statDateInfo,
-                        ),
-                      ),
+                SizedBox(
+                  height: 1000.h,
+                  child: StatistTap(
+                    index: 3,
+                    category: '기간별 평균 흡연량(개인)',
+                    statInfo: smokeDB,
+                  ),
+                ),
                 Container(
                   height: 20.h,
                   color: Colors.grey[200],

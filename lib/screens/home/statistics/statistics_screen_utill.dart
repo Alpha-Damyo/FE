@@ -24,8 +24,6 @@ class StatistTap extends StatefulWidget {
 }
 
 class _StatistTapState extends State<StatistTap> {
-  
-
   @override
   void initState() {
     super.initState();
@@ -42,22 +40,24 @@ class _StatistTapState extends State<StatistTap> {
     switch (widget.index) {
       case 0:
         // 유저 정보 화면
-        return const userInfo();
+        return userInfo(userDB: widget.statInfo); // 사용자 이름만 가져오면 됨
       case 1:
         // 지역별 통계 화면
-        return localInfo(RegionInfo: widget.statInfo); // 80프로
+        return localInfo(RegionInfo: widget.statInfo); // 80프로 - Map으로 자료 변환만 되면 
       case 2:
         // 시간대별 평균 흡연량
-        return const timeAverInfo();
+        return timeAverInfo(TimeInfo: widget.statInfo); // 사용자 정보만 가져오면 됨
       case 3:
         // 기간별 통계 화면(개인 총 흡연량)
-        return const periodSingleInfo();
+        return periodSingleInfo(userDB: widget.statInfo); // 사용자 정보 가져오기
       case 4:
         // 담배값 계산기
-        return const calculatePrice();
+        return const calculatePrice(); // 사용자 정보 가져오기
       case 5:
         // 기간별 평균 흡연량 비교
-        return const periodCompareInfo();
+        return periodCompareInfo(
+          everyInfo: widget.statInfo,
+        ); // 사용자 정보만 가져오면 됨
       case 6:
         // 특정 기간에 대한 페이지
         return const SpecialDays();

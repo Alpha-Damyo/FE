@@ -127,7 +127,7 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
   String key = _GuInfo.keys.first;
   dynamic value = _GuInfo[key];
   return Container(
-    height: 50,
+    height: 55,
     child: Row(
       // mainAxisSize: MainAxisSize.min,
       // mainAxisAlignment: MainAxisAlignment.center,

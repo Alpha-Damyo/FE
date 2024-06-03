@@ -31,25 +31,30 @@ class SmokeDatabaseHelper {
     String path = join(await getDatabasesPath(), 'smokeInfo_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 3,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute(
-      'CREATE TABLE smokeInfo ('
-      'autoId INTEGER PRIMARY KEY AUTOINCREMENT, '
-      'id INTEGER, '
-      'date TEXT, '
-      'weekday TEXT'
-      'time INTEGER)',
-    );
+    await db.execute('CREATE TABLE smokeInfo ('
+        'autoId INTEGER PRIMARY KEY AUTOINCREMENT, '
+        'id TEXT, '
+        'name TEXT, '
+        'date TEXT, '
+        'weekday TEXT, '
+        'time INTEGER)');
   }
 
-  Future<void> insertSmokeInfo(
-      int id, DateTime dateInfo) async {
-    
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      await db.execute('DROP TABLE IF EXISTS smokeInfo');
+      await _onCreate(db, newVersion);
+    }
+  }
+
+  Future<void> insertSmokeInfo(String id, String name, DateTime dateInfo) async {
     String date = formatDate(dateInfo);
     int time = int.parse(formatTime(dateInfo));
     String weekday = formatWeekday(dateInfo);
@@ -58,7 +63,7 @@ class SmokeDatabaseHelper {
 
     await db.insert(
       'smokeInfo',
-      {'id': id, 'date': date, 'weekday': weekday, 'time': time},
+      {'id': id, 'name':name, 'date': date, 'weekday': weekday, 'time': time},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -72,9 +77,15 @@ class SmokeDatabaseHelper {
       String column) async {
     final db = await database;
     return await db.rawQuery(
-      'SELECT * FROM smokeInfo GROUP BY $column HAVING COUNT($column) > 1',
+      'SELECT $column, name, COUNT($column) as count FROM smokeInfo GROUP BY $column HAVING COUNT($column) > 1 ORDER BY $column ASC',
     );
   }
 
-  
+  Future<List<Map<String, dynamic>>> getSmokeInfoGroupedByColumnNOName(
+      String column) async {
+    final db = await database;
+    return await db.rawQuery(
+      'SELECT $column, COUNT($column) as count FROM smokeInfo GROUP BY $column HAVING COUNT($column) > 1',
+    );
+  }
 }

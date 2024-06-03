@@ -18,11 +18,11 @@ Future<statDateModel> getDateStatics() async {
   if (response.statusCode == 200) {
     // print(jsonMap);
     return statDateModel(
-        jsonMap['hourlyStatisticsResponse'],
-        jsonMap['dailyStatisticsResponse'],
-        jsonMap['weeklyStatisticsResponse'],
-        jsonMap['monthlyStatisticsResponse'],
-        jsonMap['dayOfWeekStatisticsResponse']);
+        jsonMap['hourlyStatisticsResponse']['time'],
+        jsonMap['dailyStatisticsResponse']['days'],
+        jsonMap['weeklyStatisticsResponse']['weeks'],
+        jsonMap['monthlyStatisticsResponse']['months'],
+        jsonMap['dayOfWeekStatisticsResponse']['dayWeek']);
   } else {
     print(utf8.decode(response.bodyBytes));
     throw Exception("Failed to date statics");
