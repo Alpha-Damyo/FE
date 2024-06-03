@@ -2,7 +2,10 @@ import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/screens/home/map/somking_area/add_favorites/add_favorite_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:damyo/database/smoke_database_helper.dart';
 
+
+DateTime now = DateTime.now();
 class SmokingAreaInfoCard extends StatefulWidget {
   final SaBasicModel saBasicModel;
   const SmokingAreaInfoCard({
@@ -19,6 +22,8 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
   String get _smokingAreaName => widget.saBasicModel.name;
   String get _smokingAreaAddress => widget.saBasicModel.address;
   double get _smokingAreaScore => widget.saBasicModel.score;
+
+  SmokeDatabaseHelper smokeDB = SmokeDatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -114,8 +119,9 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
           minimumSize: const Size(35, 35),
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        onPressed: () {
+        onPressed: () async{
           func();
+          await smokeDB.insertSmokeInfo(widget.saBasicModel.id, widget.saBasicModel.name, now);
         },
         child: Text(
           name,

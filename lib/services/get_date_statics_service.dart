@@ -1,22 +1,28 @@
 import 'dart:convert';
+import 'package:damyo/models/stat_date_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 // jjhinu104@gmail.com
 
-Future<Map<String, dynamic>> getDateStatics() async {
+Future<statDateModel> getDateStatics() async {
   final baseUrl = dotenv.get('BASE_URL');
   var url = Uri.parse('$baseUrl/data/dateStatics');
   var response = await http.get(
     url,
   );
-  
+
   final Map<String, dynamic> jsonMap =
       jsonDecode(utf8.decode(response.bodyBytes));
 
   if (response.statusCode == 200) {
-    print(jsonMap);
-    return jsonMap;
+    // print(jsonMap);
+    return statDateModel(
+        jsonMap['hourlyStatisticsResponse']['time'],
+        jsonMap['dailyStatisticsResponse']['days'],
+        jsonMap['weeklyStatisticsResponse']['weeks'],
+        jsonMap['monthlyStatisticsResponse']['months'],
+        jsonMap['dayOfWeekStatisticsResponse']['dayWeek']);
   } else {
     print(utf8.decode(response.bodyBytes));
     throw Exception("Failed to date statics");
