@@ -11,6 +11,7 @@ import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.d
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/achievement_screen.dart';
+import 'package:damyo/screens/home/mypage/in_mypage/updateprofile_screen.dart';
 import 'package:damyo/screens/login/login_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/signup/signup_screen.dart';
@@ -97,8 +98,8 @@ Future<void> _getCurrentLocation() async {
   try {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    userLatitude = position.latitude;
-    userLongitude = position.longitude;
+    // userLatitude = position.latitude;
+    // userLongitude = position.longitude;
   } catch (e) {
     print(e);
   }
@@ -228,6 +229,13 @@ final GoRouter router = GoRouter(
           path: 'achievement',
           builder: (context, state) {
             return const AchievementScreen();
+          },
+        ),
+        GoRoute(
+          name: 'update_profile',
+          path: 'update_profile',
+          builder: (context, state) {
+            return const UpdateprofileScreen();
           },
         ),
         GoRoute(

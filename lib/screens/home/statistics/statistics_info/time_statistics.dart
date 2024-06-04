@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 //index 2
 bool timeCheck = true;
 
 class timeAverInfo extends StatefulWidget {
-  const timeAverInfo({super.key});
+  const timeAverInfo({super.key, required this.TimeInfo});
 
+  final dynamic TimeInfo;
   @override
   State<timeAverInfo> createState() => _timeAverInfoState();
 }
 
 class _timeAverInfoState extends State<timeAverInfo> {
+  List<dynamic>? _EveryList;
+
+  void setTimeInfo() {
+    setState(() {
+      _EveryList = widget.TimeInfo;
+    });
+  }
+  
+  @override
+  void initState() {
+    setTimeInfo();
+    super.initState();
+  }
+
   //시간대별 정보
   @override
   Widget build(BuildContext context) {
@@ -59,7 +73,7 @@ class _timeAverInfoState extends State<timeAverInfo> {
             ),
             TextButton(
               onPressed: () {
-                 setState(() {
+                setState(() {
                   timeCheck = false;
                 });
               },
@@ -99,7 +113,7 @@ class _timeAverInfoState extends State<timeAverInfo> {
         lineBarsData: lineBarsData,
         minX: 0,
         maxX: 24,
-        maxY: 30,
+        maxY: 60,
         minY: 0,
       );
 
@@ -136,33 +150,14 @@ class _timeAverInfoState extends State<timeAverInfo> {
       fontSize: 10,
     );
     int text;
-    switch (value.toInt()) {
-      case 5:
-        text = 5;
-        break;
-      case 10:
-        text = 10;
-        break;
-      case 15:
-        text = 15;
-        break;
-      case 20:
-        text = 20;
-        break;
-      case 25:
-        text = 25;
-        break;
-      default:
-        return Container();
-    }
-
+    text = value.toInt();
     return Text('$text', style: style, textAlign: TextAlign.center);
   }
 
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
         showTitles: true,
-        interval: 1,
+        interval: 10,
         reservedSize: 20,
       );
 
@@ -219,6 +214,7 @@ class _timeAverInfoState extends State<timeAverInfo> {
   FlGridData get gridData => const FlGridData(
         show: true,
         drawHorizontalLine: true,
+        horizontalInterval: 10,
         drawVerticalLine: false,
       );
 
@@ -279,16 +275,19 @@ class _timeAverInfoState extends State<timeAverInfo> {
         isStrokeCapRound: true,
         dotData: const FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        spots: const [
-          FlSpot(0, 1),
-          FlSpot(3, 2.8),
-          FlSpot(6, 4.2),
-          FlSpot(9, 9.8),
-          FlSpot(12, 7.6),
-          FlSpot(15, 10.9),
-          FlSpot(18, 15.9),
-          FlSpot(21, 23.9),
-          FlSpot(24, 10.9),
-        ],
+        spots: List.generate(_EveryList!.length, (index){
+          return FlSpot(index*3, _EveryList![index]);
+        })
+        // spots: const [
+        //   FlSpot(0, 1),
+        //   FlSpot(3, 2.8),
+        //   FlSpot(6, 4.2),
+        //   FlSpot(9, 9.8),
+        //   FlSpot(12, 7.6),
+        //   FlSpot(15, 10.9),
+        //   FlSpot(18, 15.9),
+        //   FlSpot(21, 23.9),
+        //   FlSpot(24, 10.9),
+        // ],
       );
 }

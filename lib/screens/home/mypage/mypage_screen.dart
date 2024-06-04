@@ -160,21 +160,20 @@ class _MypageScreenState extends State<MypageScreen> {
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                            MainAxisAlignment.start,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            '업적',
+                                            '업적 & 기여도',
                                             style: TextStyle(
                                               color: const Color(0xFF262B32),
                                               fontSize: 16.sp,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w500,
-                                              height: 0,
                                             ),
                                           ),
-                                          SizedBox(width: 306.w),
+                                          SizedBox(width: 280),
                                         ],
                                       ),
                                     ),
@@ -576,7 +575,13 @@ class _MypageScreenState extends State<MypageScreen> {
                     ),
                   ],
                 ),
-                SizedBox(width: 112.w),
+                SizedBox(width: 70.w),
+                IconButton(
+                    onPressed: () {
+                      context.push('/update_profile');
+                    },
+                    icon: const Icon(Icons.keyboard_arrow_right)),
+                SizedBox(width: 10.w),
               ],
             ),
           ),

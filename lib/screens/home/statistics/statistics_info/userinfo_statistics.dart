@@ -1,24 +1,59 @@
+import 'package:damyo/database/smoke_database_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 // 날짜 정보를 가져오기 위해
 DateTime now = DateTime.now();
 
 class userInfo extends StatefulWidget {
-  const userInfo({super.key});
+  userInfo({
+    super.key,
+    required this.userDB,
+  });
 
+  SmokeDatabaseHelper userDB;
   final String userName = '최하영';
   @override
   State<userInfo> createState() => _userInfoState();
 }
 
-class _userInfoState extends State<userInfo> {
+class _userInfoState extends State<userInfo>
+    with SingleTickerProviderStateMixin {
+  late ScrollController _controller;
+  late AnimationController _animationController;
+  List<dynamic>? smokePlace;
+
+  @override
+  void initState() {
+    _controller = ScrollController();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5), // 애니메이션 지속 시간 설정
+    )..repeat();
+    getDB();
+    super.initState();
+  }
+
+  Future<void> getDB() async {
+    final _smokeDB = await widget.userDB.getSmokeInfoGroupedByColumn('id');
+    setState(() {
+      smokePlace = _smokeDB;
+      // print(smokePlace);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   // 사용자 정보 위젯
   Widget build(BuildContext context) {
     return Container(
-      padding: const  EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 25,
         left: 16,
         right: 16,
@@ -97,17 +132,32 @@ class _userInfoState extends State<userInfo> {
                 ),
               ),
               const SizedBox(height: 10),
-              SizedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _mostSmokingArea(1, '국민대 도서관', 23129),
-                    _mostSmokingArea(2, '정릉역 2번출구', 13023),
-                    _mostSmokingArea(3, '국민대 공학관', 10322),
-                  ],
-                ),
-              ),
+              (smokePlace == null || smokePlace!.isEmpty)
+                  ? const Center(child: Text('No Data Available'))
+                  : SizedBox(
+                      width: 390,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: List.generate(smokePlace!.length, (index) {
+                          if (index < 3) {
+                            return _mostSmokingArea(
+                              index + 1,
+                              smokePlace?[index]['id'],
+                              smokePlace?[index]['name'],
+                              smokePlace?[index]['count'],
+                            );
+                          }
+                          return Container();
+                        }).where((element) => element != Container()).toList(),
+                        // children: [
+                        //   _mostSmokingArea(1, '국민대 도서관', 23129),
+                        //   _mostSmokingArea(2, '정릉역 2번출구', 13023),
+                        //   _mostSmokingArea(3, '국민대 공학관', 10322),
+                        // ],
+                      ),
+                    ),
             ],
           ),
         ],
@@ -116,73 +166,83 @@ class _userInfoState extends State<userInfo> {
   }
 
   // 많이 방문한 흡연구역
-  Widget _mostSmokingArea(int rank, String place, int cnt) {
-    return Center(
-      child: InkWell(
-        onTap: () {
-          print(place);
-          print(now.weekday);
-          context.push('/sa_info', extra: '1');
-        },
-        child: Container(
-          width: 120,
-          height: 120,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(width: 1, color: const Color(0xFFEEF1F4)),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '$rank등',
-                style: const TextStyle(
-                  color: Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                ),
+  Widget _mostSmokingArea(int rank, String id, String name, int cnt) {
+    return Row(
+      children: [
+        Center(
+          child: InkWell(
+            onTap: () {
+              // print(id);
+              // print(now.weekday);
+              context.push('/sa_info', extra: id);
+            },
+            child: Container(
+              width: 120,
+              height: 120,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 1, color: const Color(0xFFEEF1F4)),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    place,
+                    '$rank등',
                     style: const TextStyle(
-                      color: Color(0xFF10151B),
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '$cnt 회',
-                    style: const TextStyle(
-                      color: Color(0xFF6E767F),
-                      fontSize: 10,
+                      color: Color(0xFF0099FC),
+                      fontSize: 12,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTag('실외'),
-                      _buildTag('개방형'),
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          color: Color(0xFF10151B),
+                          fontSize: 14,
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$cnt 회',
+                        style: const TextStyle(
+                          color: Color(0xFF6E767F),
+                          fontSize: 10,
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          _buildTag('실외'),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          _buildTag('개방형'),
+                        ],
+                      ),
                     ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        const SizedBox(
+          width: 10,
+        ),
+      ],
     );
   }
 

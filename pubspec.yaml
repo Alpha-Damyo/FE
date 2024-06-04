@@ -115,6 +115,7 @@ flutter:
     - assets/icons/
     - assets/images/smoking_area_default_image.png
 
+    
   fonts:
     - family: pretendard
       fonts:

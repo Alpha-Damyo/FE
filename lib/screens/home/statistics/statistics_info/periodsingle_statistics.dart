@@ -1,3 +1,4 @@
+import 'package:damyo/database/smoke_database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:async';
@@ -7,25 +8,66 @@ final List<bool> _isPeriodtype = [true, false, false];
 String periodType = '일';
 // 날짜 정보를 가져오기 위해
 DateTime now = DateTime.now();
+List<String> weekOrder = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+];
 
 class periodSingleInfo extends StatefulWidget {
   const periodSingleInfo({
     super.key,
+    required this.userDB,
   });
+
+  final SmokeDatabaseHelper userDB;
 
   @override
   State<periodSingleInfo> createState() => _periodSingleInfoState();
 }
 
 class _periodSingleInfoState extends State<periodSingleInfo> {
-  bool _isLoading = false;
+  bool _isLoading = true;
+  List<dynamic>? smokeWeekdayInfo;
 
   Future<void> _loadData(int term) async {
     Timer(Duration(milliseconds: term), () {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     });
+  }
+
+  Future<void> getDB() async {
+    final _smokeDB = await widget.userDB.getSmokeInfo();
+    final _smokeWeekday =
+        await widget.userDB.getSmokeInfoGroupedByColumnNOName('weekday');
+    if (mounted) {
+      setState(() {
+        List<int> smokeCounts = List.filled(7, 0);
+        for (var item in _smokeWeekday) {
+          int index = weekOrder.indexOf(item['weekday']);
+          if (index != -1) {
+            smokeCounts[index] = item['count'];
+          }
+        }
+        smokeWeekdayInfo = smokeCounts;
+        // print(_smokeDB);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData(300);
+    getDB();
   }
 
   @override
@@ -88,7 +130,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
                           barGroups: barDayGroups,
                           gridData: const FlGridData(show: false),
                           alignment: BarChartAlignment.spaceAround,
-                          maxY: 20,
+                          maxY: 30,
                         ),
                       )
                     : (periodType == '주')
@@ -121,7 +163,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
           child: ToggleButtons(
             disabledColor: Colors.white,
             selectedColor: const Color(0xFFEEF1F4),
-            fillColor: const Color(0xFFEEF1F4), 
+            fillColor: const Color(0xFFEEF1F4),
             borderRadius: BorderRadius.circular(10),
             renderBorder: false,
             isSelected: _isPeriodtype,
@@ -235,7 +277,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
         touchTooltipData: BarTouchTooltipData(
           getTooltipColor: (group) => Colors.transparent,
           tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 8,
+          tooltipMargin: 20,
           getTooltipItem: (
             BarChartGroupData group,
             int groupIndex,
@@ -279,7 +321,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
         ),
       );
 
-  // '주'
+  // '월'
   BarTouchData get barMonthTouchData => BarTouchData(
         enabled: false,
         touchTooltipData: BarTouchTooltipData(
@@ -316,7 +358,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       fontSize: 14,
     );
     String text;
-    bool day = (now.weekday == value.toInt());
+    bool thisday = (now.weekday == value.toInt());
     switch (value.toInt()) {
       case 1:
         text = '월';
@@ -346,7 +388,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
-      child: Text(text, style: (day) ? style1 : style2),
+      child: Text(text, style: (thisday) ? style1 : style2),
     );
   }
 
@@ -363,7 +405,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       fontSize: 14,
     );
     String text;
-    bool day = (1 == value.toInt());
+    bool thisweek = (1 == value.toInt());
     switch (value.toInt()) {
       case 1:
         text = '이번주';
@@ -377,12 +419,6 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       case 4:
         text = '3주전';
         break;
-      case 5:
-        text = '4주전';
-        break;
-      case 6:
-        text = '5주전';
-        break;
       default:
         text = '';
         break;
@@ -390,7 +426,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
-      child: Text(text, style: (day) ? style1 : style2),
+      child: Text(text, style: (thisweek) ? style1 : style2),
     );
   }
 
@@ -407,7 +443,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       fontSize: 14,
     );
     String text;
-    bool day = (1 == value.toInt());
+    bool thismonth = (1 == value.toInt());
     switch (value.toInt()) {
       case 1:
         text = '이번달';
@@ -434,7 +470,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 4,
-      child: Text(text, style: (day) ? style1 : style2),
+      child: Text(text, style: (thismonth) ? style1 : style2),
     );
   }
 
@@ -529,92 +565,24 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
         end: Alignment.topCenter,
       );
 
-  List<BarChartGroupData> get barDayGroups => [
-        BarChartGroupData(
-          x: 1,
+  List<BarChartGroupData> get barDayGroups =>
+      List.generate(smokeWeekdayInfo!.length, (index) {
+        return BarChartGroupData(
+          x: index + 1,
           barRods: [
             BarChartRodData(
-              toY: 8,
+              toY: (smokeWeekdayInfo?[index] != 0)
+                  ? (smokeWeekdayInfo?[index] * 1.0)
+                  : 0.2,
               width: 30,
-              gradient:
-                  (1 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
+              gradient: ((index + 1) == now.weekday)
+                  ? _barsGradientBlue
+                  : _barsGradientGrey,
             )
           ],
           showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              width: 30,
-              gradient:
-                  (2 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-              toY: 14,
-              width: 30,
-              gradient:
-                  (3 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 4,
-          barRods: [
-            BarChartRodData(
-              toY: 15,
-              width: 30,
-              gradient:
-                  (4 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              toY: 13,
-              width: 30,
-              gradient:
-                  (5 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 6,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              width: 30,
-              gradient:
-                  (6 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 7,
-          barRods: [
-            BarChartRodData(
-              toY: 16,
-              width: 30,
-              gradient:
-                  (7 == now.weekday) ? _barsGradientBlue : _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-      ];
+        );
+      });
 
   List<BarChartGroupData> get barWeekGroups => [
         BarChartGroupData(
@@ -655,28 +623,6 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
           barRods: [
             BarChartRodData(
               toY: 15,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              toY: 13,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 6,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
               width: 30,
               gradient: _barsGradientGrey,
             )
