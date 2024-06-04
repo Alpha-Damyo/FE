@@ -261,7 +261,7 @@ class _MapScreenState extends State<MapScreen>
                           isCameraMoved = false;
                         },
                         child: Container(
-                          width: 146,
+                          width: 160,
                           padding: const EdgeInsets.symmetric(
                               vertical: 5, horizontal: 16),
                           decoration: BoxDecoration(
@@ -299,7 +299,7 @@ class _MapScreenState extends State<MapScreen>
                       ),
                     ),
                     SizedBox(
-                        width: mapWidth / 2 - padding - alignButtonSize - 73),
+                        width: mapWidth / 2 - padding - alignButtonSize - 80),
                     InkWell(
                       onTap: () {
                         setState(() {
