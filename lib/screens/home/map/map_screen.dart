@@ -112,6 +112,21 @@ class _MapScreenState extends State<MapScreen>
     "quite": null,
     "chair": null,
   };
+  void resetFilter() {
+    searchFilterMap['opened'] = null;
+    searchFilterMap['closed'] = null;
+    searchFilterMap['hygiene'] = null;
+    searchFilterMap['dirty'] = null;
+    searchFilterMap['airOut'] = null;
+    searchFilterMap['noExist'] = null;
+    searchFilterMap['indoor'] = null;
+    searchFilterMap['outdoor'] = null;
+    searchFilterMap['big'] = null;
+    searchFilterMap['small'] = null;
+    searchFilterMap['crowded'] = null;
+    searchFilterMap['quite'] = null;
+    searchFilterMap['chair'] = null;
+  }
 
   final List<String> _mapFilterCharacterList = [
     '실외',
@@ -244,23 +259,16 @@ class _MapScreenState extends State<MapScreen>
                                 setState(() {
                                   if (_selectedFilterIndex == index) {
                                     _selectedFilterIndex = -1;
-                                    if (index == 0) {
-                                      searchFilterMap['outdoor'] = null;
-                                    } else if (index == 1) {
-                                      searchFilterMap['opened'] = null;
-                                    } else if (index == 2) {
-                                      searchFilterMap['quite'] = null;
-                                    } else if (index == 3) {
-                                      searchFilterMap['hygiene'] = null;
-                                    } else {
-                                      searchFilterMap['chair'] = null;
-                                    }
+                                    resetFilter();
                                   } else {
                                     _selectedFilterIndex = index;
+                                    resetFilter();
                                     if (index == 0) {
                                       searchFilterMap['outdoor'] = true;
+                                      searchFilterMap['indoor'] = false;
                                     } else if (index == 1) {
                                       searchFilterMap['opened'] = true;
+                                      searchFilterMap['closed'] = false;
                                     } else if (index == 2) {
                                       searchFilterMap['quite'] = true;
                                     } else if (index == 3) {
@@ -272,7 +280,6 @@ class _MapScreenState extends State<MapScreen>
                                 });
                                 updateMap(_nowCameraPosition!.target.latitude,
                                     _nowCameraPosition!.target.longitude);
-                                print(searchFilterMap);
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -323,8 +330,18 @@ class _MapScreenState extends State<MapScreen>
                     const SizedBox(width: 10),
                     // 필터 설정 버튼
                     InkWell(
-                      onTap: () {
-                        filterScreen(context);
+                      onTap: () async {
+                        clickApplyFilter = false;
+                        await filterScreen(
+                          context,
+                          searchFilterMap,
+                          applyFilter,
+                        );
+                        if (clickApplyFilter) {
+                          _selectedFilterIndex = -1;
+                          updateMap(_nowCameraPosition!.target.latitude,
+                              _nowCameraPosition!.target.longitude);
+                        }
                       },
                       child: Container(
                         width: alignButtonSize,
@@ -613,6 +630,12 @@ class _MapScreenState extends State<MapScreen>
       smokingAreaSelected = true;
     });
     mapController!.addOverlay(marker);
+  }
+
+  bool clickApplyFilter = false;
+
+  void applyFilter() {
+    clickApplyFilter = true;
   }
 
   void onCameraChange() async {

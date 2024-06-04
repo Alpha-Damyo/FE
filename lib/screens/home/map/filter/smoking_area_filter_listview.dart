@@ -52,10 +52,12 @@ import 'package:flutter/material.dart';
 class FilterListview extends StatefulWidget {
   final List<String> characterList;
   int selectedCharacterIndex;
+  Function(int) setIndex;
   FilterListview({
     super.key,
     required this.characterList,
     required this.selectedCharacterIndex,
+    required this.setIndex,
   });
 
   @override
@@ -85,8 +87,10 @@ class _FilterListviewState extends State<FilterListview> {
                     setState(() {
                       if (widget.selectedCharacterIndex == index) {
                         widget.selectedCharacterIndex = -1;
+                        widget.setIndex(-1);
                       } else {
                         widget.selectedCharacterIndex = index;
+                        widget.setIndex(index);
                       }
                     });
                   },
