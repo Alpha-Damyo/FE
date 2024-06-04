@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 Text textFormat(
     {required String text,
-    double fontsize = 14,
+    double fontSize = 14,
     Color? color = Colors.black,
     FontWeight fontWeight = FontWeight.normal,
-    TextOverflow? textoverflow}) {
+    TextOverflow? textOverflow}) {
   return Text(
     text,
     style: TextStyle(
-      fontSize: fontsize,
+      fontSize: fontSize,
       fontFamily: 'Pretendard',
       fontWeight: fontWeight,
       color: color,
     ),
     textScaler: TextScaler.noScaling,
-    overflow: textoverflow,
+    overflow: textOverflow,
   );
 }
