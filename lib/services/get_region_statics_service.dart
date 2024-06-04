@@ -19,7 +19,6 @@ Future<statRegionModel> getRegionStatics() async {
     return statRegionModel(
         jsonMap['allRegionStatisticsResponse']['allRegion'], jsonMap['areaTopResponse']['areaTop']);
   } else {
-    print(utf8.decode(response.bodyBytes));
     throw Exception("Failed to region statics");
   }
 }

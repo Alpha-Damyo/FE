@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-Text textFormat(String text, double fontsize, var color, FontWeight fontWeight){
+Text textFormat(
+    {required String text,
+    double fontsize = 14,
+    Color? color = Colors.black,
+    FontWeight fontWeight = FontWeight.normal,
+    TextOverflow? textoverflow}) {
   return Text(
     text,
     style: TextStyle(
@@ -10,5 +15,6 @@ Text textFormat(String text, double fontsize, var color, FontWeight fontWeight){
       color: color,
     ),
     textScaler: TextScaler.noScaling,
+    overflow: textoverflow,
   );
 }

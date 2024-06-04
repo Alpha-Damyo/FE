@@ -1,6 +1,10 @@
 import 'package:damyo/models/stat_region_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:damyo/services/smoking_area_service.dart';
+import 'package:damyo/models/smoking_area/sa_detail_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:path/path.dart';
 
 class localInfo extends StatefulWidget {
   const localInfo({
@@ -17,11 +21,28 @@ class _localInfoState extends State<localInfo>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<dynamic>? _GuList, _areaList;
+  List<SaDetailModel>? _SaList;
 
   void setRegionInfo() {
     setState(() {
       _GuList = widget.RegionInfo?.allRegion;
       _areaList = widget.RegionInfo?.areaTop;
+      // print(_areaList?[0].runtimeType);
+      getSaModle(_areaList);
+    });
+  }
+
+  Future<void> getSaModle(List<dynamic>? areaList) async {
+    List<SaDetailModel> area = [];
+    if (areaList != null) {
+      for (int i = 0; i < areaList.length; i++) {
+        SaDetailModel popArea =
+            await SmokingAreaService.getDetailModelById(areaList[i].keys.first);
+        area.add(popArea);
+      }
+    }
+    setState(() {
+      _SaList = area;
     });
   }
 
@@ -84,7 +105,7 @@ class _localInfoState extends State<localInfo>
                 controller: _tabController,
                 children: [
                   _tapContentsGu(),
-                  _tapContentsSmokeArea(),
+                  _tapContentsSmokeArea(context),
                 ],
               ),
             ),
@@ -109,15 +130,15 @@ class _localInfoState extends State<localInfo>
   }
 
   // 가장 인기있는 흡연구역(흡연구역)
-  Widget _tapContentsSmokeArea() {
-    if (_areaList != null || _areaList!.isEmpty) {
+  Widget _tapContentsSmokeArea(BuildContext context) {
+    if (_areaList == null || _areaList!.isEmpty) {
       return const Center(child: Text('No Data Available'));
     }
     return Column(
         children: List.generate(
       _GuList!.length,
       (index) {
-        return _Gu(_GuList?[index], index);
+        return _Sa(_areaList?[index], _SaList![index], index, context);
       },
     ));
   }
@@ -170,6 +191,62 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
           ],
         ),
       ],
+    ),
+  );
+}
+
+Widget _Sa(Map<String, dynamic> _SaInfo, SaDetailModel SaModel, int rank, BuildContext context) {
+  String key = _SaInfo.keys.first;
+  dynamic value = _SaInfo[key];
+  return Ink(
+    height: 55,
+    child: InkWell(
+      onTap:(){
+        context.push('/sa_info', extra: SaModel.id);
+      },
+      child: Row(
+        // mainAxisSize: MainAxisSize.min,
+        // mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '${rank + 1}등',
+            style: const TextStyle(
+              color: Color(0xFF0099FC),
+              fontSize: 12,
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                SaModel.name,
+                style: const TextStyle(
+                  color: Color(0xFF10151B),
+                  fontSize: 14,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                '$value회',
+                style: const TextStyle(
+                  color: Color(0xFF454D56),
+                  fontSize: 12,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }

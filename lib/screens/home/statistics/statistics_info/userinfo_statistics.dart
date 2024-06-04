@@ -38,7 +38,7 @@ class _userInfoState extends State<userInfo>
     final _smokeDB = await widget.userDB.getSmokeInfoGroupedByColumn('id');
     setState(() {
       smokePlace = _smokeDB;
-      print(smokePlace);
+      // print(smokePlace);
     });
   }
 
@@ -172,8 +172,8 @@ class _userInfoState extends State<userInfo>
         Center(
           child: InkWell(
             onTap: () {
-              print(id);
-              print(now.weekday);
+              // print(id);
+              // print(now.weekday);
               context.push('/sa_info', extra: id);
             },
             child: Container(
