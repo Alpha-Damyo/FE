@@ -31,14 +31,16 @@ class periodSingleInfo extends StatefulWidget {
 }
 
 class _periodSingleInfoState extends State<periodSingleInfo> {
-  bool _isLoading = false;
+  bool _isLoading = true;
   List<dynamic>? smokeWeekdayInfo;
 
   Future<void> _loadData(int term) async {
     Timer(Duration(milliseconds: term), () {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     });
   }
 
@@ -46,23 +48,26 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     final _smokeDB = await widget.userDB.getSmokeInfo();
     final _smokeWeekday =
         await widget.userDB.getSmokeInfoGroupedByColumnNOName('weekday');
-    setState(() {
-      List<int> smokeCounts = List.filled(7, 0);
-      for (var item in _smokeWeekday) {
-        int index = weekOrder.indexOf(item['weekday']);
-        if (index != -1) {
-          smokeCounts[index] = item['count'];
+    if (mounted) {
+      setState(() {
+        List<int> smokeCounts = List.filled(7, 0);
+        for (var item in _smokeWeekday) {
+          int index = weekOrder.indexOf(item['weekday']);
+          if (index != -1) {
+            smokeCounts[index] = item['count'];
+          }
         }
-      }
-      smokeWeekdayInfo = smokeCounts;
-      print(_smokeDB);
-    });
+        smokeWeekdayInfo = smokeCounts;
+        // print(_smokeDB);
+      });
+    }
   }
 
   @override
   void initState() {
-    getDB();
     super.initState();
+    _loadData(300);
+    getDB();
   }
 
   @override
@@ -566,7 +571,9 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
           x: index + 1,
           barRods: [
             BarChartRodData(
-              toY: (smokeWeekdayInfo?[index] != 0)? (smokeWeekdayInfo?[index] * 1.0) : 0.2,
+              toY: (smokeWeekdayInfo?[index] != 0)
+                  ? (smokeWeekdayInfo?[index] * 1.0)
+                  : 0.2,
               width: 30,
               gradient: ((index + 1) == now.weekday)
                   ? _barsGradientBlue

@@ -517,7 +517,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
       ];
   List<BarChartGroupData> get barWeeksCompare => [
         for (int i = 0; i < UserAverWeek.length; i++)
-          makeGroupData(i, UserAverWeek[i], everyWeeks?[4 - i], compareCheck)
+          makeGroupData(i, UserAverWeek[i], everyWeeks?[i+1], compareCheck)
       ];
   List<BarChartGroupData> get barMonthsCompare => [
         for (int i = 0; i < UserAverMonth.length; i++)
