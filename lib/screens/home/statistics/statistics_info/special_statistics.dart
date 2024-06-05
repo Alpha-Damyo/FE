@@ -42,7 +42,7 @@ class _SpecialDaysState extends State<SpecialDays> {
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(color: Colors.white),
                           child:
-                              Image(image: AssetImage('assets/icons/test.png')),
+                              Image(image: AssetImage('assets/statisticsScreen/specialStatistics/test.png')),
                         ),
                         const SizedBox(width: 16),
                         const Text.rich(
@@ -78,7 +78,7 @@ class _SpecialDaysState extends State<SpecialDays> {
                       context.push('/special_day');
                     },
                     icon: const ImageIcon(
-                      AssetImage('assets/icons/go.png'),
+                      AssetImage('assets/statisticsScreen/specialStatistics/go.png'),
                     ),
                   ),
                 ],

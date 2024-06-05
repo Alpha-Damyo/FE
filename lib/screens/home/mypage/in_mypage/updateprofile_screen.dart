@@ -1,5 +1,19 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:damyo/models/updateprofile/update_name_model.dart';
+import 'package:damyo/models/updateprofile/update_profile_model.dart';
+import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:damyo/services/profile_update_service.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+
+XFile? _profileImage;
+Uint8List? imageFile;
+final ImagePicker picker = ImagePicker();
+
+bool _changedImage = false;
 
 bool _isFieldEmpty(TextEditingController controller) {
   return controller.text.trim().isEmpty;
@@ -15,6 +29,16 @@ class UpdateprofileScreen extends StatefulWidget {
 class _UpdateprofileState extends State<UpdateprofileScreen> {
   final TextEditingController _nameController = TextEditingController();
 
+  // 이미지를 가져오는 함수
+  Future getImage(ImageSource imageSource) async {
+    final XFile? pickedFile = await picker.pickImage(source: imageSource);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = XFile(pickedFile.path);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -23,6 +47,9 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    if(!_changedImage){
+      _profileImage = null;
+    }
     super.dispose();
   }
 
@@ -38,52 +65,114 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
             '프로필 수정',
           ),
           centerTitle: true,
+          actions: [
+            TextButton(
+                onPressed: () async {
+                  String? result2 = await putUserUpdateProfile(
+                      UpdateProfileModel.fromMap(_profileImage));
+                  print(result2);
+                  setState(() {
+                    _changedImage = true;
+                  });
+                  if (!_isFieldEmpty(_nameController)) {
+                    try {
+                      String? result1 = await putUserUpdateName(
+                          UpdateNameModel(_nameController.text));
+
+                      context.pop();
+                    } catch (e) {
+                      _showErrorLog(context, '이름 변경에 실패하셨습니다.');
+                    }
+                  }
+                },
+                child: textFormat(
+                    text: '완료', fontSize: 13, fontWeight: FontWeight.w500)),
+          ],
         ),
         body: Center(
           child: Column(
             children: [
               SizedBox(height: 10.h),
+              Stack(children: [
+                Container(
+                  width: 110,
+                  height: 110,
+                  padding: const EdgeInsets.only(bottom: 1),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: Color(0xFFDEDEDE),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(56),
+                    ),
+                  ),
+                  child: _profileImage == null
+                      ? Image.asset(
+                          'assets/updateprofileScreen/profile.png',
+                          fit: BoxFit.cover,
+                        )
+                      : Image.file(
+                          File(_profileImage!.path),
+                        ),
+                ),
+                Positioned(
+                  top: 65,
+                  left: 65,
+                  child: IconButton(
+                    onPressed: () async {
+                      await getImage(ImageSource.gallery);
+                    },
+                    icon: Image.asset(
+                      'assets/updateprofileScreen/camera.png',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              ]),
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 12.0, left: 16.0),
-                        child: Text(
-                          '이름',
-                          style: TextStyle(
-                            color: Color(0xFF262B32),
-                            fontSize: 16,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w700,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 12.0),
+                          child: Text(
+                            '이름',
+                            style: TextStyle(
+                              color: Color(0xFF262B32),
+                              fontSize: 16,
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 13, vertical: 10),
-                        clipBehavior: Clip.antiAlias,
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                width: 1, color: Color(0xFFE4E7EA)),
-                            borderRadius: BorderRadius.circular(10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 13,
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  width: 1, color: Color(0xFFE4E7EA)),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: TextField(
+                            controller: _nameController,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration:
+                                const InputDecoration(border: InputBorder.none),
                           ),
                         ),
-                        child: TextField(
-                          controller: _nameController,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          decoration:
-                              const InputDecoration(border: InputBorder.none),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -93,4 +182,55 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
       ),
     );
   }
+}
+
+// 애러 메시지 띄우기
+void _showErrorLog(BuildContext context, String log) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        content: Container(
+          // width: 300,
+          height: 180,
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      textFormat(
+                          text: log, fontSize: 16, fontWeight: FontWeight.w600),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

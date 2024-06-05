@@ -1,4 +1,4 @@
-import 'package:damyo/models/stat_region_model.dart';
+import 'package:damyo/models/statistics/stat_region_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:damyo/services/smoking_area_service.dart';
