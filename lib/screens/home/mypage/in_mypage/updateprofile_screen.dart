@@ -1,5 +1,7 @@
 import 'dart:io';
-
+import 'dart:typed_data';
+import 'package:damyo/models/updateprofile/update_name_model.dart';
+import 'package:damyo/models/updateprofile/update_profile_model.dart';
 import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +10,9 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 XFile? _profileImage;
+Uint8List? imageFile;
 final ImagePicker picker = ImagePicker();
+
 bool _changedImage = false;
 
 bool _isFieldEmpty(TextEditingController controller) {
@@ -31,7 +35,6 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
     if (pickedFile != null) {
       setState(() {
         _profileImage = XFile(pickedFile.path);
-        _changedImage = true;
       });
     }
   }
@@ -44,6 +47,9 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    if(!_changedImage){
+      _profileImage = null;
+    }
     super.dispose();
   }
 
@@ -62,10 +68,17 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
           actions: [
             TextButton(
                 onPressed: () async {
+                  String? result2 = await putUserUpdateProfile(
+                      UpdateProfileModel.fromMap(_profileImage));
+                  print(result2);
+                  setState(() {
+                    _changedImage = true;
+                  });
                   if (!_isFieldEmpty(_nameController)) {
                     try {
-                      String? result =
-                          await putUserUpdateName(_nameController.text);
+                      String? result1 = await putUserUpdateName(
+                          UpdateNameModel(_nameController.text));
+
                       context.pop();
                     } catch (e) {
                       _showErrorLog(context, '이름 변경에 실패하셨습니다.');
@@ -94,7 +107,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                   ),
                   child: _profileImage == null
                       ? Image.asset(
-                          'assets/icons/profile.png',
+                          'assets/updateprofileScreen/profile.png',
                           fit: BoxFit.cover,
                         )
                       : Image.file(
@@ -109,7 +122,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                       await getImage(ImageSource.gallery);
                     },
                     icon: Image.asset(
-                      'assets/icons/camera.png',
+                      'assets/updateprofileScreen/camera.png',
                       fit: BoxFit.fill,
                     ),
                   ),

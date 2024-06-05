@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:damyo/screens/home/statistics/statistics_screen_utill.dart';
 import 'package:damyo/services/statics_service.dart';
-import 'package:damyo/models/stat_date_model.dart';
-import 'package:damyo/models/stat_region_model.dart';
+import 'package:damyo/models/statistics/stat_date_model.dart';
+import 'package:damyo/models/statistics/stat_region_model.dart';
 import 'package:damyo/database/smoke_database_helper.dart';
 
 class StatisticsScreen extends StatefulWidget {
