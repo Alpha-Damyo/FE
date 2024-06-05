@@ -129,7 +129,7 @@ Widget badgeList() {
                 children: [
                   SizedBox(
                     child: Image.asset(
-                        'assets/achievementScreen/contribution_${contributionPoint[index]}.png'),
+                        'assets/icons/achievement_screen/contribution_${contributionPoint[index]}.png'),
                   ),
                 ],
               ),
@@ -616,7 +616,7 @@ Widget explane() {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: Image.asset('assets/achievementScreen/lock.png'),
+                  child: Image.asset('assets/icons/achievement_screen/lock.png'),
                 ),
               ],
             ),
