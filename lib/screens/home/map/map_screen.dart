@@ -7,6 +7,7 @@ import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/models/smoking_area/sa_search_model.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
+import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:damyo/screens/home/map/util/map_filter_listview.dart';
 import 'package:damyo/services/smoking_area_service.dart';
@@ -195,7 +196,14 @@ class _MapScreenState extends State<MapScreen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.push('/search');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return SearchScreen(
+                          searchFilterMap: searchFilterMap,
+                        );
+                      }),
+                    );
                   },
                   child: Container(
                     width: searchWidth,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:damyo/models/smoking_area/sa_detail_model.dart';
 import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/models/smoking_area/sa_inform_model.dart';
+import 'package:damyo/models/smoking_area/sa_keyword_search_model.dart';
 import 'package:damyo/models/smoking_area/sa_search_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -33,6 +34,35 @@ class SmokingAreaService {
       "quite": saSearchModel.quite,
       "chair": saSearchModel.chair,
     };
+
+    var body = json.encode(data);
+
+    var response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+
+    var responseDecode = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode == 200) {
+      print("success searched");
+      print(responseDecode['smokingAreas']);
+      return responseDecode['smokingAreas'];
+    } else {
+      print(responseDecode);
+      throw Exception("fail search");
+    }
+  }
+
+  // 흡연구역 검색어 검색
+  static Future<List<dynamic>> searchSmokingAreaByKeyword(
+      SaKeywordSearchModel saKeywordSearchModel) async {
+    final baseUrl = dotenv.get('BASE_URL');
+    var url = Uri.parse('$baseUrl/area/querySearch');
+
+    var data = saKeywordSearchModel.toMap();
 
     var body = json.encode(data);
 

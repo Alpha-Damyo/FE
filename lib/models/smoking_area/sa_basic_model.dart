@@ -15,6 +15,17 @@ class SaBasicModel {
     this.score,
   );
 
+  SaBasicModel toJson(Map<String, dynamic> map) {
+    return SaBasicModel(
+      map['areaId'],
+      map['name'],
+      map['latitude'],
+      map['longitude'],
+      map['address'],
+      map['score'],
+    );
+  }
+
   SaBasicModel.fromJson(Map<String, dynamic> json)
       : id = json['areaId'],
         name = json['name'],

@@ -186,13 +186,6 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
-          name: 'search',
-          path: 'search',
-          builder: (context, state) {
-            return const SearchScreen();
-          },
-        ),
-        GoRoute(
             name: 'sa_info',
             path: 'sa_info',
             builder: (context, state) => const SmokingAreaInfoScreen(),
