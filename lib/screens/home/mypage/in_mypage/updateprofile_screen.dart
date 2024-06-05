@@ -107,7 +107,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                   ),
                   child: _profileImage == null
                       ? Image.asset(
-                          'assets/updateprofileScreen/profile.png',
+                          'assets/icons/updateprofile_screen/profile.png',
                           fit: BoxFit.cover,
                         )
                       : Image.file(
@@ -122,7 +122,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                       await getImage(ImageSource.gallery);
                     },
                     icon: Image.asset(
-                      'assets/updateprofileScreen/camera.png',
+                      'assets/icons/updateprofile_screen/camera.png',
                       fit: BoxFit.fill,
                     ),
                   ),
