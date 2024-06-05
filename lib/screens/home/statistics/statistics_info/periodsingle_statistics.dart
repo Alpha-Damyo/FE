@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:async';
 
+import 'package:intl/intl.dart';
+
 //index 3
 final List<bool> _isPeriodtype = [true, false, false];
 String periodType = '일';
@@ -32,7 +34,8 @@ class periodSingleInfo extends StatefulWidget {
 
 class _periodSingleInfoState extends State<periodSingleInfo> {
   bool _isLoading = true;
-  List<dynamic>? smokeWeekdayInfo;
+  List<dynamic>? smokeWeekdayInfo, smokeWeeksInfo, smokeMonthsInfo;
+  int? maxWeekday, maxWeeks, maxMonths;
 
   Future<void> _loadData(int term) async {
     Timer(Duration(milliseconds: term), () {
@@ -44,30 +47,79 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
     });
   }
 
-  Future<void> getDB() async {
-    final _smokeDB = await widget.userDB.getSmokeInfo();
-    final _smokeWeekday =
-        await widget.userDB.getSmokeInfoGroupedByColumnNOName('weekday');
-    if (mounted) {
-      setState(() {
-        List<int> smokeCounts = List.filled(7, 0);
-        for (var item in _smokeWeekday) {
-          int index = weekOrder.indexOf(item['weekday']);
-          if (index != -1) {
-            smokeCounts[index] = item['count'];
-          }
+  void weekdayInfo() async {
+    List<int> smokeCounts = List.filled(7, 0);
+    int max = 0;
+    final startDate = now.subtract(Duration(days: 6));
+    final dataInRange =
+        await widget.userDB.getSmokeInfoInWeekDayRange(startDate, now);
+
+    for (var item in dataInRange) {
+      int index = weekOrder.indexOf(item['weekday']);
+      if (index != -1) {
+        smokeCounts[index] = item['count'];
+        if(max < item['count']){
+          max = item['count'];
         }
-        smokeWeekdayInfo = smokeCounts;
-        // print(_smokeDB);
-      });
+      }
     }
+
+    setState(() {
+      smokeWeekdayInfo = smokeCounts;
+      maxWeekday = max;
+    });
+  }
+
+  void weeksInfo() async {
+    List<int> smokeCounts = List.filled(4, 0);
+    int max = 0;
+
+    for (int i = 0; i < 4; i++) {
+      final startDate = now.subtract(Duration(days: 6 + (7 * i)));
+      final endDate = now.subtract(Duration(days: 7 * i));
+      final dateInRange =
+          await widget.userDB.getSmokeInfoInWeeksRange(startDate, endDate);
+      smokeCounts[i] = dateInRange.first['count'];
+      if (max < dateInRange.first['count']){
+        max = dateInRange.first['count'];
+      }
+    }
+
+    setState(() {
+      smokeWeeksInfo = smokeCounts;
+      maxWeeks = max;
+    });
+  }
+
+  void monthsInfo() async {
+    List<int> smokeCounts = List.filled(6, 0);
+    int max = 0;
+
+    for (int i = 0; i < 6; i++) {
+      final startDate = now.subtract(Duration(days: 27 + (28 * i)));
+      final endDate = now.subtract(Duration(days: 28 * i));
+      final dateInRange =
+          await widget.userDB.getSmokeInfoInWeeksRange(startDate, endDate);
+      smokeCounts[i] = dateInRange.first['count'];
+      if(max < dateInRange.first['count']){
+        max = dateInRange.first['count'];
+      }
+    }
+
+    setState(() {
+      smokeMonthsInfo = smokeCounts;
+      maxMonths = max;
+    });
   }
 
   @override
   void initState() {
     super.initState();
+
+    weekdayInfo();
+    weeksInfo();
+    monthsInfo();
     _loadData(300);
-    getDB();
   }
 
   @override
@@ -130,7 +182,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
                           barGroups: barDayGroups,
                           gridData: const FlGridData(show: false),
                           alignment: BarChartAlignment.spaceAround,
-                          maxY: 30,
+                          maxY: (maxWeekday! + 10),
                         ),
                       )
                     : (periodType == '주')
@@ -142,7 +194,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
                               barGroups: barWeekGroups,
                               gridData: const FlGridData(show: false),
                               alignment: BarChartAlignment.spaceAround,
-                              maxY: 20,
+                              maxY: (maxWeeks! + 10),
                             ),
                           )
                         : BarChart(
@@ -154,7 +206,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
                               barGroups: barMonthGroups,
                               gridData: const FlGridData(show: false),
                               alignment: BarChartAlignment.spaceAround,
-                              maxY: 20,
+                              maxY: (maxMonths! + 10),
                             ),
                           ),
               ),
@@ -303,7 +355,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
         touchTooltipData: BarTouchTooltipData(
           getTooltipColor: (group) => Colors.transparent,
           tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 8,
+          tooltipMargin: 20,
           getTooltipItem: (
             BarChartGroupData group,
             int groupIndex,
@@ -327,7 +379,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
         touchTooltipData: BarTouchTooltipData(
           getTooltipColor: (group) => Colors.transparent,
           tooltipPadding: EdgeInsets.zero,
-          tooltipMargin: 8,
+          tooltipMargin: 20,
           getTooltipItem: (
             BarChartGroupData group,
             int groupIndex,
@@ -584,119 +636,37 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
         );
       });
 
-  List<BarChartGroupData> get barWeekGroups => [
-        BarChartGroupData(
-          x: 1,
+  List<BarChartGroupData> get barWeekGroups =>
+      List.generate(smokeWeeksInfo!.length, (index) {
+        return BarChartGroupData(
+          x: index + 1,
           barRods: [
             BarChartRodData(
-              toY: 8,
+              toY: (smokeWeeksInfo?[index] != 0)
+                  ? (smokeWeeksInfo?[index] * 1.0)
+                  : 0.2,
               width: 30,
-              gradient: _barsGradientBlue,
+              gradient: (index == 0) ? _barsGradientBlue : _barsGradientGrey,
             )
           ],
           showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-              toY: 14,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 4,
-          barRods: [
-            BarChartRodData(
-              toY: 15,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-      ];
+        );
+      });
 
-  List<BarChartGroupData> get barMonthGroups => [
-        BarChartGroupData(
-          x: 1,
+  List<BarChartGroupData> get barMonthGroups =>
+      List.generate(smokeMonthsInfo!.length, (index) {
+        return BarChartGroupData(
+          x: index + 1,
           barRods: [
             BarChartRodData(
-              toY: 8,
+              toY: (smokeMonthsInfo?[index] != 0)
+                  ? (smokeMonthsInfo?[index] * 1.0)
+                  : 0.2,
               width: 30,
-              gradient: _barsGradientBlue,
+              gradient: (index == 0) ? _barsGradientBlue : _barsGradientGrey,
             )
           ],
           showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 2,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 3,
-          barRods: [
-            BarChartRodData(
-              toY: 14,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 4,
-          barRods: [
-            BarChartRodData(
-              toY: 15,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 5,
-          barRods: [
-            BarChartRodData(
-              toY: 13,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-        BarChartGroupData(
-          x: 6,
-          barRods: [
-            BarChartRodData(
-              toY: 10,
-              width: 30,
-              gradient: _barsGradientGrey,
-            )
-          ],
-          showingTooltipIndicators: [0],
-        ),
-      ];
+        );
+      });
 }

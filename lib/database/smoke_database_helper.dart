@@ -54,7 +54,8 @@ class SmokeDatabaseHelper {
     }
   }
 
-  Future<void> insertSmokeInfo(String id, String name, DateTime dateInfo) async {
+  Future<void> insertSmokeInfo(
+      String id, String name, DateTime dateInfo) async {
     String date = formatDate(dateInfo);
     int time = int.parse(formatTime(dateInfo));
     String weekday = formatWeekday(dateInfo);
@@ -63,7 +64,7 @@ class SmokeDatabaseHelper {
 
     await db.insert(
       'smokeInfo',
-      {'id': id, 'name':name, 'date': date, 'weekday': weekday, 'time': time},
+      {'id': id, 'name': name, 'date': date, 'weekday': weekday, 'time': time},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -86,6 +87,30 @@ class SmokeDatabaseHelper {
     final db = await database;
     return await db.rawQuery(
       'SELECT $column, COUNT($column) as count FROM smokeInfo GROUP BY $column HAVING COUNT($column) > 1',
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getSmokeInfoInWeekDayRange(
+      DateTime startDate, DateTime endDate) async {
+    final db = await database;
+    final startDateString = formatDate(startDate);
+    final endDateString = formatDate(endDate);
+
+    return await db.rawQuery(
+      'SELECT weekday, COUNT(weekday) as count FROM smokeInfo WHERE date BETWEEN ? AND ? GROUP BY weekday',
+      [startDateString, endDateString],
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getSmokeInfoInWeeksRange(
+      DateTime startDate, DateTime endDate) async {
+    final db = await database;
+    final startDateString = formatDate(startDate);
+    final endDateString = formatDate(endDate);
+
+    return await db.rawQuery(
+      'SELECT COUNT(*) as count FROM smokeInfo WHERE date BETWEEN ? AND ? ',
+      [startDateString, endDateString],
     );
   }
 }

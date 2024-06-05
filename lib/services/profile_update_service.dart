@@ -62,6 +62,8 @@ Future<String?> putUserUpdateProfile(UpdateProfileModel profileModel) async {
     return jsonBody;
   } else {
     print(jsonBody);
+    // print(jsonDecode(jsonBody)['code']);
+    
     throw Exception("Failed to update profile");
   }
 }

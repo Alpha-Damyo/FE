@@ -49,7 +49,7 @@ class _StatistTapState extends State<StatistTap> {
         return timeAverInfo(TimeInfo: widget.statInfo); // 사용자 정보만 가져오면 됨
       case 3:
         // 기간별 통계 화면(개인 총 흡연량)
-        return periodSingleInfo(userDB: widget.statInfo); // 사용자 정보 가져오기
+        return periodSingleInfo(userDB: widget.statInfo); // (일, 주, 월 완료)
       case 4:
         // 담배값 계산기
         return const calculatePrice(); // 사용자 정보 가져오기
