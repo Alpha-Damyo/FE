@@ -7,6 +7,14 @@ class statDateModel {
 
   statDateModel(this.time, this.days, this.weeks,
       this.months, this.dayWeek);
+  
+  statDateModel.fromJson(Map<String, dynamic> json)
+      : time = json['hourlyStatisticsResponse']['time'],
+        days = json['dailyStatisticsResponse']['days'],
+        weeks = json['weeklyStatisticsResponse']['weeks'],
+        months = json['monthlyStatisticsResponse']['months'],
+        dayWeek = json['dayOfWeekStatisticsResponse']['dayWeek'];
+        
   @override
   String toString() {
     return '$time, $days, $weeks, $months, $dayWeek';
