@@ -98,8 +98,8 @@ Future<void> _getCurrentLocation() async {
   try {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    // userLatitude = position.latitude;
-    // userLongitude = position.longitude;
+    userLatitude = position.latitude;
+    userLongitude = position.longitude;
   } catch (e) {
     print(e);
   }

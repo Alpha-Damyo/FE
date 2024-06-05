@@ -38,6 +38,14 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
   return distance;
 }
 
+String mKm(double distance) {
+  if (distance > 1000) {
+    return '${(distance / 1000).toInt().toString()}km';
+  } else {
+    return '${(distance.toInt().toString())}m';
+  }
+}
+
 class SearchScreen extends StatefulWidget {
   final Map<String, dynamic> searchFilterMap;
   SearchScreen({
@@ -85,18 +93,15 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.only(left: 20.0),
               child: Row(
                 children: [
-                  Transform.translate(
-                    offset: const Offset(0, 2),
-                    child: InkWell(
-                      onTap: () {
-                        if (MediaQuery.of(context).viewInsets.bottom > 0) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        } else {
-                          context.pop();
-                        }
-                      },
-                      child: const Icon(Icons.arrow_back_ios),
-                    ),
+                  InkWell(
+                    onTap: () {
+                      if (MediaQuery.of(context).viewInsets.bottom > 0) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      } else {
+                        context.pop();
+                      }
+                    },
+                    child: const Icon(Icons.arrow_back_ios),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -121,15 +126,6 @@ class _SearchScreenState extends State<SearchScreen> {
                               .add(SaBasicModel.fromJson(tmpRtn[i]));
                         }
                         setState(() {});
-                        double lat1 = 37.7749;
-                        double lon1 = -122.4194;
-                        double lat2 = 34.0522;
-                        double lon2 = -118.2437;
-
-                        // 거리 계산
-                        double distance =
-                            calculateDistance(lat1, lon1, lat2, lon2);
-                        print('Distance: ${distance} meters');
                       },
                       decoration: const InputDecoration(
                         hintText: "흡연구역 검색",
@@ -162,47 +158,75 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.all(10),
+              child: ListView.separated(
+                padding: const EdgeInsets.all(10),
                 itemCount: smokingAreaLists.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            child:
-                                textFormat(text: smokingAreaLists[index].name),
-                          ),
-                          Container(
-                            child: textFormat(
-                                text: smokingAreaLists[index].address),
-                          )
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            child: textFormat(
-                                text: smokingAreaLists[index].score.toString()),
-                          ),
-                          Container(
-                            child: textFormat(
-                                text: calculateDistance(
-                                      userLatitude,
-                                      userLongitude,
-                                      smokingAreaLists[index].latitude,
-                                      smokingAreaLists[index].longitude,
-                                    ).toInt().toString() +
-                                    'm'),
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      )
-                    ],
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: textFormat(
+                                text: smokingAreaLists[index].name,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Container(
+                              child: textFormat(
+                                text: smokingAreaLists[index].address,
+                                color: const Color(0xFF6F767F),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    size: 17,
+                                    color: Color(0xFFFFC226),
+                                  ),
+                                  textFormat(
+                                    text: smokingAreaLists[index]
+                                        .score
+                                        .toString(),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: textFormat(
+                                  text: mKm(calculateDistance(
+                                userLatitude,
+                                userLongitude,
+                                smokingAreaLists[index].latitude,
+                                smokingAreaLists[index].longitude,
+                              ))),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider(
+                    color: Color(0xFFEEF1F5),
                   );
                 },
               ),

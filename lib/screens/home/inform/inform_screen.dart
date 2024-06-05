@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:damyo/models/smoking_area/sa_inform_model.dart';
+import 'package:damyo/models/updateprofile/update_profile_model.dart';
 import 'package:damyo/services/get_address_service.dart';
+import 'package:damyo/services/image_service.dart';
 import 'package:damyo/services/smoking_area_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
@@ -185,6 +187,12 @@ class _InformScreenState extends State<InformScreen> {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () async {
+                  String? url;
+                  if (_spotImage != null) {
+                    url = await ImageService(UpdateProfileModel(
+                        'smokingAreaImage', _spotImage!.path));
+                  }
+
                   SaInformModel saInformModel = SaInformModel(
                       _spotInfo[2],
                       _spotInfo[0],
@@ -196,7 +204,7 @@ class _InformScreenState extends State<InformScreen> {
                       _selectedOpenClose[1],
                       _selectedInOut[0],
                       _selectedInOut[1],
-                      null);
+                      url);
 
                   bool isSuccess =
                       await SmokingAreaService.informSmokingArea(saInformModel);
