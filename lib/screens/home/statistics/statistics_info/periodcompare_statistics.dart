@@ -1,4 +1,4 @@
-import 'package:damyo/models/stat_date_model.dart';
+import 'package:damyo/models/statistics/stat_date_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:async';

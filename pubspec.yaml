@@ -112,8 +112,14 @@ flutter:
 
   assets:
     - .env
-    - assets/icons/
+    - assets/
+    - assets/icons/achievement_screen/
+    - assets/icons/statistics_screen/
+    - assets/icons/statistics_screen/special_statistics/
+    - assets/icons/updateprofile_screen/
+    - assets/icons/mypage_screen/
     - assets/images/smoking_area_default_image.png
+    
 
     
   fonts:
