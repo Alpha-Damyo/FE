@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:damyo/models/smoking_area/sa_inform_model.dart';
+import 'package:damyo/models/updateprofile/update_profile_model.dart';
 import 'package:damyo/services/get_address_service.dart';
+import 'package:damyo/services/image_service.dart';
 import 'package:damyo/services/smoking_area_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
@@ -34,6 +36,7 @@ class InformScreen extends StatefulWidget {
 }
 
 class _InformScreenState extends State<InformScreen> {
+  bool _isProcessing = false;
   XFile? _spotImage;
   final ImagePicker picker = ImagePicker();
   // 이름, 설명, 주소 순으로 저장
@@ -53,186 +56,219 @@ class _InformScreenState extends State<InformScreen> {
     final String coords = GoRouterState.of(context).extra! as String;
     // 화면을 동적으로 빌드하기 위한 사이즈
 
-    return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        title: const Text(
-          '제보',
-        ),
-        centerTitle: true,
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).unfocus();
-                  },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        InkWell(
-                          child: Container(
-                            width: double.infinity,
-                            height: 184,
-                            alignment: Alignment.center,
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: informImage(),
-                          ),
-                          onTap: () {
-                            // getImage(ImageSource.camera);
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext bc) {
-                                  return SafeArea(
-                                    child: Wrap(
-                                      children: <Widget>[
-                                        ListTile(
-                                            leading:
-                                                const Icon(Icons.photo_camera),
-                                            title: const Text(
-                                              '카메라에서 선택',
-                                              style: TextStyle(fontSize: 18),
-                                            ),
-                                            onTap: () {
-                                              getImage(ImageSource.camera);
-                                              Navigator.of(context).pop();
-                                            }),
-                                        ListTile(
-                                          leading:
-                                              const Icon(Icons.photo_library),
-                                          title: const Text(
-                                            '갤러리에서 선택',
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          onTap: () {
-                                            getImage(ImageSource.gallery);
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        informTextInput('이름', '이름을 입력해주세요', 0),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            scrolledUnderElevation: 0,
+            title: const Text(
+              '제보',
+            ),
+            centerTitle: true,
+          ),
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
-                            const Text('주소',
-                                style: TextStyle(fontWeight: FontWeight.w600)),
-                            // Text('서울특별시 중구 남산동2가 2'),
-                            FutureBuilder(
-                              future: GetAddress(coords),
-                              builder: (
-                                BuildContext context,
-                                AsyncSnapshot snapshot,
-                              ) {
-                                // 데이터가 없을 때
-                                if (snapshot.hasData == false) {
-                                  return const Text('...');
-                                } else if (snapshot.hasError) {
-                                  return const Text('주소를 불러올 수 없습니다');
-                                } else {
-                                  _spotInfo[2] = snapshot.data.toString();
-                                  return Text(
-                                    _spotInfo[2],
-                                  );
-                                }
+                            InkWell(
+                              child: Container(
+                                width: double.infinity,
+                                height: 184,
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: informImage(),
+                              ),
+                              onTap: () {
+                                // getImage(ImageSource.camera);
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (BuildContext bc) {
+                                      return SafeArea(
+                                        child: Wrap(
+                                          children: <Widget>[
+                                            ListTile(
+                                                leading: const Icon(
+                                                    Icons.photo_camera),
+                                                title: const Text(
+                                                  '카메라에서 선택',
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                                onTap: () {
+                                                  getImage(ImageSource.camera);
+                                                  Navigator.of(context).pop();
+                                                }),
+                                            ListTile(
+                                              leading: const Icon(
+                                                  Icons.photo_library),
+                                              title: const Text(
+                                                '갤러리에서 선택',
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                              onTap: () {
+                                                getImage(ImageSource.gallery);
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
                               },
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        informTextInput('상세주소', '상세주소를 입력해주세요', 1),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Row(
+                            const SizedBox(height: 20),
+                            informTextInput('이름', '이름을 입력해주세요', 0),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('별점',
+                                const Text('주소',
                                     style:
                                         TextStyle(fontWeight: FontWeight.w600)),
-                                blueStar(),
+                                // Text('서울특별시 중구 남산동2가 2'),
+                                FutureBuilder(
+                                  future: GetAddress(coords),
+                                  builder: (
+                                    BuildContext context,
+                                    AsyncSnapshot snapshot,
+                                  ) {
+                                    // 데이터가 없을 때
+                                    if (snapshot.hasData == false) {
+                                      return const Text('...');
+                                    } else if (snapshot.hasError) {
+                                      return const Text('주소를 불러올 수 없습니다');
+                                    } else {
+                                      _spotInfo[2] = snapshot.data.toString();
+                                      return Text(
+                                        _spotInfo[2],
+                                      );
+                                    }
+                                  },
+                                ),
                               ],
                             ),
-                            ratingStars(),
+                            const SizedBox(height: 20),
+                            informTextInput('상세주소', '상세주소를 입력해주세요', 1),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Row(
+                                  children: [
+                                    Text('별점',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600)),
+                                    blueStar(),
+                                  ],
+                                ),
+                                ratingStars(),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            informToggle('실내 여부', inout, _selectedInOut, 0),
+                            const SizedBox(height: 20),
+                            informToggle(
+                                '개방 여부', openclose, _selectedOpenClose, 1),
+                            const SizedBox(height: 20),
                           ],
                         ),
-                        const SizedBox(height: 20),
-                        informToggle('실내 여부', inout, _selectedInOut, 0),
-                        const SizedBox(height: 20),
-                        informToggle('개방 여부', openclose, _selectedOpenClose, 1),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              InkWell(
-                onTap: () async {
-                  SaInformModel saInformModel = SaInformModel(
-                      _spotInfo[2],
-                      _spotInfo[0],
-                      _spotInfo[1],
-                      double.parse(coords.split(',')[1]),
-                      double.parse(coords.split(',')[0]),
-                      _starValue,
-                      _selectedOpenClose[0],
-                      _selectedOpenClose[1],
-                      _selectedInOut[0],
-                      _selectedInOut[1],
-                      null);
-
-                  bool isSuccess =
-                      await SmokingAreaService.informSmokingArea(saInformModel);
-                  if (isSuccess) {
-                    Fluttertoast.showToast(msg: "제보가 완료되었습니다.");
-                    context.pop();
-                  } else {
-                    Fluttertoast.showToast(msg: "제보에 실패하였습니다.");
-                  }
-                },
-                child: Ink(
-                  width: double.infinity,
-                  height: 47,
-                  decoration: BoxDecoration(
-                    color: activateInformBtn
-                        ? Colors.blue
-                        : const Color(0xffd2d7dd),
-                    borderRadius: const BorderRadius.all(Radius.circular(26)),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '제보하기',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
                       ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    onTap: () async {
+                      setState(() {
+                        _isProcessing = true;
+                      });
+
+                      String? url;
+                      if (_spotImage != null) {
+                        url = await ImageService(UpdateProfileModel(
+                            'smokingAreaImage', _spotImage!.path));
+                      }
+
+                      SaInformModel saInformModel = SaInformModel(
+                          _spotInfo[2],
+                          _spotInfo[0],
+                          _spotInfo[1],
+                          double.parse(coords.split(',')[1]),
+                          double.parse(coords.split(',')[0]),
+                          _starValue,
+                          _selectedOpenClose[0],
+                          _selectedOpenClose[1],
+                          _selectedInOut[0],
+                          _selectedInOut[1],
+                          url);
+
+                      bool isSuccess =
+                          await SmokingAreaService.informSmokingArea(
+                              saInformModel);
+
+                      setState(() {
+                        _isProcessing = false;
+                      });
+
+                      if (isSuccess) {
+                        Fluttertoast.showToast(msg: "제보가 완료되었습니다");
+                        context.pop();
+                      } else {
+                        Fluttertoast.showToast(msg: "제보에 실패하였습니다");
+                      }
+                    },
+                    child: Ink(
+                      width: double.infinity,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: activateInformBtn
+                            ? Colors.blue
+                            : const Color(0xffd2d7dd),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(26)),
+                      ),
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          '제보하기',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        if (_isProcessing)
+          AbsorbPointer(
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
