@@ -63,6 +63,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  String searchKeyword = '';
   List<SaBasicModel> smokingAreaLists = [];
   bool showRecentKeywords = true;
   bool showSearchResult = false;
@@ -132,10 +133,11 @@ class _SearchScreenState extends State<SearchScreen> {
                         showSearchResult = true;
                         FocusManager.instance.primaryFocus?.unfocus();
 
-                        if (recentKeywords.contains(_controller.text)) {
-                          recentKeywords.remove(_controller.text);
+                        searchKeyword = _controller.text;
+                        if (recentKeywords.contains(searchKeyword)) {
+                          recentKeywords.remove(searchKeyword);
                         }
-                        recentKeywords.insert(0, _controller.text);
+                        recentKeywords.insert(0, searchKeyword);
 
                         String stringRecentKeywords = '';
                         for (int i = 0; i < recentKeywords.length; i++) {
@@ -146,7 +148,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                         SaKeywordSearchModel tmpModel =
                             SaKeywordSearchModel.fromMap(
-                                _controller.text, widget.searchFilterMap);
+                                searchKeyword, widget.searchFilterMap);
                         List<dynamic> tmpRtn =
                             await SmokingAreaService.searchSmokingAreaByKeyword(
                           tmpModel,
@@ -205,10 +207,12 @@ class _SearchScreenState extends State<SearchScreen> {
                           borderRadius: BorderRadius.circular(26),
                           onTap: () async {
                             FocusManager.instance.primaryFocus?.unfocus();
+                            searchKeyword = recentKeywords[index];
+                            _controller.text = searchKeyword;
+
                             SaKeywordSearchModel tmpModel =
                                 SaKeywordSearchModel.fromMap(
-                                    recentKeywords[index],
-                                    widget.searchFilterMap);
+                                    searchKeyword, widget.searchFilterMap);
                             List<dynamic> tmpRtn = await SmokingAreaService
                                 .searchSmokingAreaByKeyword(
                               tmpModel,
@@ -273,92 +277,99 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             if (showSearchResult)
-              Expanded(
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: smokingAreaLists.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          context.pop();
-                          screenIndex = 0;
-                          homePageController.jumpToPage(0);
-                          moveCameraById(
-                            smokingAreaLists[index].id,
-                          );
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  child: textFormat(
-                                    text: smokingAreaLists[index].name,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                Container(
-                                  child: textFormat(
-                                    text: smokingAreaLists[index].address,
-                                    color: const Color(0xFF6F767F),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Container(
-                                  child: Row(
+              smokingAreaLists.isNotEmpty
+                  ? Expanded(
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(10),
+                        itemCount: smokingAreaLists.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                context.pop();
+                                screenIndex = 0;
+                                homePageController.jumpToPage(0);
+                                moveCameraById(
+                                  smokingAreaLists[index].id,
+                                );
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const Icon(
-                                        Icons.star_rounded,
-                                        size: 17,
-                                        color: Color(0xFFFFC226),
+                                      Container(
+                                        child: textFormat(
+                                          text: smokingAreaLists[index].name,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
                                       ),
-                                      textFormat(
-                                        text: smokingAreaLists[index]
-                                            .score
-                                            .toString(),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                      ),
+                                      Container(
+                                        child: textFormat(
+                                          text: smokingAreaLists[index].address,
+                                          color: const Color(0xFF6F767F),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                        ),
+                                      )
                                     ],
                                   ),
-                                ),
-                                Container(
-                                  child: textFormat(
-                                      text: mKm(calculateDistance(
-                                    userLatitude,
-                                    userLongitude,
-                                    smokingAreaLists[index].latitude,
-                                    smokingAreaLists[index].longitude,
-                                  ))),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.star_rounded,
+                                              size: 17,
+                                              color: Color(0xFFFFC226),
+                                            ),
+                                            textFormat(
+                                              text: smokingAreaLists[index]
+                                                  .score
+                                                  .toString(),
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        child: textFormat(
+                                            text: mKm(calculateDistance(
+                                          userLatitude,
+                                          userLongitude,
+                                          smokingAreaLists[index].latitude,
+                                          smokingAreaLists[index].longitude,
+                                        ))),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider(
+                            color: Color(0xFFEEF1F5),
+                          );
+                        },
                       ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider(
-                      color: Color(0xFFEEF1F5),
-                    );
-                  },
-                ),
-              )
+                    )
+                  : textFormat(
+                      text: "\"$searchKeyword\" 에 대한 검색 결과가 없습니다",
+                      fontSize: 16,
+                    )
           ],
         ),
       ),
