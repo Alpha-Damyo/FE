@@ -14,14 +14,12 @@ class SmokingAreaInfoScreen extends StatefulWidget {
   State<SmokingAreaInfoScreen> createState() => _SmokingAreaInfoScreenState();
 }
 
-class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
   @override
   Widget build(BuildContext context) {
-    final String smokingAreaId = GoRouterState.of(context).extra! as String;
+    String data = GoRouterState.of(context).extra! as String;
+    final String smokingAreaId = data.split(',')[0];
+    final String smokingAreaName = data.split(',')[1];
     const double padding = 16;
     return ScreenUtilInit(
       designSize: const Size(390, 1112),
@@ -137,7 +135,8 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen>
                                   name: '리뷰작성',
                                   onPressed: () {
                                     context.push('/sa_info/write_review',
-                                        extra: '국민대 도서관 $smokingAreaId');
+                                        extra:
+                                            '$smokingAreaId,$smokingAreaName');
                                   },
                                 ),
                               ],

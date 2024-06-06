@@ -4,6 +4,7 @@ import 'package:damyo/models/smoking_area/sa_detail_model.dart';
 import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/models/smoking_area/sa_inform_model.dart';
 import 'package:damyo/models/smoking_area/sa_keyword_search_model.dart';
+import 'package:damyo/models/smoking_area/sa_reivew_model.dart';
 import 'package:damyo/models/smoking_area/sa_search_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -122,6 +123,7 @@ class SmokingAreaService {
   // 흡연구역 제보
   static Future<bool> informSmokingArea(SaInformModel saInformModel) async {
     final baseUrl = dotenv.get('BASE_URL');
+    final token = dotenv.get('TEST_TOKEN');
     var url = Uri.parse('$baseUrl/area/postArea');
 
     var data = {
@@ -139,12 +141,22 @@ class SmokingAreaService {
     };
 
     var body = json.encode(data);
+    Map<String, String> header;
+    bool isLogined = false;
+    if (isLogined) {
+      header = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      };
+    } else {
+      header = {
+        'Content-Type': 'application/json',
+      };
+    }
 
     var response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: header,
       body: body,
     );
 
@@ -155,6 +167,37 @@ class SmokingAreaService {
     } else {
       print(responseDecode);
       throw Exception("fail inform");
+    }
+  }
+
+  // 흡연구역 리뷰 작성
+  static Future<bool> reviewSmokingArea(SaReivewModel saReviewModel) async {
+    final baseUrl = dotenv.get('BASE_URL');
+    final token = dotenv.get('TEST_TOKEN');
+
+    var url = Uri.parse('$baseUrl/info/postInfo');
+
+    var data = saReviewModel.toJson();
+
+    var header = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
+    var body = json.encode(data);
+
+    var response = await http.post(
+      url,
+      headers: header,
+      body: body,
+    );
+
+    var responseDecode = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode == 200) {
+      print("success review");
+      return true;
+    } else {
+      print(responseDecode);
+      throw Exception("fail review");
     }
   }
 }

@@ -110,7 +110,7 @@ var favorites = [
   "기본",
 ];
 var favoritesDetail = [];
-bool addFavorite = false;
+// bool addFavorite = false;
 
 Future<void> getFavorites() async {
   FlutterSecureStorage secureStorage = const FlutterSecureStorage();
@@ -144,16 +144,29 @@ Future<void> getFavorites() async {
   }
 }
 
+// 최근 검색어 받아오기
+List<String> recentKeywords = [];
+Future<void> getRecentKeywords() async {
+  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  String? stringRecentkeywords =
+      await secureStorage.read(key: 'recentKeywords');
+  if (stringRecentkeywords != null) {
+    recentKeywords += stringRecentkeywords.toString().split(',');
+    recentKeywords.remove('');
+  }
+}
+
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   _requestPermission();
-  await _getCurrentLocation();
+  // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
   await getFavorites();
+  await getRecentKeywords();
 
   /*runApp(ChangeNotifierProvider(
     create: (context) => FilterList(),

@@ -29,6 +29,7 @@ class SaDetailModel {
         longitude = json['longitude'],
         address = json['address'],
         creadtedAt = json['createdAt'],
+        status = json['status'],
         description = json['description'],
         score = json['score'],
         opened = json['opened'],

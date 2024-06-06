@@ -1,9 +1,12 @@
 import 'package:damyo/main.dart';
 import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/models/smoking_area/sa_keyword_search_model.dart';
+import 'package:damyo/screens/home/home_screen.dart';
+import 'package:damyo/screens/home/map/map_screen.dart';
 import 'package:damyo/services/smoking_area_service.dart';
 import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:math';
 
@@ -48,7 +51,7 @@ String mKm(double distance) {
 
 class SearchScreen extends StatefulWidget {
   final Map<String, dynamic> searchFilterMap;
-  SearchScreen({
+  const SearchScreen({
     super.key,
     required this.searchFilterMap,
   });
@@ -61,6 +64,8 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   List<SaBasicModel> smokingAreaLists = [];
+  bool showRecentKeywords = true;
+  bool showSearchResult = false;
 
   @override
   void initState() {
@@ -79,6 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterSecureStorage secureStorage = const FlutterSecureStorage();
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -95,11 +101,16 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      if (MediaQuery.of(context).viewInsets.bottom > 0) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                      } else {
-                        context.pop();
-                      }
+                      setState(() {
+                        if (MediaQuery.of(context).viewInsets.bottom > 0) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        } else if (showSearchResult) {
+                          showSearchResult = false;
+                          showRecentKeywords = true;
+                        } else {
+                          context.pop();
+                        }
+                      });
                     },
                     child: const Icon(Icons.arrow_back_ios),
                   ),
@@ -109,10 +120,30 @@ class _SearchScreenState extends State<SearchScreen> {
                       controller: _controller,
                       // focusNode: _focusNode,
                       onChanged: (text) {
-                        setState(() {});
+                        setState(() {
+                          if (_controller.text.isEmpty && !showSearchResult) {
+                            showRecentKeywords = true;
+                          } else {
+                            showRecentKeywords = false;
+                          }
+                        });
                       },
                       onEditingComplete: () async {
+                        showSearchResult = true;
                         FocusManager.instance.primaryFocus?.unfocus();
+
+                        if (recentKeywords.contains(_controller.text)) {
+                          recentKeywords.remove(_controller.text);
+                        }
+                        recentKeywords.insert(0, _controller.text);
+
+                        String stringRecentKeywords = '';
+                        for (int i = 0; i < recentKeywords.length; i++) {
+                          stringRecentKeywords += '${recentKeywords[i]},';
+                        }
+                        await secureStorage.write(
+                            key: 'recentKeywords', value: stringRecentKeywords);
+
                         SaKeywordSearchModel tmpModel =
                             SaKeywordSearchModel.fromMap(
                                 _controller.text, widget.searchFilterMap);
@@ -130,7 +161,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       decoration: const InputDecoration(
                         hintText: "흡연구역 검색",
                         border: InputBorder.none,
-                        hintStyle: const TextStyle(
+                        hintStyle: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF6F767F),
@@ -146,6 +177,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     IconButton(
                       onPressed: () {
                         _controller.clear();
+                        if (!showSearchResult) {
+                          showRecentKeywords = true;
+                        }
                         setState(() {});
                       },
                       icon: const Icon(
@@ -157,80 +191,174 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
             ),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.all(10),
-                itemCount: smokingAreaLists.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            if (showRecentKeywords)
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 32,
+                height: 30,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: recentKeywords.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Row(
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              child: textFormat(
-                                text: smokingAreaLists[index].name,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
+                        InkWell(
+                          borderRadius: BorderRadius.circular(26),
+                          onTap: () async {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            SaKeywordSearchModel tmpModel =
+                                SaKeywordSearchModel.fromMap(
+                                    recentKeywords[index],
+                                    widget.searchFilterMap);
+                            List<dynamic> tmpRtn = await SmokingAreaService
+                                .searchSmokingAreaByKeyword(
+                              tmpModel,
+                            );
+                            smokingAreaLists.clear();
+                            for (int i = 0; i < tmpRtn.length; i++) {
+                              smokingAreaLists
+                                  .add(SaBasicModel.fromJson(tmpRtn[i]));
+                            }
+                            setState(() {
+                              showRecentKeywords = false;
+                              showSearchResult = true;
+                            });
+                          },
+                          child: Ink(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(0xFFE4E7EB),
                               ),
+                              borderRadius: BorderRadius.circular(26),
                             ),
-                            Container(
-                              child: textFormat(
-                                text: smokingAreaLists[index].address,
-                                color: const Color(0xFF6F767F),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star_rounded,
-                                    size: 17,
-                                    color: Color(0xFFFFC226),
+                            padding: const EdgeInsets.only(
+                                left: 16, right: 14, top: 5, bottom: 5),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                textFormat(
+                                    text: recentKeywords[index],
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500),
+                                const SizedBox(width: 5),
+                                GestureDetector(
+                                  onTap: () async {
+                                    recentKeywords.removeAt(index);
+
+                                    String stringRecentKeywords = '';
+                                    for (int i = 0;
+                                        i < recentKeywords.length;
+                                        i++) {
+                                      stringRecentKeywords +=
+                                          '${recentKeywords[i]},';
+                                    }
+                                    await secureStorage.write(
+                                        key: 'recentKeywords',
+                                        value: stringRecentKeywords);
+                                    setState(() {});
+                                  },
+                                  child: const Icon(
+                                    Icons.close,
+                                    size: 16,
                                   ),
-                                  textFormat(
-                                    text: smokingAreaLists[index]
-                                        .score
-                                        .toString(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            if (showSearchResult)
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(10),
+                  itemCount: smokingAreaLists.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          context.pop();
+                          screenIndex = 0;
+                          homePageController.jumpToPage(0);
+                          moveCameraById(
+                            smokingAreaLists[index].id,
+                          );
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: textFormat(
+                                    text: smokingAreaLists[index].name,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Container(
+                                  child: textFormat(
+                                    text: smokingAreaLists[index].address,
+                                    color: const Color(0xFF6F767F),
                                     fontWeight: FontWeight.w500,
                                     fontSize: 12,
                                   ),
-                                ],
-                              ),
+                                )
+                              ],
                             ),
-                            Container(
-                              child: textFormat(
-                                  text: mKm(calculateDistance(
-                                userLatitude,
-                                userLongitude,
-                                smokingAreaLists[index].latitude,
-                                smokingAreaLists[index].longitude,
-                              ))),
-                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.star_rounded,
+                                        size: 17,
+                                        color: Color(0xFFFFC226),
+                                      ),
+                                      textFormat(
+                                        text: smokingAreaLists[index]
+                                            .score
+                                            .toString(),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: textFormat(
+                                      text: mKm(calculateDistance(
+                                    userLatitude,
+                                    userLongitude,
+                                    smokingAreaLists[index].latitude,
+                                    smokingAreaLists[index].longitude,
+                                  ))),
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return const Divider(
-                    color: Color(0xFFEEF1F5),
-                  );
-                },
-              ),
-            )
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const Divider(
+                      color: Color(0xFFEEF1F5),
+                    );
+                  },
+                ),
+              )
           ],
         ),
       ),

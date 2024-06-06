@@ -33,7 +33,7 @@ void moveCameraByPosition(double lat, double lng) {
   );
 }
 
-void moveCameraByFavorite(String id, String name) async {
+void moveCameraById(String id) async {
   // 기존의 마커들 지우기
   mapController!.clearOverlays();
 
@@ -595,7 +595,7 @@ class _MapScreenState extends State<MapScreen>
     SaSearchModel saSearchModel = SaSearchModel(
       latitude: lat,
       longitude: lng,
-      range: 0.01,
+      range: 0.05,
       status: searchFilterMap['satatus'],
       opened: searchFilterMap['opened'],
       closed: searchFilterMap['opened'],
