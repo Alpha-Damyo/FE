@@ -130,6 +130,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         });
                       },
                       onEditingComplete: () async {
+                        showRecentKeywords = false;
                         showSearchResult = true;
                         FocusManager.instance.primaryFocus?.unfocus();
 
@@ -194,87 +195,93 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             if (showRecentKeywords)
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 32,
-                height: 30,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: recentKeywords.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Row(
-                      children: [
-                        InkWell(
-                          borderRadius: BorderRadius.circular(26),
-                          onTap: () async {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            searchKeyword = recentKeywords[index];
-                            _controller.text = searchKeyword;
-
-                            SaKeywordSearchModel tmpModel =
-                                SaKeywordSearchModel.fromMap(
-                                    searchKeyword, widget.searchFilterMap);
-                            List<dynamic> tmpRtn = await SmokingAreaService
-                                .searchSmokingAreaByKeyword(
-                              tmpModel,
-                            );
-                            smokingAreaLists.clear();
-                            for (int i = 0; i < tmpRtn.length; i++) {
-                              smokingAreaLists
-                                  .add(SaBasicModel.fromJson(tmpRtn[i]));
-                            }
-                            setState(() {
-                              showRecentKeywords = false;
-                              showSearchResult = true;
-                            });
-                          },
-                          child: Ink(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color(0xFFE4E7EB),
-                              ),
+              Column(
+                children: [
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 32,
+                    height: 30,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: recentKeywords.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Row(
+                          children: [
+                            InkWell(
                               borderRadius: BorderRadius.circular(26),
-                            ),
-                            padding: const EdgeInsets.only(
-                                left: 16, right: 14, top: 5, bottom: 5),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                textFormat(
-                                    text: recentKeywords[index],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
-                                const SizedBox(width: 5),
-                                GestureDetector(
-                                  onTap: () async {
-                                    recentKeywords.removeAt(index);
+                              onTap: () async {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                searchKeyword = recentKeywords[index];
+                                _controller.text = searchKeyword;
 
-                                    String stringRecentKeywords = '';
-                                    for (int i = 0;
-                                        i < recentKeywords.length;
-                                        i++) {
-                                      stringRecentKeywords +=
-                                          '${recentKeywords[i]},';
-                                    }
-                                    await secureStorage.write(
-                                        key: 'recentKeywords',
-                                        value: stringRecentKeywords);
-                                    setState(() {});
-                                  },
-                                  child: const Icon(
-                                    Icons.close,
-                                    size: 16,
+                                SaKeywordSearchModel tmpModel =
+                                    SaKeywordSearchModel.fromMap(
+                                        searchKeyword, widget.searchFilterMap);
+                                List<dynamic> tmpRtn = await SmokingAreaService
+                                    .searchSmokingAreaByKeyword(
+                                  tmpModel,
+                                );
+                                smokingAreaLists.clear();
+                                for (int i = 0; i < tmpRtn.length; i++) {
+                                  smokingAreaLists
+                                      .add(SaBasicModel.fromJson(tmpRtn[i]));
+                                }
+                                const Duration(milliseconds: 10);
+                                setState(() {
+                                  showRecentKeywords = false;
+                                  showSearchResult = true;
+                                });
+                              },
+                              child: Ink(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: const Color(0xFFE4E7EB),
                                   ),
+                                  borderRadius: BorderRadius.circular(26),
                                 ),
-                              ],
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 10, top: 5, bottom: 5),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    textFormat(
+                                        text: recentKeywords[index],
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                    const SizedBox(width: 5),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        recentKeywords.removeAt(index);
+
+                                        String stringRecentKeywords = '';
+                                        for (int i = 0;
+                                            i < recentKeywords.length;
+                                            i++) {
+                                          stringRecentKeywords +=
+                                              '${recentKeywords[i]},';
+                                        }
+                                        await secureStorage.write(
+                                            key: 'recentKeywords',
+                                            value: stringRecentKeywords);
+                                        setState(() {});
+                                      },
+                                      child: const Icon(
+                                        Icons.close,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    );
-                  },
-                ),
+                            const SizedBox(width: 10),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             if (showSearchResult)
               smokingAreaLists.isNotEmpty
