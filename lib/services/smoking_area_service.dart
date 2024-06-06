@@ -37,6 +37,7 @@ class SmokingAreaService {
     };
 
     var body = json.encode(data);
+    print(body);
 
     var response = await http.post(
       url,
@@ -112,7 +113,11 @@ class SmokingAreaService {
 
     var responseDecode = jsonDecode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
-      print("success search");
+      // print("success search");
+      // print(responseDecode);
+      SaDetailModel saDetailModel = SaDetailModel.fromJson(responseDecode);
+      print(saDetailModel);
+      print("123");
       return SaDetailModel.fromJson(responseDecode);
     } else {
       print(responseDecode);
@@ -178,6 +183,7 @@ class SmokingAreaService {
     var url = Uri.parse('$baseUrl/info/postInfo');
 
     var data = saReviewModel.toJson();
+    print(data);
 
     var header = {
       'Authorization': 'Bearer $token',
@@ -191,12 +197,11 @@ class SmokingAreaService {
       body: body,
     );
 
-    var responseDecode = jsonDecode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 200) {
       print("success review");
       return true;
     } else {
-      print(responseDecode);
+      print('fail review');
       throw Exception("fail review");
     }
   }

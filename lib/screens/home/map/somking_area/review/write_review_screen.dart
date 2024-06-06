@@ -67,6 +67,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   ];
 
   bool activateReviewBtn = false;
+  bool _isProcessing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -74,12 +75,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     String data = GoRouterState.of(context).extra! as String;
     final String smokingAreaId = data.split(',')[0];
     final String smokingAreaName = data.split(',')[1];
-    bool isProcessing = false;
 
     return Stack(
       children: [
         Scaffold(
-          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             scrolledUnderElevation: 0,
             title: Text(
@@ -285,7 +284,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                   borderRadius: const BorderRadius.all(Radius.circular(26)),
                   onTap: () async {
                     setState(() {
-                      isProcessing = true;
+                      _isProcessing = true;
                     });
 
                     String? imageUrl;
@@ -296,8 +295,8 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                     SaReivewModel saReviewModel = SaReivewModel(
                         id: smokingAreaId,
                         score: _starValue,
-                        opened: _tagIndex[1][1],
-                        closed: _tagIndex[1][0],
+                        opened: _tagIndex[1][0],
+                        closed: _tagIndex[1][1],
                         notExist: _tagIndex[5][2],
                         airOut: _tagIndex[5][1],
                         hygiene: _tagIndex[4][0],
@@ -315,8 +314,9 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         saReviewModel);
 
                     setState(() {
-                      isProcessing = false;
+                      _isProcessing = false;
                     });
+
                     if (isSuccess) {
                       Fluttertoast.showToast(msg: "리뷰 작성이 완료되었습니다");
                       context.pop();
@@ -326,7 +326,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                   },
                   child: Ink(
                     width: double.infinity,
-                    height: 47,
+                    height: 60,
                     decoration: BoxDecoration(
                       color: activateReviewBtn
                           ? Theme.of(context).colorScheme.primary
@@ -350,7 +350,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
             ),
           ),
         ),
-        if (isProcessing)
+        if (_isProcessing)
           AbsorbPointer(
             child: Container(
               color: Colors.black.withOpacity(0.5),

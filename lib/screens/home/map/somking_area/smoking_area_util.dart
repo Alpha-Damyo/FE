@@ -1,4 +1,6 @@
+import 'package:damyo/screens/home/map/somking_area/smoking_area_gallery_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // 별점 표시
@@ -12,13 +14,21 @@ class SAInfoScreenStar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Icon(Icons.star, color: Colors.yellow),
-        Icon(Icons.star, color: Colors.yellow),
-        Icon(Icons.star, color: Colors.yellow),
-        Icon(Icons.star, color: Colors.yellow),
-        Icon(Icons.star, color: Color(0xffe4e7eb)),
+        RatingStars(
+          starColor: const Color(0xFFFFC226),
+          // starSpacing: 4,
+          value: starValue,
+          maxValueVisibility: false,
+          valueLabelVisibility: false,
+          starSize: 23,
+        ),
+        const SizedBox(width: 5),
+        Text(
+          '($starValue)',
+          style: const TextStyle(fontSize: 16),
+        ),
       ],
     );
   }
@@ -127,12 +137,6 @@ class SAInfoScreenCharacteristic extends StatelessWidget {
   }
 }
 
-List<String> photoUrlList = [
-  'https://www.sisain.co.kr/news/photo/202203/47046_84952_2317.jpg',
-  'https://mediahub.seoul.go.kr/uploads/mediahub/2023/02/wVVfdlOSDzeCdUziNtMyHjYIvgntUwDm.jpg',
-  'https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/2OhT/image/bOXhfr9EO2JubQiJKQhI9JqA3xk.jpg',
-];
-
 // 사진
 class SAInfoScreenPhotos extends StatelessWidget {
   final List<String> photoUrlList;
@@ -148,25 +152,32 @@ class SAInfoScreenPhotos extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: photoUrlList.map((url) {
-            return Padding(
+        child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          for (int i = 0; i < photoUrlList.length; i++)
+            Padding(
               padding: EdgeInsets.only(
-                  right:
-                      url == photoUrlList[photoUrlList.length - 1] ? 0 : 10.0),
+                  right: i == photoUrlList.length - 1 ? 0 : 16.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  url,
-                  width: 128,
-                  height: 128,
-                  fit: BoxFit.fill,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GalleryScreen(photoUrlList, i),
+                      ),
+                    );
+                  },
+                  child: Image.network(
+                    photoUrlList[i],
+                    width: 128,
+                    height: 128,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            );
-          }).toList(),
-        ),
+            )
+        ]),
       ),
     );
   }

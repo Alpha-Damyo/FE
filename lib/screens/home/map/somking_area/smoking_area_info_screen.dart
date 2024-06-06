@@ -20,6 +20,7 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
     String data = GoRouterState.of(context).extra! as String;
     final String smokingAreaId = data.split(',')[0];
     final String smokingAreaName = data.split(',')[1];
+
     const double padding = 16;
     return ScreenUtilInit(
       designSize: const Size(390, 1112),
@@ -35,10 +36,13 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
               body: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: CircularProgressIndicator(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 ],
               ),
@@ -46,6 +50,14 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
           } else if (snapshot.hasError) {
             return Scaffold(appBar: AppBar(), body: const Text("에러가 발생하였습니다"));
           } else {
+            String? smokingAreaImage;
+            if (snapshot.data.pictureList.length > 0) {
+              smokingAreaImage = snapshot.data.pictureList[0]['pictureUrl'];
+            }
+            List<String> photoUrlList = [];
+            for (int i = 0; i < snapshot.data.pictureList.length; i++) {
+              photoUrlList.add(snapshot.data.pictureList[i]['pictureUrl']);
+            }
             return Scaffold(
               appBar: AppBar(
                 scrolledUnderElevation: 0,
@@ -63,24 +75,24 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ImageScreen(
-                                'assets/images/smoking_area_default_image.png'),
+                            builder: (context) => ImageScreen(smokingAreaImage),
                           ),
                         );
                       },
-                      child: Image.asset(
-                        'assets/images/smoking_area_default_image.png',
-                        fit: BoxFit.cover,
-                        width: 390.w,
-                        height: 266,
-                      ),
+                      child: snapshot.data.pictureList.isEmpty
+                          ? Image.asset(
+                              'assets/images/smoking_area_default_image.png',
+                              fit: BoxFit.cover,
+                              width: 390.w,
+                              height: 266,
+                            )
+                          : Image.network(
+                              snapshot.data.pictureList[0]['pictureUrl'],
+                              fit: BoxFit.cover,
+                              width: 390.w,
+                              height: 266,
+                            ),
                     ),
-                    // Image.network(
-                    //   'https://www.sisain.co.kr/news/photo/202203/47046_84952_2317.jpg',
-                    //   fit: BoxFit.cover,
-                    //   width: 390.w,
-                    //   height: 266,
-                    // ),
                     Padding(
                       padding: const EdgeInsets.all(padding),
                       child: Column(
@@ -90,16 +102,11 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 5),
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              SAInfoScreenStar(starValue: 4),
-                              SizedBox(width: 10),
-                              Text(
-                                '(17건)',
-                                style: TextStyle(fontSize: 16),
-                              ),
+                              SAInfoScreenStar(starValue: snapshot.data.score),
                             ],
                           ),
                           const SizedBox(height: 25),
@@ -146,12 +153,12 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                       ),
                     ),
                     const SAInfoScreenGrayContainer(),
-                    const Padding(
-                      padding: EdgeInsets.all(padding),
+                    Padding(
+                      padding: const EdgeInsets.all(padding),
                       child: Column(
                         children: [
-                          SizedBox(height: 5),
-                          Row(
+                          const SizedBox(height: 5),
+                          const Row(
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(right: 10.0),
@@ -163,8 +170,8 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                               Text("서울특별시 성북구 정릉로 77")
                             ],
                           ),
-                          SizedBox(height: 20),
-                          Align(
+                          const SizedBox(height: 20),
+                          const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               '특징',
@@ -172,12 +179,39 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                                   fontSize: 14, fontWeight: FontWeight.w600),
                             ),
                           ),
-                          SAInfoScreenCharacteristic(name: '개방', count: 16),
-                          SAInfoScreenCharacteristic(name: '실내', count: 8),
-                          SAInfoScreenCharacteristic(name: '큼', count: 6),
-                          SAInfoScreenCharacteristic(name: '혼잡함', count: 4),
-                          SAInfoScreenCharacteristic(name: '청결함', count: 3),
-                          SAInfoScreenCharacteristic(name: '의자가 있음', count: 1),
+                          SAInfoScreenCharacteristic(
+                              name: '개방', count: snapshot.data.openedCount),
+                          SAInfoScreenCharacteristic(
+                              name: '폐쇄', count: snapshot.data.closedCount),
+                          SAInfoScreenCharacteristic(
+                              name: '실내', count: snapshot.data.indoorCount),
+                          SAInfoScreenCharacteristic(
+                              name: '실외', count: snapshot.data.outdoorCount),
+                          SAInfoScreenCharacteristic(
+                              name: '흡연실이 커요', count: snapshot.data.bigCount),
+                          SAInfoScreenCharacteristic(
+                              name: '흡연실이 작아요',
+                              count: snapshot.data.smallCount),
+                          SAInfoScreenCharacteristic(
+                              name: '흡연실이 한산해요',
+                              count: snapshot.data.quiteCount),
+                          SAInfoScreenCharacteristic(
+                              name: '흡연실이 혼잡해요',
+                              count: snapshot.data.crowdedCount),
+                          SAInfoScreenCharacteristic(
+                              name: '흡연실이 청결해요',
+                              count: snapshot.data.hygieneCount),
+                          SAInfoScreenCharacteristic(
+                              name: '흡연실이 더러워요',
+                              count: snapshot.data.dirtyCount),
+                          SAInfoScreenCharacteristic(
+                              name: '의자가 있어요', count: snapshot.data.chairCount),
+                          SAInfoScreenCharacteristic(
+                              name: '환기성이 좋아요',
+                              count: snapshot.data.airOutCount),
+                          SAInfoScreenCharacteristic(
+                              name: '존재하지 않아요',
+                              count: snapshot.data.noExistCount),
                         ],
                       ),
                     ),
@@ -186,15 +220,15 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                       padding: const EdgeInsets.all(padding),
                       child: Column(
                         children: [
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '사진 (6)',
-                                style: TextStyle(
+                                '사진 (${snapshot.data.pictureList.length})',
+                                style: const TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w600),
                               ),
-                              Text(
+                              const Text(
                                 '전체보기 >',
                                 style: TextStyle(
                                   fontSize: 12,

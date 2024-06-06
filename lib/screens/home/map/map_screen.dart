@@ -598,7 +598,7 @@ class _MapScreenState extends State<MapScreen>
       range: 0.05,
       status: searchFilterMap['satatus'],
       opened: searchFilterMap['opened'],
-      closed: searchFilterMap['opened'],
+      closed: searchFilterMap['closed'],
       hygiene: searchFilterMap['hygiene'],
       dirty: searchFilterMap['dirty'],
       airOut: searchFilterMap['airOut'],

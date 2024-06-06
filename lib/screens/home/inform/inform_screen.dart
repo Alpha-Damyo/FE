@@ -233,7 +233,7 @@ class _InformScreenState extends State<InformScreen> {
                     },
                     child: Ink(
                       width: double.infinity,
-                      height: 47,
+                      height: 60,
                       decoration: BoxDecoration(
                         color: activateInformBtn
                             ? Colors.blue

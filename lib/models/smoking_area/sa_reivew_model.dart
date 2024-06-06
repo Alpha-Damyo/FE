@@ -68,7 +68,7 @@ class SaReivewModel {
       "crowded": crowded,
       "quite": quite,
       "chair": chair,
-      "url": "string"
+      "url": url,
     };
   }
 }

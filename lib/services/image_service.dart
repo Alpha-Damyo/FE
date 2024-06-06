@@ -28,7 +28,7 @@ Future<String> ImageService(UpdateProfileModel image) async {
   // 요청 보내기
   var response = await request.send();
   var jsonBody = await response.stream.bytesToString();
-  var rtnUrl = jsonDecode(jsonBody)['url'];
+  var rtnUrl = await jsonDecode(jsonBody)['url'];
 
   if (response.statusCode == 200) {
     print("//////////////////");
