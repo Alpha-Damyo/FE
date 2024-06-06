@@ -148,9 +148,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                     context.go('/');
                                     screenIndex = 0;
                                     homePageController.jumpToPage(0);
-                                    moveCameraByFavorite(
-                                        favoritesDetail[index][j][0],
-                                        favoritesDetail[index][j][1]);
+                                    moveCameraById(
+                                      favoritesDetail[index][j][0],
+                                    );
                                   });
                                 },
                                 child: Text(favoritesDetail[index][j][1]),

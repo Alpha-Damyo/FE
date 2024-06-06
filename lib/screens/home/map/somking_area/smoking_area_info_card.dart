@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:damyo/database/smoke_database_helper.dart';
 
-
 DateTime now = DateTime.now();
+
 class SmokingAreaInfoCard extends StatefulWidget {
   final SaBasicModel saBasicModel;
   const SmokingAreaInfoCard({
@@ -29,7 +29,7 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/sa_info', extra: _smokingAreaId);
+        context.push('/sa_info', extra: '$_smokingAreaId,$_smokingAreaName');
       },
       child: Container(
         // Todo: _smokingAreaId를 통해 흡연구역 정보를 불러와야함
@@ -119,9 +119,10 @@ class _SmokingAreaInfoCardState extends State<SmokingAreaInfoCard> {
           minimumSize: const Size(35, 35),
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        onPressed: () async{
+        onPressed: () async {
           func();
-          await smokeDB.insertSmokeInfo(widget.saBasicModel.id, widget.saBasicModel.name, now);
+          await smokeDB.insertSmokeInfo(
+              widget.saBasicModel.id, widget.saBasicModel.name, now);
         },
         child: Text(
           name,
