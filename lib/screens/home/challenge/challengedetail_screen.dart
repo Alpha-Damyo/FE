@@ -36,7 +36,7 @@ class ChallengeDetailScreen extends StatelessWidget {
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image:
-                            NetworkImage("https://via.placeholder.com/390x163"),
+                            AssetImage("assets/images/challenge_thumbnail.png"),
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -48,9 +48,9 @@ class ChallengeDetailScreen extends StatelessWidget {
                       children: [
                         Text(
                           '$title : 2024.1.1 ~ 2024.6.30',
-                          style: TextStyle(
-                            color: const Color(0xFF262B32),
-                            fontSize: 14.sp,
+                          style: const TextStyle(
+                            color: Color(0xFF262B32),
+                            fontSize: 14,
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w500,
                           ),
@@ -81,11 +81,11 @@ class ChallengeDetailScreen extends StatelessWidget {
                     color: const Color(0xFFEEF1F4),
                     borderRadius: BorderRadius.circular(22.r),
                   ),
-                  child: Text(
+                  child: const Text(
                     '사진 구경하기',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w600,
                     ),
@@ -98,7 +98,7 @@ class ChallengeDetailScreen extends StatelessWidget {
                 height: 624.h,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage("https://via.placeholder.com/390x624"),
+                    image: AssetImage("assets/images/challenge.png"),
                     fit: BoxFit.fill,
                   ),
                 ),

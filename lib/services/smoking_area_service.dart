@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:damyo/models/smoking_area/sa_detail_model.dart';
 import 'package:damyo/models/smoking_area/sa_basic_model.dart';
+import 'package:damyo/models/smoking_area/sa_detail_model.dart';
 import 'package:damyo/models/smoking_area/sa_inform_model.dart';
 import 'package:damyo/models/smoking_area/sa_search_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

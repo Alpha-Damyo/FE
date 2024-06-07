@@ -1,9 +1,8 @@
-import 'package:damyo/provider/islogin_provider.dart';
-import 'package:damyo/provider/userInfo_provider.dart';
+import 'package:damyo/services/signup_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -14,6 +13,23 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   String? selectedGender;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+  String? email;
+
+  @override
+  Future<void> initState() async {
+    super.initState();
+    email = await storage.read(key: 'email');
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    ageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +53,12 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Column(
               children: [
                 SizedBox(height: 37.h),
-                Expanded(
+                const Expanded(
                   child: Text(
                     '간단한 정보를 알려주세요 !',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 24.sp,
+                      fontSize: 24,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w700,
                     ),
@@ -54,30 +70,31 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         '이름',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16.sp,
+                          fontSize: 16,
                           fontFamily: 'Pretendard',
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       SizedBox(height: 8.h),
                       TextField(
-                        decoration: InputDecoration(
+                        controller: nameController,
+                        decoration: const InputDecoration(
                           hintText: '이름을 입력해주세요.',
                           hintStyle: TextStyle(
-                            color: const Color(0xFFA8AFB6),
-                            fontSize: 14.sp,
+                            color: Color(0xFFA8AFB6),
+                            fontSize: 14,
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w500,
                           ),
-                          enabledBorder: const UnderlineInputBorder(),
+                          enabledBorder: UnderlineInputBorder(),
                         ),
                         onChanged: (value) async {
-                          Provider.of<UserInfoProvider>(context, listen: false)
-                              .setName(value);
+                          // Provider.of<UserInfoProvider>(context, listen: false)
+                          //     .setName(value);
                         },
                       ),
                     ],
@@ -91,11 +108,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             '나이',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               fontFamily: 'Pretendard',
                               fontWeight: FontWeight.w600,
                             ),
@@ -104,21 +121,22 @@ class _SignupScreenState extends State<SignupScreen> {
                           SizedBox(
                             width: 130.w,
                             child: TextField(
+                              controller: ageController,
                               keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: '나이를 입력해주세요.',
                                 hintStyle: TextStyle(
-                                  color: const Color(0xFFA8AFB6),
-                                  fontSize: 14.sp,
+                                  color: Color(0xFFA8AFB6),
+                                  fontSize: 14,
                                   fontFamily: 'Pretendard',
                                   fontWeight: FontWeight.w500,
                                 ),
-                                enabledBorder: const UnderlineInputBorder(),
+                                enabledBorder: UnderlineInputBorder(),
                               ),
                               onChanged: (value) {
-                                Provider.of<UserInfoProvider>(context,
-                                        listen: false)
-                                    .setAge(int.parse(value));
+                                // Provider.of<UserInfoProvider>(context,
+                                //         listen: false)
+                                //     .setAge(int.parse(value));
                               },
                             ),
                           ),
@@ -131,11 +149,11 @@ class _SignupScreenState extends State<SignupScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               '성별',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 16.sp,
+                                fontSize: 16,
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.w600,
                               ),
@@ -151,9 +169,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                     onPressed: () {
                                       setState(() {
                                         selectedGender = '남성';
-                                        Provider.of<UserInfoProvider>(context,
-                                                listen: false)
-                                            .setGender(true);
+                                        // Provider.of<UserInfoProvider>(context,
+                                        //         listen: false)
+                                        //     .setGender(true);
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -171,8 +189,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                                 width: 1),
                                       ),
                                     ),
-                                    child: Text('남성',
-                                        style: TextStyle(fontSize: 14.sp)),
+                                    child: const Text('남성',
+                                        style: TextStyle(fontSize: 14)),
                                   ),
                                 ),
                                 SizedBox(width: 8.w),
@@ -183,9 +201,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                     onPressed: () {
                                       setState(() {
                                         selectedGender = '여성';
-                                        Provider.of<UserInfoProvider>(context,
-                                                listen: false)
-                                            .setGender(false);
+                                        // Provider.of<UserInfoProvider>(context,
+                                        //         listen: false)
+                                        //     .setGender(false);
                                       });
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -203,8 +221,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                                 width: 1),
                                       ),
                                     ),
-                                    child: Text('여성',
-                                        style: TextStyle(fontSize: 14.sp)),
+                                    child: const Text('여성',
+                                        style: TextStyle(fontSize: 14)),
                                   ),
                                 ),
                               ],
@@ -221,8 +239,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: ElevatedButton(
                     onPressed: () async {
                       // 받은 정보 서버에 보내기
-                      Provider.of<IsLoginProvider>(context, listen: false)
-                          .checkFirst();
+                      // Provider.of<IsLoginProvider>(context, listen: false)
+                      //     .checkFirst();
+                      signup("image", email!, nameController.text,
+                          selectedGender!, int.parse(ageController.text));
                       context.go('/');
                     },
                     style: ElevatedButton.styleFrom(
@@ -232,11 +252,11 @@ class _SignupScreenState extends State<SignupScreen> {
                         borderRadius: BorderRadius.circular(26.r),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       '완료',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16.sp,
+                        fontSize: 16,
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w700,
                       ),

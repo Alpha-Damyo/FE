@@ -23,14 +23,13 @@ class _MypageScreenState extends State<MypageScreen> {
             appBar: AppBar(
               scrolledUnderElevation: 0,
               backgroundColor: Colors.white,
-              title: Text(
+              title: const Text(
                 '마이페이지',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 20,
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w700,
-                  height: 0,
                 ),
               ),
               centerTitle: true,
@@ -80,11 +79,11 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
+                                          const Text(
                                             '즐겨찾기 관리',
                                             style: TextStyle(
-                                              color: const Color(0xFF262B32),
-                                              fontSize: 16.sp,
+                                              color: Color(0xFF262B32),
+                                              fontSize: 16,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -118,14 +117,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '흡연구역 업데이트',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                 ),
@@ -164,16 +162,16 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
+                                          const Text(
                                             '업적 & 기여도',
                                             style: TextStyle(
-                                              color: const Color(0xFF262B32),
-                                              fontSize: 16.sp,
+                                              color: Color(0xFF262B32),
+                                              fontSize: 16,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          SizedBox(width: 280),
+                                          SizedBox(width: 280.w),
                                         ],
                                       ),
                                     ),
@@ -201,14 +199,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '흡연데이터 초기화',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                 ),
@@ -244,14 +241,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '푸쉬 알림',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                   height: 0,
@@ -341,14 +337,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '앱 버전',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                   height: 0,
@@ -357,11 +352,11 @@ class _MypageScreenState extends State<MypageScreen> {
                                             ),
                                           ),
                                           SizedBox(width: 82.w),
-                                          Text(
+                                          const Text(
                                             '3.4',
                                             style: TextStyle(
-                                              color: const Color(0xFFA8AFB6),
-                                              fontSize: 14.sp,
+                                              color: Color(0xFFA8AFB6),
+                                              fontSize: 14,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -411,21 +406,21 @@ class _MypageScreenState extends State<MypageScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     '로그인 / 회원가입',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 20.sp,
+                      fontSize: 20,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 6.h),
-                  Text(
+                  const Text(
                     '담요와 함께 바른 문화를 만들어봐요 ! ',
                     style: TextStyle(
-                      color: const Color(0xFF6E767F),
-                      fontSize: 14.sp,
+                      color: Color(0xFF6E767F),
+                      fontSize: 14,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w400,
                     ),
@@ -455,11 +450,11 @@ class _MypageScreenState extends State<MypageScreen> {
                   onTap: () {
                     context.push('/login');
                   },
-                  child: Text(
+                  child: const Text(
                     '로그인/회원가입 하러 가기',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w600,
                     ),
@@ -534,9 +529,9 @@ class _MypageScreenState extends State<MypageScreen> {
                           Provider.of<UserInfoProvider>(context)
                               .name
                               .toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 16.sp,
+                            fontSize: 16,
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w700,
                           ),
@@ -561,9 +556,9 @@ class _MypageScreenState extends State<MypageScreen> {
                             children: [
                               Text(
                                 '바른 문화 기여도: ${Provider.of<UserInfoProvider>(context).score}점',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 12.sp,
+                                  fontSize: 12,
                                   fontFamily: 'Pretendard',
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -606,11 +601,11 @@ class _MypageScreenState extends State<MypageScreen> {
                     Provider.of<IsLoginProvider>(context, listen: false)
                         .logout();
                   },
-                  child: Text(
+                  child: const Text(
                     '로그아웃',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w600,
                     ),
