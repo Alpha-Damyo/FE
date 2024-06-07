@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 class MapFilterListview extends StatefulWidget {
   final List<String> characterList;
-  const MapFilterListview({
+  final Future<void> filterOnClick;
+  Map<String, dynamic> searchFilterMap;
+  MapFilterListview({
     super.key,
     required this.characterList,
+    required this.filterOnClick,
+    required this.searchFilterMap,
   });
 
   @override
@@ -29,14 +33,37 @@ class _MapFilterListviewState extends State<MapFilterListview> {
               bottom: 5,
             ), // 마지막 아이템에는 패딩을 적용하지 않음.
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 setState(() {
                   if (_selectedIndex == index) {
                     _selectedIndex = -1;
+                    if (index == 1) {
+                      widget.searchFilterMap['outdoor'] = null;
+                    } else if (index == 2) {
+                      widget.searchFilterMap['opened'] = null;
+                    } else if (index == 3) {
+                      widget.searchFilterMap['quite'] = null;
+                    } else if (index == 4) {
+                      widget.searchFilterMap['hygiene'] = null;
+                    } else {
+                      widget.searchFilterMap['chair'] = null;
+                    }
                   } else {
                     _selectedIndex = index;
+                    if (index == 1) {
+                      widget.searchFilterMap['outdoor'] = true;
+                    } else if (index == 2) {
+                      widget.searchFilterMap['opened'] = true;
+                    } else if (index == 3) {
+                      widget.searchFilterMap['quite'] = true;
+                    } else if (index == 4) {
+                      widget.searchFilterMap['hygiene'] = true;
+                    } else {
+                      widget.searchFilterMap['chair'] = true;
+                    }
                   }
                 });
+                // await widget.filterOnClick;
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(

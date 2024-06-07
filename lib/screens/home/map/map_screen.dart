@@ -7,9 +7,11 @@ import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/models/smoking_area/sa_search_model.dart';
 import 'package:damyo/screens/home/map/filter/smoking_area_filter.dart';
 import 'package:damyo/screens/home/map/ovelay_util.dart';
+import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_card.dart';
 import 'package:damyo/screens/home/map/util/map_filter_listview.dart';
 import 'package:damyo/services/smoking_area_service.dart';
+import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +33,7 @@ void moveCameraByPosition(double lat, double lng) {
   );
 }
 
-void moveCameraByFavorite(String id, String name) async {
+void moveCameraById(String id) async {
   // 기존의 마커들 지우기
   mapController!.clearOverlays();
 
@@ -95,6 +97,37 @@ class _MapScreenState extends State<MapScreen>
   }
 
   // 필터 목록
+  Map<String, dynamic> searchFilterMap = {
+    "status": null,
+    "opened": null,
+    "closed": null,
+    "hygiene": null,
+    "dirty": null,
+    "airOut": null,
+    "noExist": null,
+    "indoor": null,
+    "outdoor": null,
+    "big": null,
+    "small": null,
+    "crowded": null,
+    "quite": null,
+    "chair": null,
+  };
+  void resetFilter() {
+    searchFilterMap['opened'] = null;
+    searchFilterMap['closed'] = null;
+    searchFilterMap['hygiene'] = null;
+    searchFilterMap['dirty'] = null;
+    searchFilterMap['airOut'] = null;
+    searchFilterMap['noExist'] = null;
+    searchFilterMap['indoor'] = null;
+    searchFilterMap['outdoor'] = null;
+    searchFilterMap['big'] = null;
+    searchFilterMap['small'] = null;
+    searchFilterMap['crowded'] = null;
+    searchFilterMap['quite'] = null;
+    searchFilterMap['chair'] = null;
+  }
 
   final List<String> _mapFilterCharacterList = [
     '실외',
@@ -103,6 +136,7 @@ class _MapScreenState extends State<MapScreen>
     '청결한',
     '의자가 있는',
   ];
+  int _selectedFilterIndex = -1;
 
   BottomDrawerController bottomDrawerController = BottomDrawerController();
 
@@ -144,9 +178,6 @@ class _MapScreenState extends State<MapScreen>
               log("onMapReady", name: "onMapReady");
 
               await updateMap(userLatitude, userLongitude);
-              // attachOverlay(SaBasicModel(
-              //     '1', "국민대 도서관 1", 37.65640, 127.11670, "2323", 5));
-              // attachOverlay(SaBasicModel(2, "국민대 도서관 2", 37.65690, 127.11720));
             },
             onMapTapped: (point, latLng) {
               smokingAreaSelected = false;
@@ -165,7 +196,14 @@ class _MapScreenState extends State<MapScreen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.push('/search');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return SearchScreen(
+                          searchFilterMap: searchFilterMap,
+                        );
+                      }),
+                    );
                   },
                   child: Container(
                     width: searchWidth,
@@ -184,21 +222,19 @@ class _MapScreenState extends State<MapScreen>
                       ],
                     ),
                     padding: const EdgeInsets.only(left: 10),
-                    child: const Row(
+                    child: Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.search,
                           size: iconSize,
                         ),
-                        SizedBox(width: 10),
-                        Text(
-                          "흡연구역 검색",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF6F767F),
-                          ),
+                        const SizedBox(width: 10),
+                        textFormat(
+                          text: "흡연구역 검색",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF6F767F),
                         ),
                       ],
                     ),
@@ -211,14 +247,109 @@ class _MapScreenState extends State<MapScreen>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    MapFilterListview(
-                      characterList: _mapFilterCharacterList,
+                    Container(
+                      width: MediaQuery.of(context).size.width - 70,
+                      height: 35,
+                      alignment: Alignment.centerLeft,
+                      child: ListView.builder(
+                        itemCount: _mapFilterCharacterList.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              right: index == _mapFilterCharacterList.length - 1
+                                  ? 5
+                                  : 10,
+                              bottom: 5,
+                            ), // 마지막 아이템에는 패딩을 적용하지 않음.
+                            child: GestureDetector(
+                              onTap: () async {
+                                setState(() {
+                                  if (_selectedFilterIndex == index) {
+                                    _selectedFilterIndex = -1;
+                                    resetFilter();
+                                  } else {
+                                    _selectedFilterIndex = index;
+                                    resetFilter();
+                                    if (index == 0) {
+                                      searchFilterMap['outdoor'] = true;
+                                      searchFilterMap['indoor'] = false;
+                                    } else if (index == 1) {
+                                      searchFilterMap['opened'] = true;
+                                      searchFilterMap['closed'] = false;
+                                    } else if (index == 2) {
+                                      searchFilterMap['quite'] = true;
+                                    } else if (index == 3) {
+                                      searchFilterMap['hygiene'] = true;
+                                    } else {
+                                      searchFilterMap['chair'] = true;
+                                    }
+                                  }
+                                });
+                                updateMap(_nowCameraPosition!.target.latitude,
+                                    _nowCameraPosition!.target.longitude);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _selectedFilterIndex == index
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: _selectedFilterIndex == index
+                                      ? Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        )
+                                      : Border.all(
+                                          color: const Color(0xffE4E7EB),
+                                        ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 0,
+                                      blurRadius: 2.0,
+                                      offset: const Offset(
+                                          0, 3), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    _mapFilterCharacterList[index],
+                                    style: const TextStyle(
+                                      color: Color(0xFF464D57),
+                                      fontSize: 12,
+                                      fontFamily: 'Pretendard',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                     const SizedBox(width: 10),
                     // 필터 설정 버튼
                     InkWell(
-                      onTap: () {
-                        filterScreen(context);
+                      onTap: () async {
+                        clickApplyFilter = false;
+                        await filterScreen(
+                          context,
+                          searchFilterMap,
+                          applyFilter,
+                        );
+                        if (clickApplyFilter) {
+                          _selectedFilterIndex = -1;
+                          updateMap(_nowCameraPosition!.target.latitude,
+                              _nowCameraPosition!.target.longitude);
+                        }
                       },
                       child: Container(
                         width: alignButtonSize,
@@ -278,20 +409,18 @@ class _MapScreenState extends State<MapScreen>
                               ),
                             ],
                           ),
-                          child: const Row(
+                          child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.refresh_rounded,
                                 color: Color(0xFF0099FC),
                                 size: 20,
                               ),
-                              Text(
-                                "이 위치에서 재탐색",
-                                style: TextStyle(
-                                  color: Color(0xFF0099FC),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                ),
+                              textFormat(
+                                text: "이 위치에서 재탐색",
+                                color: const Color(0xFF0099FC),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
                               )
                             ],
                           ),
@@ -325,18 +454,18 @@ class _MapScreenState extends State<MapScreen>
                             ),
                           ],
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.add_location_alt_outlined,
                               size: iconSize,
                               color: Color(0xff6f767f),
                             ),
-                            Text(
-                              '제보',
-                              style: TextStyle(
-                                  fontSize: 12, color: Color(0xff6f767f)),
+                            textFormat(
+                              text: '제보',
+                              fontSize: 12,
+                              color: const Color(0xff6f767f),
                             ),
                           ],
                         ),
@@ -372,18 +501,18 @@ class _MapScreenState extends State<MapScreen>
                             ),
                           ],
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.star_border_rounded,
                               size: iconSize,
                               color: Color(0xff6f767f),
                             ),
-                            Text(
-                              '저장',
-                              style: TextStyle(
-                                  fontSize: 12, color: Color(0xff6f767f)),
+                            textFormat(
+                              text: '저장',
+                              fontSize: 12,
+                              color: const Color(0xff6f767f),
                             ),
                           ],
                         ),
@@ -429,7 +558,9 @@ class _MapScreenState extends State<MapScreen>
                                 extra:
                                     '${stringCoordinate(_nowCameraPosition?.target.longitude)},${stringCoordinate(_nowCameraPosition?.target.latitude)}');
                           },
-                          child: const Text('제보하기'),
+                          child: textFormat(
+                              text: '제보하기',
+                              color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ],
@@ -464,7 +595,21 @@ class _MapScreenState extends State<MapScreen>
     SaSearchModel saSearchModel = SaSearchModel(
       latitude: lat,
       longitude: lng,
-      range: 0.01,
+      range: 0.05,
+      status: searchFilterMap['satatus'],
+      opened: searchFilterMap['opened'],
+      closed: searchFilterMap['closed'],
+      hygiene: searchFilterMap['hygiene'],
+      dirty: searchFilterMap['dirty'],
+      airOut: searchFilterMap['airOut'],
+      noExist: searchFilterMap['noExist'],
+      indoor: searchFilterMap['indoor'],
+      outdoor: searchFilterMap['outdoor'],
+      big: searchFilterMap['big'],
+      small: searchFilterMap['small'],
+      crowded: searchFilterMap['crowded'],
+      quite: searchFilterMap['quite'],
+      chair: searchFilterMap['chair'],
     );
 
     List<dynamic> smokingAreaList =
@@ -493,6 +638,12 @@ class _MapScreenState extends State<MapScreen>
       smokingAreaSelected = true;
     });
     mapController!.addOverlay(marker);
+  }
+
+  bool clickApplyFilter = false;
+
+  void applyFilter() {
+    clickApplyFilter = true;
   }
 
   void onCameraChange() async {

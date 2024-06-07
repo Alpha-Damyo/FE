@@ -41,24 +41,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleUser!.authentication;
 
-    if (googleUser != null) {
-      print('name = ${googleUser.displayName}');
-      print('email = ${googleUser.email}');
-      print('id = ${googleUser.id}');
+    print('name = ${googleUser.displayName}');
+    print('email = ${googleUser.email}');
+    print('id = ${googleUser.id}');
 
-      await storage.write(key: 'userID', value: googleUser.email);
-      await storage.write(key: 'sns', value: "google");
-      // 읽고 싶을 때는
-      // String? id = await storage.read(key: 'userID');
-      Provider.of<IsLoginProvider>(context, listen: false).login();
-      //checkLoginState();
-    }
+    await storage.write(key: 'userID', value: googleUser.email);
+    await storage.write(key: 'sns', value: "google");
+    // 읽고 싶을 때는
+    // String? id = await storage.read(key: 'userID');
+
+    // google accesstoken 받아오기
+    print(googleSignInAuthentication.accessToken);
+    Provider.of<IsLoginProvider>(context, listen: false).login();
+    //checkLoginState();
   }
 
   void signInWithNaver() async {
     NaverLoginResult naverUser = await FlutterNaverLogin.logIn();
-    // final NaverLoginResult User = await FlutterNaverLogin.logIn();
     NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
     dynamic userInfo;
 
@@ -70,8 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await storage.write(key: 'userID', value: naverUser.account.email);
       await storage.write(key: 'sns', value: "naver");
       Provider.of<IsLoginProvider>(context, listen: false).login();
-      userInfo = await login(naverToken.toString());
-      checkLoginState(userInfo);
+      checkLoginState();
     }
     setState(() {});
   }
