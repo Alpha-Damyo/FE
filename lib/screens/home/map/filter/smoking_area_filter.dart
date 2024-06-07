@@ -261,7 +261,7 @@ Future<dynamic> filterScreen(BuildContext context,
                     },
                     child: Ink(
                       width: double.infinity,
-                      height: 47.h,
+                      height: 60,
                       decoration: const BoxDecoration(
                         color: Colors.blue,
                         borderRadius: BorderRadius.all(Radius.circular(26)),
