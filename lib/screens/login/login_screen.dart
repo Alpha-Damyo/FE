@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await storage.write(key: 'userID', value: naverUser.account.email);
       await storage.write(key: 'sns', value: "naver");
       Provider.of<IsLoginProvider>(context, listen: false).login();
-      checkLoginState();
+      checkLoginState(userInfo);
     }
     setState(() {});
   }
@@ -131,6 +131,9 @@ class _LoginScreenState extends State<LoginScreen> {
             print(userInfo);
             checkLoginState(userInfo);
           } catch (error) {
+            if (error == 404) {
+              context.push('/login/signup');
+            }
             print('사용자 정보 요청 실패2 $error');
           }
         } catch (error) {
@@ -156,6 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
           print(userInfo);
           checkLoginState(userInfo);
         } catch (error) {
+          if (error == "404") {
+            context.push('/login/signup');
+          }
           print('사용자 정보 요청 실패3 $error');
         }
       } catch (error) {
@@ -210,7 +216,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 150.h,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/icons/login_logo.png'),
+                          image: AssetImage(
+                              'assets/icons/login_screen/login_logo.png'),
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -240,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: buildLoginButton(
                   text: '구글로 계속하기',
                   backgroundColor: Colors.white,
-                  imageUrl: "assets/icons/google.png",
+                  imageUrl: "assets/icons/login_screen/google.png",
                 ),
               ),
               SizedBox(height: 15.h),
@@ -249,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: buildLoginButton(
                   text: '카카오로 계속하기',
                   backgroundColor: const Color(0xFFF9E000),
-                  imageUrl: "assets/icons/kakao.png",
+                  imageUrl: "assets/icons/login_screen/kakao.png",
                 ),
               ),
               SizedBox(height: 15.h),
@@ -258,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: buildLoginButton(
                   text: '네이버로 계속하기',
                   backgroundColor: const Color(0xFF00C73C),
-                  imageUrl: "assets/icons/naver.png",
+                  imageUrl: "assets/icons/login_screen/naver.png",
                 ),
               ),
             ],
