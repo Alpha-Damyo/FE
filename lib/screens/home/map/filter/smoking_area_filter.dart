@@ -259,12 +259,13 @@ Future<dynamic> filterScreen(BuildContext context,
                       applyFilter();
                       context.pop();
                     },
+                    borderRadius: BorderRadius.circular(26),
                     child: Ink(
                       width: double.infinity,
                       height: 60,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(26)),
+                        borderRadius: BorderRadius.circular(26),
                       ),
                       child: const Align(
                         alignment: Alignment.center,
