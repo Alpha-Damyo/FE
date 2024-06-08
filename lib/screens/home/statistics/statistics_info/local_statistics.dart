@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:damyo/models/statistics/stat_region_model.dart';
 import 'package:flutter/material.dart';
@@ -75,16 +76,14 @@ class _localInfoState extends State<localInfo>
   Widget build(BuildContext context) {
     return Container(
       child: _isLoading
-          ? const Expanded(
-              child: Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: 50.0, // 원하는 너비
-                  height: 50.0, // 원하는 높이
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            )
+          ? const Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              width: 50.0, // 원하는 너비
+              height: 50.0, // 원하는 높이
+              child: CircularProgressIndicator(),
+            ),
+          )
           : Column(
               children: [
                 Padding(
@@ -172,8 +171,6 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
   return Container(
     height: 55,
     child: Row(
-      // mainAxisSize: MainAxisSize.min,
-      // mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
@@ -225,11 +222,9 @@ Widget _Sa(Map<String, dynamic> _SaInfo, SaDetailModel SaModel, int rank,
     height: 55,
     child: InkWell(
       onTap: () {
-        context.push('/sa_info', extra: SaModel.id);
+        context.push('/sa_info', extra: '${SaModel.id},${SaModel.name}');
       },
       child: Row(
-        // mainAxisSize: MainAxisSize.min,
-        // mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(

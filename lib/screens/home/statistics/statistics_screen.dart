@@ -58,16 +58,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                ElevatedButton(
-                    onPressed: () async {
-                      print(userSmokeList);
-                    },
-                    child: Text('test1')),
-                ElevatedButton(
-                    onPressed: () async {
-                      print(await getRegionStatics());
-                    },
-                    child: Text('test2')),
                 SizedBox(
                   height: 20.h,
                 ),
@@ -82,7 +72,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 ),
                 // 지역별 흡연 데이터 통계
                 statRegionInfo == null
-                    ? const CircularProgressIndicator() // 로딩 중에는 로딩 인디케이터를 표시
+                    ? const CircularProgressIndicator()
                     : SizedBox(
                         height: 250,
                         child: StatistTap(
@@ -95,8 +85,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   color: Colors.grey[200],
                 ),
                 statDateInfo == null
-                    ? const CircularProgressIndicator() // 로딩 중에는 로딩 인디케이터를 표시
-                    : SizedBox(
+                    ? const CircularProgressIndicator()
+                    : Container(
                         child: StatistTap(
                           index: 6,
                           category: '특정 기간',
@@ -158,7 +148,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         child: StatistTap(
                           index: 5,
                           category: '평균 흡연량 비교 통계',
-                          statInfo: [userDB,statDateInfo],
+                          statInfo: [userDB, statDateInfo],
                         ),
                       ),
                 const SizedBox(

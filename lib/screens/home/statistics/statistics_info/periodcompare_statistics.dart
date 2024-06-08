@@ -39,7 +39,7 @@ double roundUpToNearestTen(int number) {
 }
 
 class _periodCompareInfoState extends State<periodCompareInfo> {
-  bool _isLoading = false;
+  bool _isLoading = true;
   List<dynamic>? everyDayWeek, everyWeeks, everyMonths;
   List<dynamic>? smokeWeekdayInfo, smokeWeeksInfo, smokeMonthsInfo;
   int? maxWeekday, maxWeeks, maxMonths;
@@ -125,9 +125,9 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
 
   @override
   void initState() {
+    _loadData(500);
     setEveryInfo();
     setUserInfo();
-    _loadData(500);
     super.initState();
   }
 

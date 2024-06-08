@@ -58,16 +58,14 @@ class _timeAverInfoState extends State<timeAverInfo> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? const Expanded(
-            child: Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: 50.0, // 원하는 너비
-                height: 50.0, // 원하는 높이
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          )
+        ? const Align(
+          alignment: Alignment.center,
+          child: SizedBox(
+            width: 50.0, // 원하는 너비
+            height: 50.0, // 원하는 높이
+            child: CircularProgressIndicator(),
+          ),
+        )
         : Column(
             children: [
               const Padding(

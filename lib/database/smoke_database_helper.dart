@@ -31,7 +31,7 @@ class SmokeDatabaseHelper {
     String path = join(await getDatabasesPath(), 'smokeInfo_database.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -48,7 +48,7 @@ class SmokeDatabaseHelper {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
+    if (oldVersion < 4) {
       await db.execute('DROP TABLE IF EXISTS smokeInfo');
       await _onCreate(db, newVersion);
     }
