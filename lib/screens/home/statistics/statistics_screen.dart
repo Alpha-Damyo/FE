@@ -17,7 +17,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   statDateModel? statDateInfo;
   statRegionModel? statRegionInfo;
 
-  SmokeDatabaseHelper smokeDB = SmokeDatabaseHelper();
+  SmokeDatabaseHelper userDB = SmokeDatabaseHelper();
   List<Map<String, dynamic>> userSmokeList = [];
 
   Future<void> getStatics() async {
@@ -72,13 +72,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   height: 20.h,
                 ),
                 // 사용자의 정보
-                SizedBox(
-                  height: 400,
-                  child: StatistTap(
-                    index: 0,
-                    category: '사용자 정보',
-                    statInfo: smokeDB,
-                  ),
+                StatistTap(
+                  index: 0,
+                  category: '사용자 정보',
+                  statInfo: userDB,
                 ),
                 SizedBox(
                   height: 20.h,
@@ -94,7 +91,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             statInfo: statRegionInfo),
                       ),
                 Container(
-                  height: 20.h,
+                  height: 10,
                   color: Colors.grey[200],
                 ),
                 statDateInfo == null
@@ -107,7 +104,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         ),
                       ),
                 Container(
-                  height: 20.h,
+                  height: 10,
                   color: Colors.grey[200],
                 ),
                 // 시간대별 흡연 데이터 통계(사용자, 전체)
@@ -118,11 +115,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         child: StatistTap(
                           index: 2,
                           category: '시간대별 평균 흡연량',
-                          statInfo: statDateInfo?.time,
+                          statInfo: [userDB, statDateInfo?.time],
                         ),
                       ),
                 Container(
-                  height: 20.h,
+                  height: 10,
                   color: Colors.grey[200],
                 ),
                 // 기간별 흡연 데이터 통계(사용자)
@@ -131,11 +128,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   child: StatistTap(
                     index: 3,
                     category: '기간별 평균 흡연량(개인)',
-                    statInfo: smokeDB,
+                    statInfo: userDB,
                   ),
                 ),
                 Container(
-                  height: 20.h,
+                  height: 10,
                   color: Colors.grey[200],
                 ),
                 // 담배값 계산기
@@ -146,11 +143,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         child: StatistTap(
                           index: 4,
                           category: '담배값 계산기',
-                          statInfo: statDateInfo,
+                          statInfo: userDB,
                         ),
                       ),
                 Container(
-                  height: 20.h,
+                  height: 10,
                   color: Colors.grey[200],
                 ),
                 // 평균 흡연량 비교 데이터 통계
@@ -161,12 +158,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         child: StatistTap(
                           index: 5,
                           category: '평균 흡연량 비교 통계',
-                          statInfo: statDateInfo,
+                          statInfo: [userDB,statDateInfo],
                         ),
                       ),
-                SizedBox(
-                  width: 390.w,
-                  height: 20.h,
+                const SizedBox(
+                  height: 20,
                 ),
               ],
             ),

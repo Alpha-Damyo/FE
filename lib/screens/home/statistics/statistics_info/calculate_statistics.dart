@@ -1,15 +1,22 @@
+import 'package:damyo/database/smoke_database_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 const int won = 225;
-bool _isPrice = false;
+bool _inputUser = false;
 int _selectedIndex = -1;
 var allcnt;
+DateTime now = DateTime.now();
+List<String> calType = ['최근 한달', '최근 일주일', '오늘 하루'];
 
 class calculatePrice extends StatefulWidget {
-  const calculatePrice({super.key});
+  const calculatePrice({
+    super.key,
+    required this.userDB,
+  });
+  final SmokeDatabaseHelper userDB;
 
   @override
   State<calculatePrice> createState() => _calculatePriceState();
@@ -17,6 +24,51 @@ class calculatePrice extends StatefulWidget {
 
 class _calculatePriceState extends State<calculatePrice> {
   final TextEditingController _priceController = TextEditingController();
+  int? cntDay, cntWeek, cntMonth;
+
+  void dayInfo() async {
+    int cnt = 0;
+    final dateInRange = await widget.userDB.getSmokeInfoInWeeksRange(now, now);
+    cnt = dateInRange.first['count'];
+
+    setState(() {
+      cntDay = cnt;
+    });
+  }
+
+  void weekInfo() async {
+    int cnt = 0;
+
+    final startDate = now.subtract(const Duration(days: 6));
+    final dateInRange =
+        await widget.userDB.getSmokeInfoInWeeksRange(startDate, now);
+    cnt = dateInRange.first['count'];
+
+    setState(() {
+      cntWeek = cnt;
+    });
+  }
+
+  void monthInfo() async {
+    int cnt = 0;
+
+    final startDate = now.subtract(const Duration(days: 27));
+    final dateInRange =
+        await widget.userDB.getSmokeInfoInWeeksRange(startDate, now);
+    cnt = dateInRange.first['count'];
+
+    setState(() {
+      cntMonth = cnt;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dayInfo();
+    weekInfo();
+    monthInfo();
+  }
 
   @override
   void dispose() {
@@ -41,7 +93,7 @@ class _calculatePriceState extends State<calculatePrice> {
             ),
           ),
         ),
-        SizedBox(
+        Container(
           height: 100.h,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -52,10 +104,12 @@ class _calculatePriceState extends State<calculatePrice> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (_selectedIndex == index) {
-                          _selectedIndex = -1;
-                        } else {
-                          _selectedIndex = index;
+                        if (!_inputUser) {
+                          if (_selectedIndex == index) {
+                            _selectedIndex = -1;
+                          } else {
+                            _selectedIndex = index;
+                          }
                         }
                       });
                     },
@@ -80,7 +134,7 @@ class _calculatePriceState extends State<calculatePrice> {
                       child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'test $index',
+                          calType[index],
                           style: const TextStyle(
                             color: Color(0xFF464D57),
                             fontSize: 12,
@@ -112,14 +166,14 @@ class _calculatePriceState extends State<calculatePrice> {
                 ),
                 onPressed: () {
                   setState(() {
-                    _isPrice = !_isPrice;
+                    _inputUser = !_inputUser;
+                    _selectedIndex = -1;
                     _priceController.clear();
                     allcnt = 0;
-                    print(_isPrice);
                   });
                 },
               ),
-              if (_isPrice)
+              if (_inputUser)
                 SizedBox(
                   width: 100.w,
                   child: TextField(
@@ -158,7 +212,13 @@ class _calculatePriceState extends State<calculatePrice> {
             children: [
               SizedBox(
                 child: Text(
-                  (_isPrice) ? _priceController.text + ' 개비' : '63 개비',
+                  (_inputUser)
+                      ? '${_priceController.text} 개비'
+                      : (_selectedIndex == 0)
+                          ? '$cntMonth 개비'
+                          : (_selectedIndex == 1)
+                              ? '$cntWeek 개비'
+                              : '$cntDay 개비',
                   style: const TextStyle(
                     color: Color(0xFF454D56),
                     fontSize: 14,
@@ -169,7 +229,13 @@ class _calculatePriceState extends State<calculatePrice> {
               ),
               SizedBox(
                 child: Text(
-                  (_isPrice) ? formatCurrency(allcnt) : '13,500원',
+                  (_inputUser)
+                      ? formatCurrency(allcnt)
+                      : (_selectedIndex == 0)
+                          ? formatCurrency(cntMonth)
+                          : (_selectedIndex == 1)
+                              ? formatCurrency(cntWeek)
+                              : formatCurrency(cntDay),
                   textAlign: TextAlign.right,
                   style: const TextStyle(
                     color: Color(0xFF0099FC),
@@ -187,7 +253,13 @@ class _calculatePriceState extends State<calculatePrice> {
   }
 
   String formatCurrency(var cnt) {
-    int price = cnt * won;
+    int price;
+    if (cnt == null) {
+      price = 0;
+    } else {
+      price = cnt * won;
+    }
+
     final formatter = NumberFormat.currency(locale: 'ko_KR', symbol: '');
     return '${formatter.format(price)}원';
   }

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:async';
 
-import 'package:intl/intl.dart';
-
 //index 3
 final List<bool> _isPeriodtype = [true, false, false];
 String periodType = '일';
@@ -58,7 +56,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       int index = weekOrder.indexOf(item['weekday']);
       if (index != -1) {
         smokeCounts[index] = item['count'];
-        if(max < item['count']){
+        if (max < item['count']) {
           max = item['count'];
         }
       }
@@ -80,7 +78,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       final dateInRange =
           await widget.userDB.getSmokeInfoInWeeksRange(startDate, endDate);
       smokeCounts[i] = dateInRange.first['count'];
-      if (max < dateInRange.first['count']){
+      if (max < dateInRange.first['count']) {
         max = dateInRange.first['count'];
       }
     }
@@ -101,7 +99,7 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
       final dateInRange =
           await widget.userDB.getSmokeInfoInWeeksRange(startDate, endDate);
       smokeCounts[i] = dateInRange.first['count'];
-      if(max < dateInRange.first['count']){
+      if (max < dateInRange.first['count']) {
         max = dateInRange.first['count'];
       }
     }
@@ -114,12 +112,11 @@ class _periodSingleInfoState extends State<periodSingleInfo> {
 
   @override
   void initState() {
-    super.initState();
-
     weekdayInfo();
     weeksInfo();
     monthsInfo();
     _loadData(300);
+    super.initState();
   }
 
   @override

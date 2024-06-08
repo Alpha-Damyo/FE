@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:damyo/database/smoke_database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -5,104 +8,139 @@ import 'package:fl_chart/fl_chart.dart';
 bool timeCheck = true;
 
 class timeAverInfo extends StatefulWidget {
-  const timeAverInfo({super.key, required this.TimeInfo});
+  const timeAverInfo({
+    super.key,
+    required this.TimeInfo,
+    required this.userDB,
+  });
 
   final dynamic TimeInfo;
+  final SmokeDatabaseHelper userDB;
   @override
   State<timeAverInfo> createState() => _timeAverInfoState();
 }
 
 class _timeAverInfoState extends State<timeAverInfo> {
-  List<dynamic>? _EveryList;
+  List<dynamic>? EveryList;
+  Map<String, double>? UserList;
+  bool _isLoading = true;
+
+  void userTimeinfo() async {
+    final _UserList = await widget.userDB.getThreeHourlyAverages();
+    setState(() {
+      UserList = _UserList;
+    });
+  }
 
   void setTimeInfo() {
     setState(() {
-      _EveryList = widget.TimeInfo;
+      EveryList = widget.TimeInfo;
     });
   }
-  
+
+  Future<void> _loadData(int term) async {
+    Timer(Duration(milliseconds: term), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     setTimeInfo();
+    userTimeinfo();
+    _loadData(500);
     super.initState();
   }
 
   //시간대별 정보
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 20, left: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+    return _isLoading
+        ? const Expanded(
+            child: Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 50.0, // 원하는 너비
+                height: 50.0, // 원하는 높이
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          )
+        : Column(
             children: [
-              Text(
-                '시간별 평균 흡연량',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w600,
+              const Padding(
+                padding: EdgeInsets.only(top: 20, left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      '시간별 평균 흡연량',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        timeCheck = true;
+                      });
+                    },
+                    child: Text(
+                      '나',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: timeCheck
+                            ? const Color(0xFF0099FC)
+                            : const Color(0xFFD1D6DC),
+                        fontSize: 12,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        timeCheck = false;
+                      });
+                    },
+                    child: Text(
+                      '전체',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: timeCheck
+                            ? const Color(0xFFD1D6DC)
+                            : const Color(0xFF0099FC),
+                        fontSize: 12,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: LineChart(
+                    timeSmokeAver,
+                    duration: const Duration(milliseconds: 250),
+                  ),
                 ),
               ),
             ],
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  timeCheck = true;
-                });
-              },
-              child: Text(
-                '나',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: timeCheck
-                      ? const Color(0xFF0099FC)
-                      : const Color(0xFFD1D6DC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  timeCheck = false;
-                });
-              },
-              child: Text(
-                '전체',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: timeCheck
-                      ? const Color(0xFFD1D6DC)
-                      : const Color(0xFF0099FC),
-                  fontSize: 12,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: LineChart(
-              timeSmokeAver,
-              duration: const Duration(milliseconds: 250),
-            ),
-          ),
-        ),
-      ],
-    );
+          );
   }
 
   LineChartData get timeSmokeAver => LineChartData(
@@ -140,9 +178,13 @@ class _timeAverInfoState extends State<timeAverInfo> {
       );
 
   List<LineChartBarData> get lineBarsData => [
-        lineChartBarDataUser,
         lineChartBarDataEvery,
+        lineChartBarDataUser,
       ];
+  // : [
+  //     lineChartBarDataUser,
+  //     lineChartBarDataEvery,
+  //   ];
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
@@ -206,7 +248,7 @@ class _timeAverInfoState extends State<timeAverInfo> {
 
   SideTitles get bottomTitles => SideTitles(
         showTitles: true,
-        reservedSize: 32,
+        reservedSize: 30,
         interval: 1,
         getTitlesWidget: timeLineWidgets,
       );
@@ -229,65 +271,51 @@ class _timeAverInfoState extends State<timeAverInfo> {
       );
 
   LineChartBarData get lineChartBarDataUser => LineChartBarData(
-        isCurved: true,
-        gradient: LinearGradient(
-          colors: timeCheck
-              ? [
-                  const Color(0xFFD6ECFA),
-                  const Color(0xFF0099FC),
-                ]
-              : [
-                  const Color(0xFFD2D7DD),
-                  const Color(0xFFD2D7DD),
-                ],
-        ),
-        barWidth: 4,
-        isStrokeCapRound: true,
-        dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        spots: [
-          const FlSpot(0, 10),
-          const FlSpot(3, 12.3),
-          const FlSpot(6, 4),
-          const FlSpot(9, 3),
-          const FlSpot(12, 7),
-          const FlSpot(15, 4),
-          const FlSpot(18, 10),
-          const FlSpot(21, 4),
-          const FlSpot(24, 8),
-        ],
-      );
+      isCurved: true,
+      preventCurveOverShooting: true,
+      gradient: LinearGradient(
+        colors: timeCheck
+            ? [
+                const Color(0xFFD6ECFA),
+                const Color(0xFF0099FC),
+              ]
+            : [
+                const Color(0x7FD2D7DD),
+                const Color(0x7FD2D7DD),
+              ],
+      ),
+      barWidth: 4,
+      isStrokeCapRound: true,
+      dotData: const FlDotData(show: false),
+      belowBarData: BarAreaData(show: false),
+      spots: List.generate(9, (index) {
+        if (UserList?['${index * 3}'] != null) {
+          double? y = UserList!['${index * 3}'];
+          return FlSpot(index * 3, y!);
+        } else {
+          return FlSpot(index * 3, 0);
+        }
+      }));
 
   LineChartBarData get lineChartBarDataEvery => LineChartBarData(
-        isCurved: true,
-        gradient: LinearGradient(
-          colors: timeCheck
-              ? [
-                  const Color(0xFFD2D7DD),
-                  const Color(0xFFD2D7DD),
-                ]
-              : [
-                  const Color(0xFFD6ECFA),
-                  const Color(0xFF0099FC),
-                ],
-        ),
-        barWidth: 4,
-        isStrokeCapRound: true,
-        dotData: const FlDotData(show: false),
-        belowBarData: BarAreaData(show: false),
-        spots: List.generate(_EveryList!.length, (index){
-          return FlSpot(index*3, _EveryList![index]);
-        })
-        // spots: const [
-        //   FlSpot(0, 1),
-        //   FlSpot(3, 2.8),
-        //   FlSpot(6, 4.2),
-        //   FlSpot(9, 9.8),
-        //   FlSpot(12, 7.6),
-        //   FlSpot(15, 10.9),
-        //   FlSpot(18, 15.9),
-        //   FlSpot(21, 23.9),
-        //   FlSpot(24, 10.9),
-        // ],
-      );
+      isCurved: true,
+      preventCurveOverShooting: true,
+      gradient: LinearGradient(
+        colors: timeCheck
+            ? [
+                const Color(0xFFD2D7DD),
+                const Color(0xFFD2D7DD),
+              ]
+            : [
+                const Color(0xFFD6ECFA),
+                const Color(0xFF0099FC),
+              ],
+      ),
+      barWidth: 4,
+      isStrokeCapRound: true,
+      dotData: const FlDotData(show: false),
+      belowBarData: BarAreaData(show: false),
+      spots: List.generate(EveryList!.length, (index) {
+        return FlSpot(index * 3, EveryList![index]);
+      }));
 }

@@ -113,4 +113,38 @@ class SmokeDatabaseHelper {
       [startDateString, endDateString],
     );
   }
+
+  Future<Map<String, double>> getThreeHourlyAverages() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      '''
+      SELECT 
+        CASE 
+          WHEN time >= 0 AND time < 3 THEN '3'
+          WHEN time >= 3 AND time < 6 THEN '6'
+          WHEN time >= 6 AND time < 9 THEN '9'
+          WHEN time >= 9 AND time < 12 THEN '12'
+          WHEN time >= 12 AND time < 15 THEN '15'
+          WHEN time >= 15 AND time < 18 THEN '18'
+          WHEN time >= 18 AND time < 21 THEN '21'
+          WHEN time >= 21 AND time < 24 THEN '24'
+        END as time_range,
+        AVG(count) as avg_count
+      FROM (
+        SELECT date, time, COUNT(*) as count 
+        FROM smokeInfo 
+        GROUP BY date, time
+      ) 
+      GROUP BY time_range
+      ORDER BY time
+      '''
+    );
+
+    Map<String, double> threeHourlyAverages = {};
+    for (var row in result) {
+      threeHourlyAverages[row['time_range']] = row['avg_count'];
+    }
+    return threeHourlyAverages;
+  }
+
 }
