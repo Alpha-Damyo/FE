@@ -1,3 +1,4 @@
+import 'package:damyo/custom_icons_icons.dart';
 import 'package:damyo/screens/home/map/somking_area/add_favorites/add_favorite_bottomsheet.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_image_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_util.dart';
@@ -111,13 +112,16 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                           ),
                           const SizedBox(height: 25),
                           Padding(
-                            padding: EdgeInsets.only(left: 60.w, right: 60.w),
+                            padding: const EdgeInsets.only(left: 30, right: 30),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 SAInfoScreenBtn(
                                   context: context,
-                                  icon: Icons.star,
+                                  icon: (Image.asset(
+                                    'assets/icons/map_screen/bookmark.png',
+                                    width: 30,
+                                  )),
                                   name: '즐겨찾기',
                                   onPressed: () {
                                     showModalBottomSheet(
@@ -132,18 +136,35 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                                 ),
                                 SAInfoScreenBtn(
                                   context: context,
-                                  icon: Icons.ios_share,
+                                  icon: const Icon(
+                                    CustomIcons.share,
+                                    color: Colors.white,
+                                  ),
                                   name: '공유',
                                   onPressed: () {},
                                 ),
                                 SAInfoScreenBtn(
                                   context: context,
-                                  icon: Icons.rate_review_rounded,
+                                  icon: Image.asset(
+                                    'assets/icons/map_screen/write_review.png',
+                                    width: 30,
+                                  ),
                                   name: '리뷰작성',
                                   onPressed: () {
                                     context.push('/sa_info/write_review',
                                         extra:
                                             '$smokingAreaId,$smokingAreaName');
+                                  },
+                                ),
+                                SAInfoScreenBtn(
+                                  context: context,
+                                  icon: const Icon(
+                                    Icons.check_box,
+                                    color: Colors.white,
+                                  ),
+                                  name: '흡연완료',
+                                  onPressed: () {
+                                    // 흡연 완료 로직 처리
                                   },
                                 ),
                               ],

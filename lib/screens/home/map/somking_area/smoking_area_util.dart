@@ -37,7 +37,7 @@ class SAInfoScreenStar extends StatelessWidget {
 // 즐겨찾기, 공유, 내보내기 버튼
 class SAInfoScreenBtn extends StatefulWidget {
   final BuildContext context;
-  final IconData icon;
+  final Widget icon;
   final String name;
   final VoidCallback onPressed;
 
@@ -66,11 +66,7 @@ class _SAInfoScreenBtnState extends State<SAInfoScreenBtn> {
           child: FittedBox(
             child: IconButton(
               onPressed: widget.onPressed,
-              icon: Icon(
-                widget.icon,
-                color: Colors.white,
-                size: 30,
-              ),
+              icon: widget.icon,
             ),
           ),
         ),
