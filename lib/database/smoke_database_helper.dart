@@ -31,7 +31,7 @@ class SmokeDatabaseHelper {
     String path = join(await getDatabasesPath(), 'smokeInfo_database.db');
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -48,13 +48,14 @@ class SmokeDatabaseHelper {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
+    if (oldVersion < 4) {
       await db.execute('DROP TABLE IF EXISTS smokeInfo');
       await _onCreate(db, newVersion);
     }
   }
 
-  Future<void> insertSmokeInfo(String id, String name, DateTime dateInfo) async {
+  Future<void> insertSmokeInfo(
+      String id, String name, DateTime dateInfo) async {
     String date = formatDate(dateInfo);
     int time = int.parse(formatTime(dateInfo));
     String weekday = formatWeekday(dateInfo);
@@ -63,7 +64,7 @@ class SmokeDatabaseHelper {
 
     await db.insert(
       'smokeInfo',
-      {'id': id, 'name':name, 'date': date, 'weekday': weekday, 'time': time},
+      {'id': id, 'name': name, 'date': date, 'weekday': weekday, 'time': time},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -88,4 +89,62 @@ class SmokeDatabaseHelper {
       'SELECT $column, COUNT($column) as count FROM smokeInfo GROUP BY $column HAVING COUNT($column) > 1',
     );
   }
+
+  Future<List<Map<String, dynamic>>> getSmokeInfoInWeekDayRange(
+      DateTime startDate, DateTime endDate) async {
+    final db = await database;
+    final startDateString = formatDate(startDate);
+    final endDateString = formatDate(endDate);
+
+    return await db.rawQuery(
+      'SELECT weekday, COUNT(weekday) as count FROM smokeInfo WHERE date BETWEEN ? AND ? GROUP BY weekday',
+      [startDateString, endDateString],
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getSmokeInfoInWeeksRange(
+      DateTime startDate, DateTime endDate) async {
+    final db = await database;
+    final startDateString = formatDate(startDate);
+    final endDateString = formatDate(endDate);
+
+    return await db.rawQuery(
+      'SELECT COUNT(*) as count FROM smokeInfo WHERE date BETWEEN ? AND ? ',
+      [startDateString, endDateString],
+    );
+  }
+
+  Future<Map<String, double>> getThreeHourlyAverages() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      '''
+      SELECT 
+        CASE 
+          WHEN time >= 0 AND time < 3 THEN '3'
+          WHEN time >= 3 AND time < 6 THEN '6'
+          WHEN time >= 6 AND time < 9 THEN '9'
+          WHEN time >= 9 AND time < 12 THEN '12'
+          WHEN time >= 12 AND time < 15 THEN '15'
+          WHEN time >= 15 AND time < 18 THEN '18'
+          WHEN time >= 18 AND time < 21 THEN '21'
+          WHEN time >= 21 AND time < 24 THEN '24'
+        END as time_range,
+        AVG(count) as avg_count
+      FROM (
+        SELECT date, time, COUNT(*) as count 
+        FROM smokeInfo 
+        GROUP BY date, time
+      ) 
+      GROUP BY time_range
+      ORDER BY time
+      '''
+    );
+
+    Map<String, double> threeHourlyAverages = {};
+    for (var row in result) {
+      threeHourlyAverages[row['time_range']] = row['avg_count'];
+    }
+    return threeHourlyAverages;
+  }
+
 }
