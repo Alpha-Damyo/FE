@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // ),
           BottomNavigationBarItem(
             label: '챌린지',
-            icon: Icon(CustomIcons.nav_challenge),
+            icon: Icon(CustomIcons.challenge),
           ),
           BottomNavigationBarItem(
             label: '마이페이지',

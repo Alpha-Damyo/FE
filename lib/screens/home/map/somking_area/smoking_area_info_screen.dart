@@ -137,7 +137,7 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                                 SAInfoScreenBtn(
                                   context: context,
                                   icon: const Icon(
-                                    CustomIcons.group_1321315893,
+                                    CustomIcons.share,
                                     color: Colors.white,
                                   ),
                                   name: '공유',

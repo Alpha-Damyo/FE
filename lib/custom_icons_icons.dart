@@ -16,10 +16,6 @@
 ///         Author:    Daniel Bruce
 ///         License:   SIL (http://scripts.sil.org/OFL)
 ///         Homepage:  http://www.entypo.com
-/// * Material Design Icons, Copyright (C) Google, Inc
-///         Author:    Google
-///         License:   Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-///         Homepage:  https://design.google.com/icons/
 /// * Linearicons Free, Copyright (C) Linearicons.com
 ///         Author:    Perxis
 ///         License:   CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
@@ -38,14 +34,12 @@ class CustomIcons {
   static const String? _kFontPkg = null;
 
   static const IconData chart_pie_1 = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData share = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData nav_chart_pie = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData group_1321315893 = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData share = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData camera = IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData bookmark = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData group_1321315890 = IconData(0xe807, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData nav_filter = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData nav_challenge = IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData challenge = IconData(0xe80c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData pie_chart = IconData(0xe842, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData map = IconData(0xf279, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
