@@ -38,7 +38,6 @@ class _userInfoState extends State<userInfo>
     final _smokeDB = await widget.userDB.getSmokeInfoGroupedByColumn('id');
     setState(() {
       smokePlace = _smokeDB;
-      // print(smokePlace);
     });
   }
 
@@ -68,7 +67,6 @@ class _userInfoState extends State<userInfo>
         ),
       ),
       child: Column(
-        // mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
@@ -151,11 +149,6 @@ class _userInfoState extends State<userInfo>
                           }
                           return Container();
                         }).where((element) => element != Container()).toList(),
-                        // children: [
-                        //   _mostSmokingArea(1, '국민대 도서관', 23129),
-                        //   _mostSmokingArea(2, '정릉역 2번출구', 13023),
-                        //   _mostSmokingArea(3, '국민대 공학관', 10322),
-                        // ],
                       ),
                     ),
             ],
@@ -172,9 +165,7 @@ class _userInfoState extends State<userInfo>
         Center(
           child: InkWell(
             onTap: () {
-              // print(id);
-              // print(now.weekday);
-              context.push('/sa_info', extra: id);
+              context.push('/sa_info', extra: '$id,$name');
             },
             child: Container(
               width: 120,

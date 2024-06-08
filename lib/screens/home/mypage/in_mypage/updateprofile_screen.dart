@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:damyo/models/updateprofile/update_name_model.dart';
 import 'package:damyo/models/updateprofile/update_profile_model.dart';
 import 'package:damyo/style.dart';
@@ -10,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 XFile? _profileImage;
-Uint8List? imageFile;
 final ImagePicker picker = ImagePicker();
 
 bool _changedImage = false;
