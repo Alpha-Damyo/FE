@@ -1,3 +1,4 @@
+import 'package:damyo/models/userinfo/user_info_model.dart';
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,20 @@ class MypageScreen extends StatefulWidget {
   @override
   State<MypageScreen> createState() => _MypageScreenState();
 }
+
+UserInfoModel userInfoModel = UserInfoModel(
+    "c8940db5-38ae-4eed-b641-c83a38d87dd8",
+    "김민제",
+    "kmj200050005@gmail.com",
+    "2024-06-06T07:08:11.512128",
+    "https://d2wcv86mbz7x2c.cloudfront.net/c7157892-d%EB%A9%80%ED%8B%B0%ED%8C%8C%ED%8A%B8%20%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%9A%A9.jpg",
+    0,
+    "남자",
+    33,
+    50,
+    463,
+    "google",
+    "106362899132468449802");
 
 class _MypageScreenState extends State<MypageScreen> {
   @override
@@ -508,10 +523,9 @@ class _MypageScreenState extends State<MypageScreen> {
                           Container(
                             width: 84.w,
                             height: 84.h,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage(
-                                    "https://via.placeholder.com/84x84"),
+                                image: NetworkImage(userInfoModel.profileUrl!),
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -526,9 +540,7 @@ class _MypageScreenState extends State<MypageScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          Provider.of<UserInfoProvider>(context)
-                              .name
-                              .toString(),
+                          userInfoModel.name!,
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 16,
