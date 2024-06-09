@@ -1,3 +1,4 @@
+import 'package:damyo/custom_icons_icons.dart';
 import 'package:damyo/screens/home/challenge/challenge_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/map/map_screen.dart';
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: PageView(
         controller: homePageController,
         onPageChanged: _onPageChanged,
@@ -60,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             label: '통계',
-            icon: Icon(Icons.bar_chart_rounded),
+            icon: Icon(CustomIcons.nav_chart_pie),
           ),
           // BottomNavigationBarItem(
           //   label: '제보',
@@ -68,10 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
           // ),
           BottomNavigationBarItem(
             label: '챌린지',
-            icon: Icon(Icons.military_tech),
+            icon: Icon(CustomIcons.challenge),
           ),
           BottomNavigationBarItem(
-
             label: '마이페이지',
             icon: Icon(Icons.person),
           ),

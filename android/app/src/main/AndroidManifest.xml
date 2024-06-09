@@ -11,7 +11,7 @@
 
 
     <application
-        android:label="damyo"
+        android:label="담요"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         android:usesCleartextTraffic="true"

@@ -5,7 +5,9 @@ Text textFormat(
     double fontSize = 14,
     Color? color = Colors.black,
     FontWeight fontWeight = FontWeight.normal,
-    TextOverflow? textOverflow}) {
+    TextOverflow? textOverflow,
+    TextAlign? textAlign = TextAlign.start,
+    }) {
   return Text(
     text,
     style: TextStyle(
@@ -16,5 +18,6 @@ Text textFormat(
     ),
     textScaler: TextScaler.noScaling,
     overflow: textOverflow,
+    textAlign: textAlign,
   );
 }

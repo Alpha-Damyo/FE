@@ -1,4 +1,5 @@
 import 'package:damyo/screens/home/map/filter/smoking_area_filter_listview.dart';
+import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -160,9 +161,10 @@ Future<dynamic> filterScreen(BuildContext context,
                           //   selectedCharacterIndex: -1,
                           // ),
                           const SizedBox(height: 20),
-                          Text(
-                            "실내 여부",
-                            style: Theme.of(context).textTheme.displaySmall,
+                          textFormat(
+                            text: "실내 여부",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                           ),
                           const SizedBox(height: 20),
                           FilterListview(
@@ -176,9 +178,10 @@ Future<dynamic> filterScreen(BuildContext context,
                             },
                           ),
                           const SizedBox(height: 20),
-                          Text(
-                            "개방 여부",
-                            style: Theme.of(context).textTheme.displaySmall,
+                          textFormat(
+                            text: "개방 여부",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                           ),
                           const SizedBox(height: 20),
                           FilterListview(
@@ -192,9 +195,10 @@ Future<dynamic> filterScreen(BuildContext context,
                             },
                           ),
                           const SizedBox(height: 20),
-                          Text(
-                            "기타",
-                            style: Theme.of(context).textTheme.displaySmall,
+                          textFormat(
+                            text: "기타",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                           ),
                           const SizedBox(height: 20),
                           FilterListview(
@@ -259,22 +263,21 @@ Future<dynamic> filterScreen(BuildContext context,
                       applyFilter();
                       context.pop();
                     },
+                    borderRadius: BorderRadius.circular(26),
                     child: Ink(
                       width: double.infinity,
                       height: 60,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(26)),
+                        borderRadius: BorderRadius.circular(26),
                       ),
-                      child: const Align(
+                      child: Align(
                         alignment: Alignment.center,
-                        child: Text(
-                          '적용하기',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+                        child: textFormat(
+                          text: '적용하기',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),

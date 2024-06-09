@@ -118,11 +118,14 @@ flutter:
     - assets/icons/statistics_screen/
     - assets/icons/statistics_screen/special_statistics/
     - assets/icons/updateprofile_screen/
-    - assets/icons/mypage_screen/
     - assets/images/smoking_area_default_image.png
-    - assets/images/
+    - assets/icons/map_screen/bookmark.png
+    - assets/icons/map_screen/challenge.png
+    - assets/icons/map_screen/filter.png
+    - assets/icons/map_screen/inform_icon.png
+    - assets/icons/map_screen/map.png
+    - assets/icons/map_screen/write_review.png
 
-    
   fonts:
     - family: pretendard
       fonts:
@@ -144,14 +147,15 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.otf
           weight: 900
+    - family: CustomIcons
+      fonts:
+        - asset: assets/fonts/CustomIcons.ttf
 
 flutter_native_splash:
   image: assets/images/splash_screen.png
   color: "#ffffff"
   android: true
   ios: true
-  android_gravity: fill
-  ios_content_mode: bottom
   android_12:
     image: assets/images/splash_screen.png
     color: "#ffffff"

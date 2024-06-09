@@ -39,24 +39,29 @@ class _StatistTapState extends State<StatistTap> {
     //인덱스 별 통계 페이지 생성
     switch (widget.index) {
       case 0:
-        // 유저 정보 화면
-        return userInfo(userDB: widget.statInfo); // 사용자 이름만 가져오면 됨
+        // 유저 정보 화면 - 완
+        return userInfo(userDB: widget.statInfo);
       case 1:
-        // 지역별 통계 화면
-        return localInfo(RegionInfo: widget.statInfo); // 80프로 - Map으로 자료 변환만 되면 
+        // 로딩바 완료 [[[]]] 지역별 통계 화면
+        return localInfo(RegionInfo: widget.statInfo); // 80프로 - Map으로 자료 변환만 되면
       case 2:
-        // 시간대별 평균 흡연량
-        return timeAverInfo(TimeInfo: widget.statInfo); // 사용자 정보만 가져오면 됨
+        // 로딩바 완료 [[[]]] 시간대별 평균 흡연량 - 완
+        return timeAverInfo(
+            userDB: widget.statInfo[0],
+            TimeInfo: widget.statInfo[1]); // 사용자 정보만 가져오면 됨
       case 3:
-        // 기간별 통계 화면(개인 총 흡연량)
-        return periodSingleInfo(userDB: widget.statInfo); // 사용자 정보 가져오기
+        // 로딩바 완료 [[[]]] 기간별 통계 화면(개인 총 흡연량) - 완
+        return periodSingleInfo(userDB: widget.statInfo);
       case 4:
-        // 담배값 계산기
-        return const calculatePrice(); // 사용자 정보 가져오기
+        // 담배값 계산기 - 완
+        return calculatePrice(
+          userDB: widget.statInfo,
+        );
       case 5:
-        // 기간별 평균 흡연량 비교
+        // 기간별 평균 흡연량 비교 - 완
         return periodCompareInfo(
-          everyInfo: widget.statInfo,
+          userDB: widget.statInfo[0],
+          everyInfo: widget.statInfo[1],
         ); // 사용자 정보만 가져오면 됨
       case 6:
         // 특정 기간에 대한 페이지

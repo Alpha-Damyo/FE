@@ -24,7 +24,6 @@ Future<String?> putUserUpdateName(UpdateNameModel nameModel) async {
   } else {
     final Map<String, dynamic> jsonMap =
       jsonDecode(utf8.decode(response.bodyBytes));
-    print(utf8.decode(response.bodyBytes));
     throw Exception("Failed to update name");
   }
 }
@@ -58,10 +57,12 @@ Future<String?> putUserUpdateProfile(UpdateProfileModel profileModel) async {
   var response = await request.send();
   var jsonBody = await response.stream.bytesToString();
 
+  
+  print(jsonBody);
+
   if (response.statusCode == 200) {
     return jsonBody;
   } else {
-    print(jsonBody);
     throw Exception("Failed to update profile");
   }
 }
