@@ -161,7 +161,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   //_requestPermission();
-  // await _getCurrentLocation();
+  await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
   await getFavorites();
@@ -214,8 +214,8 @@ final GoRouter router = GoRouter(
           name: 'login',
           path: 'login',
           builder: (context, state) {
-            // final function = state.extra as VoidCallback;
-            return const LoginScreen();
+            final function = state.extra as VoidCallback;
+            return LoginScreen(update: function);
           },
           routes: [
             GoRoute(

@@ -77,13 +77,13 @@ class _localInfoState extends State<localInfo>
     return Container(
       child: _isLoading
           ? const Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              width: 50.0, // 원하는 너비
-              height: 50.0, // 원하는 높이
-              child: CircularProgressIndicator(),
-            ),
-          )
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 50.0, // 원하는 너비
+                height: 50.0, // 원하는 높이
+                child: CircularProgressIndicator(),
+              ),
+            )
           : Column(
               children: [
                 Padding(
@@ -165,10 +165,10 @@ class _localInfoState extends State<localInfo>
   }
 }
 
-Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
-  String key = _GuInfo.keys.first;
-  dynamic value = _GuInfo[key];
-  return Container(
+Widget _Gu(Map<String, dynamic> GuInfo, int rank) {
+  String key = GuInfo.keys.first;
+  dynamic value = GuInfo[key];
+  return SizedBox(
     height: 55,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -190,7 +190,7 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$key구',
+              key,
               style: const TextStyle(
                 color: Color(0xFF10151B),
                 fontSize: 14,
@@ -214,10 +214,10 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
   );
 }
 
-Widget _Sa(Map<String, dynamic> _SaInfo, SaDetailModel SaModel, int rank,
+Widget _Sa(Map<String, dynamic> SaInfo, SaDetailModel SaModel, int rank,
     BuildContext context) {
-  String key = _SaInfo.keys.first;
-  dynamic value = _SaInfo[key];
+  String key = SaInfo.keys.first;
+  dynamic value = SaInfo[key];
   return Ink(
     height: 55,
     child: InkWell(

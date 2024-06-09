@@ -16,8 +16,10 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({
+  VoidCallback update;
+  LoginScreen({
     super.key,
+    required this.update,
   });
 
   @override
@@ -54,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print(userInfo['token']);
       await storage.write(key: 'accessToken', value: userInfo['token']);
       userInfoModel = await getUserInfo();
-      // widget.update();
+      widget.update();
       context.pop();
     }
   }

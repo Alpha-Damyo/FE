@@ -6,7 +6,8 @@ Future<http.Response> contestLike(String token, int pictureId) async {
   var queryParams = {
     'pictureId': pictureId.toString(),
   };
-  var url = Uri.http('$baseUrl/contest/like$queryParams');
+  var url = Uri.parse('$baseUrl/contest/like?pictureId=$pictureId');
+  print(url);
   var response = await http.put(
     url,
     headers: {
@@ -27,7 +28,7 @@ Future<http.Response> contestUnlike(String token, int pictureId) async {
   var queryParams = {
     'pictureId': pictureId.toString(),
   };
-  var url = Uri.http(baseUrl, '/contest/unlike', queryParams);
+  var url = Uri.parse('$baseUrl/contest/unlike?pictureId=$pictureId');
   var response = await http.put(
     url,
     headers: {

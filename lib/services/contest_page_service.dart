@@ -9,17 +9,18 @@ Future<ContestResponse> contestPage(String token, int cursorId, String sortBy,
   final baseUrl = dotenv.get('BASE_URL');
 
   var queryParams = {
-    'cursorId': cursorId.toString(),
+    'cursorId': cursorId,
     'sortBy': sortBy,
   };
 
-  if (region != null && region.isNotEmpty) {
-    queryParams['region'] = region;
-  }
+  // if (region != null && region.isNotEmpty) {
+  //   queryParams['region'] = region;
+  // }
 
   var url = Uri.parse(
-    '$baseUrl/api/contest/page/$queryParams',
+    '$baseUrl/contest/page?cursorId=$cursorId&sortBy=$sortBy',
   );
+
   var response = await http.get(
     url,
     headers: {

@@ -3,6 +3,7 @@ import 'package:damyo/services/contest_like_service.dart';
 import 'package:damyo/services/contest_page_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 
 class ChallengeVoteScreen extends StatefulWidget {
@@ -18,10 +19,12 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
   bool sortDate = true;
   bool isGridView = true;
   List<Picture> images = [];
-  String token =
-      "eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6IndhaXRpbmdAZ21haWwuY29tIiwiaWF0IjoxNzE3NzY2OTY0LCJleHAiOjE3MTc4NTMzNjR9.8BUz8YlHjXzMRt8BpqrVgJ2i7gcucEUfwThgRJ-4O8olbSRXJa8Xv-tlG1H7r-J_uLlNDlOXLGTIKnfOKfMwoQ";
-  int cursorId = 0;
-  String sortBy = 'date';
+
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+
+  int cursorId = 1;
+  String? token = '';
+  String sortBy = '2024-06-09';
   String? region;
 
   @override
@@ -32,9 +35,11 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
 
   Future<void> _fetchImages() async {
     try {
+      token = await storage.read(key: 'accessToken');
       sortBy = sortDate ? 'date' : 'like';
       ContestResponse contestResponse =
-          await contestPage(token, cursorId, sortBy);
+          await contestPage(token!, cursorId, sortBy);
+
       print(contestResponse.pictureList);
       setState(() {
         images = contestResponse.pictureList;
@@ -90,15 +95,16 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
   }
 
   Widget _buildTopImage() {
-    return Container(
+    return SizedBox(
       width: 390.w,
       height: 163.h,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/challenge_thumbnail.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
+      child: Image.asset('assets/images/challenge_thumbnail.png'),
+      // decoration: const BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage("assets/images/challenge_thumbnail.png"),
+      //     fit: BoxFit.cover,
+      //   ),
+      // ),
     );
   }
 
@@ -225,7 +231,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
             // ),
             LikeButton(
               imageInfo: imageInfo,
-              token: token,
+              token: token!,
               onLikeChanged: (isLiked) {
                 updateImageInfo(imageInfo);
               },
@@ -295,7 +301,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
             // ),
             LikeButton(
               imageInfo: imageInfo,
-              token: token,
+              token: token!,
               onLikeChanged: (isLiked) {
                 updateImageInfo(imageInfo);
               },
@@ -417,7 +423,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
                       // ),
                       LikeButton(
                         imageInfo: imageInfo,
-                        token: token,
+                        token: token!,
                         onLikeChanged: (isLiked) {
                           updateImageInfo(imageInfo);
                         },

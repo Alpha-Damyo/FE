@@ -123,6 +123,7 @@ flutter:
     - assets/icons/login_screen/
     - assets/images/smoking_area_default_image.png
     - assets/images/default_profile.png
+    - assets/images/challenge_thumbnail.png
     - assets/icons/map_screen/bookmark.png
     - assets/icons/map_screen/challenge.png
     - assets/icons/map_screen/filter.png
