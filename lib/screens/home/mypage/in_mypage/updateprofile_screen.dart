@@ -39,6 +39,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
     }
   }
 
+  // 유저 정보를 가져오는 함수
   Future<UserInfoModel?> getUserprofile() async {
     UserInfoModel? user = await getUserInfo();
     if (user != null) {
@@ -95,8 +96,6 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                     try {
                       String? result1 = await putUserUpdateName(
                           UpdateNameModel(_nameController.text));
-
-                      context.pop();
                     } catch (e) {
                       _showErrorLog(context, '중복된 이름입니다.');
                     }
@@ -123,7 +122,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                     ),
                   ),
                   child: profileImage == null
-                      ? Image.asset('assets/icons/updateprofile_screen/profile')
+                      ? Image.asset('assets/icons/updateprofile_screen/defalut.png')
                       : _profileImage == null
                           ? Image.network(profileImage!)
                           : Image.file(

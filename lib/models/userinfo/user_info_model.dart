@@ -32,7 +32,7 @@ class UserInfoModel {
         email = json['email'],
         createAt = json['createAt'],
         profileUrl = json['profileUrl'],
-        contribution = json['cotribution'],
+        contribution = json['contribution'],
         gender = json['gender'],
         age = json['age'],
         percentage = json['percentage'],
