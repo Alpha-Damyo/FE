@@ -32,7 +32,7 @@ Future<String?> putUserUpdateName(UpdateNameModel nameModel) async {
 
 Future<String?> putUserUpdateProfile(UpdateProfileModel profileModel, String token) async {
   final baseUrl = dotenv.get('BASE_URL');
-  final token = dotenv.get('TEST_TOKEN');
+  // final token = dotenv.get('TEST_TOKEN');
   
   var url = Uri.parse('$baseUrl/user/update/profile');
   var request = http.MultipartRequest('PUT', url);
