@@ -31,10 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Future<void> checkLoginState(Map<String, dynamic> userInfo) async {
+  Future<void> checkLoginState(
+      Map<String, dynamic> userInfo, String socialToken) async {
     if (userInfo['code'] == "A102") {
       // 회원가입이 되어있지 않음. 회원가입 페이지로 이동
-      context.go('/login/signup');
+      context.go('/login/signup', extra: userInfo['token']);
     } else {
       // 로그인 성공, 토큰 저장
       print(userInfo['token']);
@@ -59,13 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
     // String? id = await storage.read(key: 'userID');
 
     // google accesstoken 받아오기
-    print(googleSignInAuthentication.accessToken.toString());
+    String googleAccessToken =
+        googleSignInAuthentication.accessToken.toString();
+
     userInfo = await login({
-      "token": googleSignInAuthentication.accessToken.toString(),
+      "token": googleAccessToken,
     }, "google");
     Provider.of<IsLoginProvider>(context, listen: false).login();
 
-    await checkLoginState(userInfo);
+    await checkLoginState(userInfo, googleAccessToken);
   }
 
   void signInWithNaver() async {
@@ -85,7 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }, "naver");
     Provider.of<IsLoginProvider>(context, listen: false).login();
 
-    await checkLoginState(userInfo);
+    await checkLoginState(
+      userInfo,
+    );
   }
 
   void signOutWithNaver() async {
@@ -134,6 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           String kakaoToken = token.accessToken;
           print('카카오계정으로 로그인 성공2');
+          print(kakaoToken);
           try {
             User user = await UserApi.instance.me();
             print('사용자 정보 요청 성공'
@@ -239,7 +245,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           image: DecorationImage(
                             image: AssetImage(
                                 'assets/icons/login_screen/login_logo.png'),
-                            fit: BoxFit.fill,
                           ),
                         ),
                       ),

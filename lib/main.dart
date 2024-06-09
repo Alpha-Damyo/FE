@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:damyo/models/challenge_model.dart';
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
@@ -216,10 +217,12 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const LoginScreen(),
           routes: [
             GoRoute(
-              name: 'signup',
-              path: 'signup',
-              builder: (context, state) => const SignupScreen(),
-            ),
+                name: 'signup',
+                path: 'signup',
+                builder: (context, state) {
+                  String token = state.extra as String;
+                  return SignupScreen(token: token);
+                }),
           ],
         ),
         GoRoute(
@@ -246,9 +249,10 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: 'details',
           builder: (context, state) {
-            final title = (state.extra as Map<String, String>)['title'] ??
-                "Default Title";
-            return ChallengeDetailScreen(title: title);
+            final challenge = state.extra as Challenge;
+            return ChallengeDetailScreen(
+              challenge: challenge,
+            );
           },
         ),
         GoRoute(

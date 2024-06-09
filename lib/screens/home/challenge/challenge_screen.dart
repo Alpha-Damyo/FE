@@ -23,8 +23,6 @@ class _ChallengeScreenState extends State<ChallengeScreen>
   List<User> nearRanks = [];
   bool isLoading = true;
   String? errorMessage;
-  String token =
-      "eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6IndhaXRpbmdAZ21haWwuY29tIiwiaWF0IjoxNzE3NzY2OTY0LCJleHAiOjE3MTc4NTMzNjR9.8BUz8YlHjXzMRt8BpqrVgJ2i7gcucEUfwThgRJ-4O8olbSRXJa8Xv-tlG1H7r-J_uLlNDlOXLGTIKnfOKfMwoQ";
 
   @override
   void initState() {
@@ -42,7 +40,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
 
   void _challengeTest() async {
     try {
-      challenges = await getCurrentChallenge(token);
+      challenges = await getCurrentChallenge();
     } catch (e) {
       setState(() {
         errorMessage = e.toString();
@@ -53,7 +51,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
 
   Future<void> fetchRanking() async {
     try {
-      RankResponse response = await contestRanking(token);
+      RankResponse response = await contestRanking();
       setState(() {
         topRanks = response.topRankResponse;
         nearRanks = response.nearRankResponse;
@@ -146,8 +144,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
           GestureDetector(
             onTap: () {
               // Navigate to the challenge detail screen
-              GoRouter.of(context)
-                  .push('/details', extra: {'title': challenge.name});
+              GoRouter.of(context).push('/details', extra: challenge);
             },
             child: Container(
               width: 358.w,
@@ -156,7 +153,7 @@ class _ChallengeScreenState extends State<ChallengeScreen>
                 borderRadius: BorderRadius.circular(15.r),
                 image: DecorationImage(
                   image: NetworkImage(challenge.bannerImgUrl),
-                  fit: BoxFit.fill,
+                  // fit: BoxFit.fill,
                 ),
               ),
             ),
