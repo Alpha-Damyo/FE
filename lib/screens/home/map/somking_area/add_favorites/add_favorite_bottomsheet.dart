@@ -1,4 +1,5 @@
 import 'package:damyo/main.dart';
+import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -50,9 +51,10 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  Text(
-                    widget.saName,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  textFormat(
+                    text: widget.saName,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
                   ),
                   const SizedBox(height: 30),
                   Expanded(
@@ -83,18 +85,16 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                                 children: [
                                   Row(
                                     children: [
-                                      Text('${_favorites[index]} '),
+                                      textFormat(text: '${_favorites[index]} '),
                                       index > 0
-                                          ? Text(
-                                              _favoritesDetail[index]
+                                          ? textFormat(
+                                              text: _favoritesDetail[index]
                                                   .length
                                                   .toString(),
-                                              style: const TextStyle(
-                                                  color: Color(0xFF6F767F),
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400),
-                                            )
-                                          : const Text(''),
+                                              color: const Color(0xFF6F767F),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400)
+                                          : textFormat(text: ''),
                                     ],
                                   ),
                                   Icon(
@@ -184,15 +184,13 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(16)),
                       ),
-                      child: const Align(
+                      child: Align(
                         alignment: Alignment.center,
-                        child: Text(
-                          '즐겨찾기 추가',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+                        child: textFormat(
+                          text: '즐겨찾기 추가',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -211,7 +209,7 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('이름을 입력하세요'),
+          title: textFormat(text: '이름을 입력하세요', fontSize: 24),
           content: TextField(
             onChanged: (value) {
               setState(() {
@@ -225,7 +223,11 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('취소'),
+              child: textFormat(
+                text: '취소',
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             TextButton(
               onPressed: () async {
@@ -246,7 +248,11 @@ class _AddFavoriteBottomSheetState extends State<AddFavoriteBottomSheet> {
                 });
                 Navigator.of(context).pop();
               },
-              child: const Text('확인'),
+              child: textFormat(
+                text: '확인',
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         );
