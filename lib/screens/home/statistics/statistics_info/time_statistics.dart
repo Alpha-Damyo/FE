@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:damyo/database/smoke_database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -24,17 +23,32 @@ class _timeAverInfoState extends State<timeAverInfo> {
   List<dynamic>? EveryList;
   Map<String, double>? UserList;
   bool _isLoading = true;
+  double EveryMax = 0, UserMax = 0;
 
   void userTimeinfo() async {
+    double max = 0;
     final _UserList = await widget.userDB.getThreeHourlyAverages();
+    for (int i = 0; i < 9; i++) {
+      if (UserList!['${i * 3}'] != null && (UserList!['${i * 3}']! > max)) {
+        max = UserList!['${i * 3}']!;
+      }
+    }
     setState(() {
       UserList = _UserList;
+      UserMax = max;
     });
   }
 
   void setTimeInfo() {
+    double max = 0;
+    for (int i = 0; i < widget.TimeInfo!.length; i++) {
+      if (widget.TimeInfo?[i] > max) {
+        max = widget.TimeInfo?[i];
+      }
+    }
     setState(() {
       EveryList = widget.TimeInfo;
+      EveryMax = max;
     });
   }
 
@@ -59,13 +73,13 @@ class _timeAverInfoState extends State<timeAverInfo> {
   Widget build(BuildContext context) {
     return _isLoading
         ? const Align(
-          alignment: Alignment.center,
-          child: SizedBox(
-            width: 50.0, // 원하는 너비
-            height: 50.0, // 원하는 높이
-            child: CircularProgressIndicator(),
-          ),
-        )
+            alignment: Alignment.center,
+            child: SizedBox(
+              width: 50.0, // 원하는 너비
+              height: 50.0, // 원하는 높이
+              child: CircularProgressIndicator(),
+            ),
+          )
         : Column(
             children: [
               const Padding(
@@ -149,7 +163,11 @@ class _timeAverInfoState extends State<timeAverInfo> {
         lineBarsData: lineBarsData,
         minX: 0,
         maxX: 24,
-        maxY: 60,
+        maxY: (UserMax == 0 && EveryMax == 0)
+            ? 60
+            : (UserMax > EveryMax)
+                ? UserMax
+                : EveryMax,
         minY: 0,
       );
 
