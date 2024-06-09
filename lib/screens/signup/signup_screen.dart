@@ -19,9 +19,9 @@ class _SignupScreenState extends State<SignupScreen> {
   String? email;
 
   @override
-  Future<void> initState() async {
+  void initState() {
     super.initState();
-    email = await storage.read(key: 'email');
+    _getEmail();
   }
 
   @override
@@ -29,6 +29,10 @@ class _SignupScreenState extends State<SignupScreen> {
     nameController.dispose();
     ageController.dispose();
     super.dispose();
+  }
+
+  void _getEmail() async {
+    email = await storage.read(key: 'userID');
   }
 
   @override
@@ -90,7 +94,11 @@ class _SignupScreenState extends State<SignupScreen> {
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w500,
                           ),
-                          enabledBorder: UnderlineInputBorder(),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xFFA9AFB7),
+                            ),
+                          ),
                         ),
                         onChanged: (value) async {
                           // Provider.of<UserInfoProvider>(context, listen: false)
@@ -131,7 +139,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                   fontFamily: 'Pretendard',
                                   fontWeight: FontWeight.w500,
                                 ),
-                                enabledBorder: UnderlineInputBorder(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFA9AFB7),
+                                  ),
+                                ),
                               ),
                               onChanged: (value) {
                                 // Provider.of<UserInfoProvider>(context,
@@ -241,8 +253,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       // 받은 정보 서버에 보내기
                       // Provider.of<IsLoginProvider>(context, listen: false)
                       //     .checkFirst();
-                      signup("image", email!, nameController.text,
-                          selectedGender!, int.parse(ageController.text));
+                      signup(
+                          "https://d2wcv86mbz7x2c.cloudfront.net/a4c37b14-2damyo.png",
+                          email!,
+                          nameController.text,
+                          selectedGender!,
+                          int.parse(ageController.text));
                       context.go('/');
                     },
                     style: ElevatedButton.styleFrom(

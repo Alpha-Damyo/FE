@@ -19,6 +19,6 @@ Future<http.Response> login(String email) async {
   if (response.statusCode == 200) {
     return response;
   } else {
-    throw '에러: ${response.statusCode}, failed login';
+    throw '${response.statusCode}';
   }
 }
