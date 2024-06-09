@@ -5,17 +5,17 @@ import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
 import 'package:damyo/screens/home/challenge/challengedetail_screen.dart';
 import 'package:damyo/screens/home/challenge/challengevote_screen.dart';
+import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
 import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
-import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/achievement_screen.dart';
+import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/updateprofile_screen.dart';
-import 'package:damyo/screens/login/login_screen.dart';
-import 'package:damyo/screens/home/home_screen.dart';
-import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/screens/home/statistics/statistics_info/special_statistics_util.dart';
+import 'package:damyo/screens/login/login_screen.dart';
+import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,9 +24,8 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 // 지도 초기화
@@ -161,8 +160,8 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: ".env");
   await _initializeMap();
-  _requestPermission();
-  await _getCurrentLocation();
+  //_requestPermission();
+  // await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
   await getFavorites();

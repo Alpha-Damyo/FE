@@ -1,4 +1,5 @@
 import 'package:damyo/provider/islogin_provider.dart';
+import 'package:damyo/services/login_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
@@ -27,8 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void checkLoginState() {
-    if (Provider.of<IsLoginProvider>(context, listen: false).isFirst) {
+  void checkLoginState(dynamic userInfo) {
+    print(userInfo.statusCode);
+    if (userInfo.statusCode != null) {
       context.push('/login/signup');
     } else {
       context.pop();
@@ -54,24 +56,27 @@ class _LoginScreenState extends State<LoginScreen> {
     // google accesstoken 받아오기
     print(googleSignInAuthentication.accessToken);
     Provider.of<IsLoginProvider>(context, listen: false).login();
-    checkLoginState();
+    //checkLoginState();
   }
 
   void signInWithNaver() async {
     NaverLoginResult naverUser = await FlutterNaverLogin.logIn();
     NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
+    Map<String, dynamic> userInfo;
 
     // print(naverUser.accessToken);
-    print(naverToken);
     print('name = ${naverUser.account.name}');
     print('email = ${naverUser.account.email}');
     print('id = ${naverUser.account.id}');
-    // print(naverToken);
     await storage.write(key: 'userID', value: naverUser.account.email);
     await storage.write(key: 'sns', value: "naver");
+
+    userInfo = await login({
+      "token": naverToken.toString(),
+      "provider": "naver",
+    });
     Provider.of<IsLoginProvider>(context, listen: false).login();
-    checkLoginState();
-    setState(() {});
+    checkLoginState(userInfo);
   }
 
   void signOutWithNaver() async {
@@ -79,9 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void signInWithKakao() async {
+    Map<String, dynamic> userInfo;
     if (await isKakaoTalkInstalled()) {
       try {
-        await UserApi.instance.loginWithKakaoTalk();
+        OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+        String kakaoToken = token.accessToken;
+
         print('카카오톡으로 로그인 성공');
         try {
           User user = await UserApi.instance.me();
@@ -90,14 +98,24 @@ class _LoginScreenState extends State<LoginScreen> {
               '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
               '\n이메일: ${user.kakaoAccount?.email}');
           await storage.write(key: 'userID', value: ("${user.id}@kakao.com"));
+          await storage.write(key: 'logintoken', value: token.toString());
           await storage.write(key: 'sns', value: "kakao");
-          Provider.of<IsLoginProvider>(context, listen: false).login();
-          checkLoginState();
+
+          //login(token.toString());
+          userInfo = await login({
+            "token": kakaoToken,
+            "provider": "kakao",
+          });
+          // print(userInfo);
+          checkLoginState(userInfo);
         } catch (error) {
-          print('사용자 정보 요청 실패 $error');
+          if (error == 404) {
+            context.push('/login/signup');
+          }
+          print('사용자 정보 요청 실패1 $error');
         }
       } catch (error) {
-        print('카카오톡으로 로그인 실패 $error');
+        print('카카오톡으로 로그인 실패1 $error');
         // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
         // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
         if (error is PlatformException && error.code == 'CANCELED') {
@@ -105,8 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
         try {
-          await UserApi.instance.loginWithKakaoAccount();
-          print('카카오계정으로 로그인 성공');
+          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+          String kakaoToken = token.accessToken;
+          print('카카오계정으로 로그인 성공2');
           try {
             User user = await UserApi.instance.me();
             print('사용자 정보 요청 성공'
@@ -115,19 +134,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 '\n이메일: ${user.kakaoAccount?.email}');
             await storage.write(key: 'userID', value: ("${user.id}@kakao.com"));
             await storage.write(key: 'sns', value: "kakao");
-            Provider.of<IsLoginProvider>(context, listen: false).login();
-            checkLoginState();
+            userInfo = await login({
+              "token": kakaoToken,
+              "provider": "kakao",
+            });
+
+            checkLoginState(userInfo);
           } catch (error) {
-            print('사용자 정보 요청 실패 $error');
+            if (error == 404) {
+              context.push('/login/signup');
+            }
+            print('사용자 정보 요청 실패2 $error');
           }
         } catch (error) {
-          print('카카오계정으로 로그인 실패 $error');
+          print('카카오계정으로 로그인 실패2 $error');
         }
       }
     } else {
       try {
-        await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
+        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+        String kakaoToken = token.accessToken;
+
+        print('카카오계정으로 로그인 성공3');
         try {
           User user = await UserApi.instance.me();
           print('사용자 정보 요청 성공'
@@ -135,14 +163,22 @@ class _LoginScreenState extends State<LoginScreen> {
               '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
               '\n이메일: ${user.kakaoAccount?.email}');
           await storage.write(key: 'userID', value: ("${user.id}@kakao.com"));
+          await storage.write(key: 'logintoken', value: token.toString());
           await storage.write(key: 'sns', value: "kakao");
-          Provider.of<IsLoginProvider>(context, listen: false).login();
-          checkLoginState();
+          userInfo = await login({
+            "token": kakaoToken,
+            "provider": "kakao",
+          });
+          print(userInfo);
+          checkLoginState(userInfo);
         } catch (error) {
-          print('사용자 정보 요청 실패 $error');
+          if (error == 404) {
+            context.push('/login/signup');
+          }
+          print('사용자 정보 요청 실패3 $error');
         }
       } catch (error) {
-        print('카카오계정으로 로그인 실패 $error');
+        print('카카오계정으로 로그인 실패3 $error');
       }
     }
   }
@@ -156,10 +192,10 @@ class _LoginScreenState extends State<LoginScreen> {
           scrolledUnderElevation: 0,
           centerTitle: true,
           foregroundColor: Colors.black,
-          title: Text('로그인',
+          title: const Text('로그인',
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 28.sp,
+                  fontSize: 20,
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w700)),
           leading: IconButton(
@@ -169,83 +205,86 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
         ),
-        body: Container(
-          width: 390.w,
-          height: 600.h,
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 89.h),
-              Container(
-                width: 158.w,
-                height: 161.h,
-                padding: EdgeInsets.all(4.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.r),
-                  color: Colors.white,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 150.w,
-                      height: 150.h,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              "https://via.placeholder.com/150x150"),
-                          fit: BoxFit.fill,
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            width: 390.w,
+            height: 600.h,
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 89.h),
+                Container(
+                  width: 158.w,
+                  height: 161.h,
+                  padding: EdgeInsets.all(4.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 150.w,
+                        height: 150.h,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                'assets/icons/login_screen/login_logo.png'),
+                            fit: BoxFit.fill,
+                          ),
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 15.h),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 15.h),
+                    const Text(
+                      '담요의 재미있는 서비스와 혜택을 누려보세요 !',
+                      style: TextStyle(
+                        color: Color(0xFF6E767F),
+                        fontSize: 14,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: 15.h),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: 15.h),
-                  Text(
-                    '담요의 재미있는 서비스와 혜택을 누려보세요 !',
-                    style: TextStyle(
-                      color: const Color(0xFF6E767F),
-                      fontSize: 14.sp,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w500,
-                    ),
+                SizedBox(height: 60.h),
+                GestureDetector(
+                  onTap: signInWithGoogle,
+                  child: buildLoginButton(
+                    text: '구글로 계속하기',
+                    backgroundColor: Colors.white,
+                    imageUrl: "assets/icons/login_screen/google.png",
                   ),
-                ],
-              ),
-              SizedBox(height: 60.h),
-              GestureDetector(
-                onTap: signInWithGoogle,
-                child: buildLoginButton(
-                  text: '    구글로 계속하기',
-                  backgroundColor: Colors.white,
-                  imageUrl: "https://via.placeholder.com/20x20",
                 ),
-              ),
-              SizedBox(height: 15.h),
-              GestureDetector(
-                onTap: signInWithKakao,
-                child: buildLoginButton(
-                  text: '카카오로 계속하기',
-                  backgroundColor: const Color(0xFFF9E000),
-                  imageUrl: "https://via.placeholder.com/23x24",
+                SizedBox(height: 15.h),
+                GestureDetector(
+                  onTap: signInWithKakao,
+                  child: buildLoginButton(
+                    text: '카카오로 계속하기',
+                    backgroundColor: const Color(0xFFF9E000),
+                    imageUrl: "assets/icons/login_screen/kakao.png",
+                  ),
                 ),
-              ),
-              SizedBox(height: 15.h),
-              GestureDetector(
-                onTap: signInWithNaver,
-                child: buildLoginButton(
-                  text: '네이버로 계속하기',
-                  backgroundColor: const Color(0xFF00C73C),
-                  imageUrl: "https://via.placeholder.com/28x28",
+                SizedBox(height: 15.h),
+                GestureDetector(
+                  onTap: signInWithNaver,
+                  child: buildLoginButton(
+                    text: '네이버로 계속하기',
+                    backgroundColor: const Color(0xFF00C73C),
+                    imageUrl: "assets/icons/login_screen/naver.png",
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -258,8 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
     required String imageUrl,
   }) {
     return Container(
-      width: 240.w,
-      height: 50.h,
+      height: 50,
       decoration: BoxDecoration(
         color: backgroundColor,
         border: Border.all(
@@ -272,30 +310,26 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 24.w,
-            height: 24.h,
-            padding: EdgeInsets.all(2.w),
+            padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.r),
+              color: backgroundColor,
+              shape: BoxShape.circle,
             ),
-            child: Container(
-              width: 20.w,
-              height: 20.h,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(imageUrl),
-                  fit: BoxFit.fill,
-                ),
+            child: SizedBox(
+              width: 25,
+              height: 25,
+              child: Image.asset(
+                imageUrl,
+                fit: BoxFit.fill,
               ),
             ),
           ),
-          SizedBox(width: 6.w),
+          const SizedBox(width: 6),
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
-              fontSize: 14.sp,
+              fontSize: 14,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w700,
             ),

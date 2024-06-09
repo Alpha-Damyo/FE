@@ -1,5 +1,9 @@
+import 'package:damyo/models/contest_model.dart';
+import 'package:damyo/services/contest_like_service.dart';
+import 'package:damyo/services/contest_page_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class ChallengeVoteScreen extends StatefulWidget {
   final String title;
@@ -10,32 +14,37 @@ class ChallengeVoteScreen extends StatefulWidget {
   State<ChallengeVoteScreen> createState() => _ChallengeVoteScreenState();
 }
 
-class ImageInfo {
-  String url;
-  String postDate;
-  String location;
-  bool isLiked;
-
-  ImageInfo(
-      {required this.url,
-      required this.postDate,
-      required this.location,
-      this.isLiked = false});
-}
-
 class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
-  bool isOldestFirst = false;
+  bool sortDate = true;
   bool isGridView = true;
-  List<ImageInfo> images = List.generate(
-    9,
-    (index) => ImageInfo(
-      url: "https://via.placeholder.com/128x128?text=Image+${index + 1}",
-      postDate: "2023-04-14",
-      location: "Location ${index + 1}",
-      isLiked: false,
-    ),
-  );
-  List<bool> likes = List.filled(9, false);
+  List<Picture> images = [];
+  String token =
+      "eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6IndhaXRpbmdAZ21haWwuY29tIiwiaWF0IjoxNzE3NzY2OTY0LCJleHAiOjE3MTc4NTMzNjR9.8BUz8YlHjXzMRt8BpqrVgJ2i7gcucEUfwThgRJ-4O8olbSRXJa8Xv-tlG1H7r-J_uLlNDlOXLGTIKnfOKfMwoQ";
+  int cursorId = 0;
+  String sortBy = 'date';
+  String? region;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchImages();
+  }
+
+  Future<void> _fetchImages() async {
+    try {
+      sortBy = sortDate ? 'date' : 'like';
+      ContestResponse contestResponse =
+          await contestPage(token, cursorId, sortBy);
+      print(contestResponse.pictureList);
+      setState(() {
+        images = contestResponse.pictureList;
+      });
+    } catch (error) {
+      // Handle error
+      print('Error fetching images: $error');
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +64,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
         ),
         backgroundColor: Colors.white,
         body: RefreshIndicator(
-          onRefresh: _refreshImages,
+          onRefresh: _fetchImages,
           child: Column(
             children: [
               _buildTopImage(),
@@ -70,28 +79,10 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     );
   }
 
-  Future<void> _refreshImages() async {
-    await Future.delayed(const Duration(seconds: 2));
-    if (mounted) {
-      setState(() {
-        images = List.generate(
-            12,
-            (index) => ImageInfo(
-                  url:
-                      "https://via.placeholder.com/128x128?text=New+${index + 1}",
-                  postDate:
-                      "2024-04-14", // Example date, you might want to make this dynamic
-                  location: "New Location ${index + 1}",
-                  isLiked: false,
-                ));
-      });
-    }
-  }
-
-  void updateImageInfo(ImageInfo updatedInfo) {
+  void updateImageInfo(Picture updatedInfo) {
     setState(() {
       final index =
-          images.indexWhere((element) => element.url == updatedInfo.url);
+          images.indexWhere((element) => element.id == updatedInfo.id);
       if (index != -1) {
         images[index] = updatedInfo;
       }
@@ -104,7 +95,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
       height: 163.h,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage("https://via.placeholder.com/390x163"),
+          image: AssetImage("assets/images/challenge_thumbnail.png"),
           fit: BoxFit.cover,
         ),
       ),
@@ -120,9 +111,9 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
           SizedBox(width: 15.w),
           Text(
             '${widget.title} 투표 ',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
-              fontSize: 14.sp,
+              fontSize: 14,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w600,
             ),
@@ -139,13 +130,14 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
       children: [
         InkWell(
           onTap: () => setState(() {
-            isOldestFirst = !isOldestFirst;
+            sortDate = !sortDate;
+            _fetchImages();
           }),
           child: Text(
-            isOldestFirst ? '인기순' : '최신순',
-            style: TextStyle(
-              color: const Color(0xFF6E767F),
-              fontSize: 12.sp,
+            sortDate ? '최신순' : '인기순',
+            style: const TextStyle(
+              color: Color(0xFF6E767F),
+              fontSize: 12,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w400,
             ),
@@ -175,7 +167,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
       ),
       itemCount: images.length,
       itemBuilder: (context, index) {
-        return _buildImageTile(images[index], index);
+        return _buildImageTile(images[index]);
       },
     );
   }
@@ -184,12 +176,12 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     return ListView.builder(
       itemCount: images.length,
       itemBuilder: (context, index) {
-        return _buildImageTileForList(images[index], index);
+        return _buildImageTileForList(images[index]);
       },
     );
   }
 
-  Widget _buildImageTile(ImageInfo imageInfo, int index) {
+  Widget _buildImageTile(Picture imageInfo) {
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -209,21 +201,33 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
         decoration: BoxDecoration(
           color: const Color(0xFFE4E7EA),
           image: DecorationImage(
-            image: NetworkImage(imageInfo.url),
+            image: NetworkImage(imageInfo.pictureUrl),
             fit: BoxFit.cover,
           ),
         ),
         child: Stack(
           alignment: Alignment.bottomRight,
           children: [
-            IconButton(
-              icon: Icon(
-                  imageInfo.isLiked ? Icons.favorite : Icons.favorite_border),
-              color: imageInfo.isLiked ? Colors.red : Colors.grey,
-              onPressed: () {
-                setState(() {
-                  images[index].isLiked = !images[index].isLiked;
-                });
+            // IconButton(
+            //   icon: Icon(
+            //       imageInfo.likeCheck ? Icons.favorite : Icons.favorite_border),
+            //   color: imageInfo.likeCheck ? Colors.red : Colors.grey,
+            //   onPressed: () {
+            //     setState(() {
+            //       imageInfo.likeCheck = !imageInfo.likeCheck;
+            //       if (imageInfo.likeCheck) {
+            //         contestLike(token, imageInfo.id);
+            //       } else {
+            //         contestUnlike(token, imageInfo.id);
+            //       }
+            //     });
+            //   },
+            // ),
+            LikeButton(
+              imageInfo: imageInfo,
+              token: token,
+              onLikeChanged: (isLiked) {
+                updateImageInfo(imageInfo);
               },
             ),
           ],
@@ -232,7 +236,9 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     );
   }
 
-  Widget _buildImageTileForList(ImageInfo imageInfo, int index) {
+  Widget _buildImageTileForList(Picture imageInfo) {
+    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -252,7 +258,7 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
             );
           },
           child: Image.network(
-            imageInfo.url,
+            imageInfo.pictureUrl,
             width: 390.w,
             height: 200.h,
             fit: BoxFit.cover,
@@ -267,22 +273,31 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  imageInfo.location,
-                  style:
-                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                  imageInfo.id
+                      .toString(), // Display the ID for now, change as needed
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Text('게시일: ${imageInfo.postDate}'),
+                Text(
+                    '게시일: ${dateFormat.format(imageInfo.createdAt).toString()}'), // Format the date as needed
               ],
             ),
             const Spacer(),
-            IconButton(
-              icon: Icon(
-                  imageInfo.isLiked ? Icons.favorite : Icons.favorite_border),
-              color: imageInfo.isLiked ? Colors.red : Colors.grey,
-              onPressed: () {
-                setState(() {
-                  images[index].isLiked = !images[index].isLiked;
-                });
+            // IconButton(
+            //   icon: Icon(
+            //       imageInfo.likeCheck ? Icons.favorite : Icons.favorite_border),
+            //   color: imageInfo.likeCheck ? Colors.red : Colors.grey,
+            //   onPressed: () {
+            //     setState(() {
+            //       imageInfo.likeCheck = !imageInfo.likeCheck;
+            //     });
+            //   },
+            // ),
+            LikeButton(
+              imageInfo: imageInfo,
+              token: token,
+              onLikeChanged: (isLiked) {
+                updateImageInfo(imageInfo);
               },
             ),
           ],
@@ -292,11 +307,13 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
     );
   }
 
-  Widget _buildImageDetailDialog(ImageInfo imageInfo) {
+  Widget _buildImageDetailDialog(Picture imageInfo) {
+    final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
         return ScreenUtilInit(
-          designSize: const Size(360, 600),
+          designSize: const Size(360, 650),
           builder: (context, child) => Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -346,11 +363,11 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
                             ),
                           ),
                           SizedBox(width: 8.w),
-                          Text(
+                          const Text(
                             '하동이',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               fontFamily: 'Pretendard',
                               fontWeight: FontWeight.w600,
                             ),
@@ -377,25 +394,31 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
                 child: Container(
                   width: 393.w,
                   height: 523.h,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                      image:
-                          NetworkImage("https://via.placeholder.com/360x450"),
+                      image: NetworkImage(imageInfo.pictureUrl),
                       fit: BoxFit.fill,
                     ),
                   ),
                   child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
-                      IconButton(
-                        icon: Icon(imageInfo.isLiked
-                            ? Icons.favorite
-                            : Icons.favorite_border),
-                        color: imageInfo.isLiked ? Colors.red : Colors.grey,
-                        onPressed: () {
-                          setState(() {
-                            imageInfo.isLiked = !imageInfo.isLiked;
-                          });
+                      // IconButton(
+                      //   icon: Icon(imageInfo.likeCheck
+                      //       ? Icons.favorite
+                      //       : Icons.favorite_border),
+                      //   color: imageInfo.likeCheck ? Colors.red : Colors.grey,
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       imageInfo.likeCheck = !imageInfo.likeCheck;
+                      //     });
+                      //     updateImageInfo(imageInfo);
+                      //   },
+                      // ),
+                      LikeButton(
+                        imageInfo: imageInfo,
+                        token: token,
+                        onLikeChanged: (isLiked) {
                           updateImageInfo(imageInfo);
                         },
                       ),
@@ -412,23 +435,22 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '게시일 : ${imageInfo.postDate}',
-                      style: TextStyle(
-                        color: const Color(0xFF33383E),
-                        fontSize: 12.sp,
+                      '게시일 : ${dateFormat.format(imageInfo.createdAt).toString()}', // Format the date as needed
+                      style: const TextStyle(
+                        color: Color(0xFF33383E),
+                        fontSize: 12,
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     SizedBox(height: 6.h),
                     Text(
-                      '장소 : ${imageInfo.location}',
-                      style: TextStyle(
-                        color: const Color(0xFF33383E),
-                        fontSize: 12.sp,
+                      '장소 : ${imageInfo.id}', // Use appropriate field for location if available
+                      style: const TextStyle(
+                        color: Color(0xFF33383E),
+                        fontSize: 12,
                         fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w500,
-                        height: 0,
                       ),
                     ),
                     SizedBox(height: 10.h),
@@ -438,6 +460,70 @@ class _ChallengeVoteScreenState extends State<ChallengeVoteScreen> {
             ],
           ),
         );
+      },
+    );
+  }
+}
+
+class LikeButton extends StatefulWidget {
+  final Picture imageInfo;
+  final String token;
+  final Function(bool) onLikeChanged;
+
+  const LikeButton({
+    super.key,
+    required this.imageInfo,
+    required this.token,
+    required this.onLikeChanged,
+  });
+
+  @override
+  _LikeButtonState createState() => _LikeButtonState();
+}
+
+class _LikeButtonState extends State<LikeButton> {
+  late bool isLiked;
+
+  @override
+  void initState() {
+    super.initState();
+    isLiked = widget.imageInfo.likeCheck;
+  }
+
+  @override
+  void didUpdateWidget(LikeButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update local isLiked state if imageInfo's likeCheck has changed
+    if (widget.imageInfo.likeCheck != oldWidget.imageInfo.likeCheck) {
+      setState(() {
+        isLiked = widget.imageInfo.likeCheck;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        isLiked ? Icons.favorite : Icons.favorite_border,
+      ),
+      color: isLiked ? Colors.red : Colors.grey,
+      onPressed: () {
+        // Toggle like status
+        final bool newLikeStatus = !isLiked;
+
+        // Update like status locally
+        setState(() {
+          isLiked = newLikeStatus;
+        });
+
+        // Call service to update like status in backend
+        widget.onLikeChanged(newLikeStatus);
+        if (newLikeStatus) {
+          contestLike(widget.token, widget.imageInfo.id);
+        } else {
+          contestUnlike(widget.token, widget.imageInfo.id);
+        }
       },
     );
   }
