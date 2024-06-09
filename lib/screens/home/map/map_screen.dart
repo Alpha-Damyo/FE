@@ -320,14 +320,11 @@ class _MapScreenState extends State<MapScreen>
                                 ),
                                 child: Align(
                                   alignment: Alignment.center,
-                                  child: Text(
-                                    _mapFilterCharacterList[index],
-                                    style: const TextStyle(
-                                      color: Color(0xFF464D57),
-                                      fontSize: 12,
-                                      fontFamily: 'Pretendard',
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  child: textFormat(
+                                    text: _mapFilterCharacterList[index],
+                                    color: const Color(0xFF464D57),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),

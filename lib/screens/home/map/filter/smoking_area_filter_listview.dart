@@ -1,3 +1,4 @@
+import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 
 // // "1점 이상"과 같은 버튼
@@ -113,14 +114,11 @@ class _FilterListviewState extends State<FilterListview> {
                               )),
                     child: Align(
                       alignment: Alignment.center,
-                      child: Text(
-                        widget.characterList[index],
-                        style: const TextStyle(
-                          color: Color(0xFF464D57),
-                          fontSize: 12,
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                        ),
+                      child: textFormat(
+                        text: widget.characterList[index],
+                        color: const Color(0xFF464D57),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
