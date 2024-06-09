@@ -1,4 +1,6 @@
+import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/services/signup_service.dart';
+import 'package:damyo/services/user_controller_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -264,8 +266,10 @@ class _SignupScreenState extends State<SignupScreen> {
                       );
                       FlutterSecureStorage storage =
                           const FlutterSecureStorage();
-                      storage.write(
+                      await storage.write(
                           key: "accessToken", value: response['token']);
+
+                      userInfoModel = await getUserInfo();
 
                       context.go('/');
                     },
