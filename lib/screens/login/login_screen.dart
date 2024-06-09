@@ -83,7 +83,6 @@ class _LoginScreenState extends State<LoginScreen> {
     // await Duration(seconds: 5);
     await storage.write(key: 'userID', value: naverUser.account.email);
     await storage.write(key: 'sns', value: "naver");
-    
 
     userInfo = await login({
       "token": naverToken.accessToken,
@@ -287,9 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 15.h),
                 GestureDetector(
-                  onTap: ()async{
-                    await signInWithNaver();
-                  },
+                  onTap: signInWithNaver,
                   child: buildLoginButton(
                     text: '네이버로 계속하기',
                     backgroundColor: const Color(0xFF00C73C),

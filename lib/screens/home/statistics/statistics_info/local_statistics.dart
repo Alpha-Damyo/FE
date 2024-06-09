@@ -190,7 +190,7 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$key구',
+              key,
               style: const TextStyle(
                 color: Color(0xFF10151B),
                 fontSize: 14,
