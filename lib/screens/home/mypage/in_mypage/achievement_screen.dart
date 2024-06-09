@@ -1,3 +1,6 @@
+import 'package:damyo/models/userinfo/user_info_model.dart';
+import 'package:damyo/screens/home/mypage/in_mypage/updateprofile_screen.dart';
+import 'package:damyo/services/user_controller_service.dart';
 import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +17,38 @@ class AchievementScreen extends StatefulWidget {
 }
 
 class _AchievementScreen extends State<AchievementScreen> {
+  int? contributionScore;
+  int? contributionGap;
+  double? contributionPecentage;
+  String? profileUrl;
+  String? name;
+
+  // 유저 정보를 가져오는 함수
+  Future<UserInfoModel?> getUser() async {
+    UserInfoModel? user = await getUserInfo();
+    if (user != null) {
+      setState(() {
+        contributionScore = user.contribution;
+        contributionGap = user.gap;
+        contributionPecentage = user.percentage;
+        profileUrl = user.profileUrl;
+      });
+    } else {
+      setState(() {
+        contributionScore = 0;
+        contributionGap = null;
+        contributionPecentage = 100;
+        profileUrl = null;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -34,10 +69,10 @@ class _AchievementScreen extends State<AchievementScreen> {
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children: [
-                    UserInfo(),
-                    badgeList(),
+                    UserInfo(contributionScore!, contributionPecentage!,
+                        contributionGap, profileUrl),
+                    badgeList(contributionScore!),
                     explane(),
-                    badge('초보 담요', context),
                   ],
                 ),
               ),
@@ -49,7 +84,7 @@ class _AchievementScreen extends State<AchievementScreen> {
   }
 }
 
-Widget badgeList() {
+Widget badgeList(int contributionScore) {
   return Container(
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(color: Colors.white),
@@ -105,7 +140,6 @@ Widget badgeList() {
               width: 80,
               clipBehavior: Clip.antiAlias,
               decoration: ShapeDecoration(
-                // color: Color(0xFFD6ECFA),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -231,7 +265,8 @@ void _showBadgeDialog(BuildContext context, String achieve) {
   );
 }
 
-Widget UserInfo() {
+Widget UserInfo(int contributionScore, double contributionPecentage,
+    int? contributionGap, String? profileUrl) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
     decoration: BoxDecoration(color: Colors.white),
@@ -269,82 +304,89 @@ Widget UserInfo() {
               ),
               const SizedBox(width: 16),
               textFormat(
-                  text: '754점', fontSize: 16, fontWeight: FontWeight.w700),
+                  text: '$contributionScore점',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700),
             ],
           ),
         ),
         const SizedBox(height: 24),
         Container(
-          height: 52,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
+              Row(
+                children: [
+                  textFormat(
                       text: '상위',
-                      style: TextStyle(
-                        color: Color(0xFF0099FC),
-                        fontSize: 20,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w700,
-                        height: 0,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' 17%',
-                      style: TextStyle(
-                        color: Color(0xFF0099FC),
-                        fontSize: 24,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w700,
-                        height: 0,
-                      ),
-                    ),
-                  ],
-                ),
+                      color: Color(0xFF0099FC),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700),
+                  textFormat(
+                      text: ' $contributionPecentage%',
+                      color: Color(0xFF0099FC),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700)
+                ],
               ),
               const SizedBox(height: 6),
-              Text(
-                '1등과 473점 차이가 나요. 조금만 더 노력해 보세요!',
-                style: TextStyle(
-                  color: Color(0xFF6E767F),
-                  fontSize: 14,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w500,
-                  height: 0,
-                ),
-              ),
+              (contributionGap != null)
+                  ? textFormat(
+                      text: '1등과 $contributionGap점 차이가 나요. 조금만 더 노력해보세요!',
+                      color: Color(0xFF6E767F),
+                      fontWeight: FontWeight.w500)
+                  : textFormat(
+                      text: '사용자 정보를 불러오지 못했습니다.',
+                      color: Color(0xFF6E767F),
+                      fontWeight: FontWeight.w500),
             ],
           ),
         ),
         const SizedBox(height: 24),
         Container(
-          height: 10,
-          padding: const EdgeInsets.only(right: 78),
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: Color(0xFFEEF1F4),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(3)),
-          ),
+          // padding: EdgeInsets.only(
+          //     right: (340 * (1 - ((contributionPecentage ?? 0) * 0.01)))),
+          // clipBehavior: Clip.antiAlias,
+
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 262,
+                width: 340 * (contributionPecentage * 0.01),
                 height: 10,
                 decoration: ShapeDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment(1.00, 0.00),
                     end: Alignment(-1, 0),
                     colors: [Color(0xFFBFE5FF), Color(0xFF0099FC)],
                   ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3)),
+                ),
+              ),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: (profileUrl != null)
+                        ? NetworkImage(profileUrl) as ImageProvider
+                        : const AssetImage(
+                            'assets/icons/achievement_screen/defalut.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              Container(
+                width: 340 * (1 - (contributionPecentage * 0.01)),
+                height: 10,
+                decoration: ShapeDecoration(
+                  color: Color(0xFFEEF1F4),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3)),
                 ),

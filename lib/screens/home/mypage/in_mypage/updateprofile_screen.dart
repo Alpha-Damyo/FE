@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:damyo/models/updateprofile/update_name_model.dart';
 import 'package:damyo/models/updateprofile/update_profile_model.dart';
+import 'package:damyo/models/userinfo/user_info_model.dart';
+import 'package:damyo/services/user_controller_service.dart';
 import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +10,7 @@ import 'package:damyo/services/profile_update_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-XFile? profileImage;
+String? profileImage;
 final ImagePicker picker = ImagePicker();
 
 bool _isFieldEmpty(TextEditingController controller) {
@@ -37,10 +39,25 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
     }
   }
 
+  // 유저 정보를 가져오는 함수
+  Future<UserInfoModel?> getUserprofile() async {
+    UserInfoModel? user = await getUserInfo();
+    if (user != null) {
+      setState(() {
+        profileImage = user.profileUrl;
+      });
+    } else {
+      setState(() {
+        profileImage = null;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    print(_changedImage);
+    getUserprofile();
+    // print(_changedImage);
   }
 
   @override
@@ -68,9 +85,8 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
             TextButton(
                 onPressed: () async {
                   if (_profileImage != null) {
-                    profileImage = _profileImage;
                     String? result2 = await putUserUpdateProfile(
-                        UpdateProfileModel.fromMap(profileImage));
+                        UpdateProfileModel.fromMap(_profileImage));
                   }
 
                   setState(() {
@@ -80,8 +96,6 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                     try {
                       String? result1 = await putUserUpdateName(
                           UpdateNameModel(_nameController.text));
-
-                      context.pop();
                     } catch (e) {
                       _showErrorLog(context, '중복된 이름입니다.');
                     }
@@ -107,14 +121,13 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                       borderRadius: BorderRadius.circular(56),
                     ),
                   ),
-                  child: _profileImage == null
-                      ? Image.asset(
-                          'assets/icons/updateprofile_screen/profile.png',
-                          fit: BoxFit.cover,
-                        )
-                      : Image.file(
-                          File(_profileImage!.path),
-                        ),
+                  child: profileImage == null
+                      ? Image.asset('assets/icons/updateprofile_screen/defalut.png')
+                      : _profileImage == null
+                          ? Image.network(profileImage!)
+                          : Image.file(
+                              File(_profileImage!.path),
+                            ),
                 ),
                 Positioned(
                   top: 65,
@@ -209,9 +222,7 @@ Future<dynamic> _showErrorLog(BuildContext context, String log) {
                 padding:
                     const EdgeInsets.only(left: 16.0, top: 43.0, bottom: 36.0),
                 child: textFormat(
-                    text: log,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500),
+                    text: log, fontSize: 20, fontWeight: FontWeight.w500),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
