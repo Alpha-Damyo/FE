@@ -25,13 +25,13 @@ class _specialDayutilState extends State<specialDayutil> {
         body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: const BoxDecoration(color: Colors.white),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 322,
                   child: Text(
                     '주간별 흡연량 비교하기',
@@ -45,14 +45,14 @@ class _specialDayutilState extends State<specialDayutil> {
                   ),
                 ),
                 const SizedBox(height: 26),
-                Container(
-                  height: 178,
+                SizedBox(
+                  height: 200,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: double.infinity,
                         child: Text(
                           '개수',
@@ -80,7 +80,7 @@ class _specialDayutilState extends State<specialDayutil> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  const Text(
                                     '9',
                                     style: TextStyle(
                                       color: Color(0xFFD1D6DC),
@@ -96,14 +96,14 @@ class _specialDayutilState extends State<specialDayutil> {
                                     height: 90,
                                     clipBehavior: Clip.antiAlias,
                                     decoration: ShapeDecoration(
-                                      color: Color(0xFFD1D6DC),
+                                      color: const Color(0xFFD1D6DC),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(
+                                  const Text(
                                     '평소',
                                     style: TextStyle(
                                       color: Color(0xFF454D56),
@@ -123,7 +123,7 @@ class _specialDayutilState extends State<specialDayutil> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  const Text(
                                     '11',
                                     style: TextStyle(
                                       color: Color(0xFF0099FC),
@@ -139,14 +139,14 @@ class _specialDayutilState extends State<specialDayutil> {
                                     height: 110,
                                     clipBehavior: Clip.antiAlias,
                                     decoration: ShapeDecoration(
-                                      color: Color(0xFF0099FC),
+                                      color: const Color(0xFF0099FC),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(
+                                  const Text(
                                     '일',
                                     style: TextStyle(
                                       color: Color(0xFF0099FC),
@@ -166,7 +166,7 @@ class _specialDayutilState extends State<specialDayutil> {
                   ),
                 ),
                 const SizedBox(height: 26),
-                SizedBox(
+                const SizedBox(
                   width: double.infinity,
                   child: Text(
                     '담요 통계 결과 평소 주간흡연량보다 2대 더 많은 흡연을 해요 !\n시험기간 모두 수고하셨고 \n몸 건강도 챙기며 좋은 결과로 나타나기를 바래요 :)',

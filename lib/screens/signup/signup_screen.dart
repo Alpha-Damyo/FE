@@ -1,11 +1,14 @@
+import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/services/signup_service.dart';
+import 'package:damyo/services/user_controller_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  final String token;
+  const SignupScreen({super.key, required this.token});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -247,18 +250,27 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 SizedBox(height: 158.h),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 32.w),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton(
                     onPressed: () async {
                       // 받은 정보 서버에 보내기
                       // Provider.of<IsLoginProvider>(context, listen: false)
                       //     .checkFirst();
-                      signup(
-                          "https://d2wcv86mbz7x2c.cloudfront.net/a4c37b14-2damyo.png",
-                          email!,
-                          nameController.text,
-                          selectedGender!,
-                          int.parse(ageController.text));
+                      Map<String, dynamic> response = await signup(
+                        "https://d2wcv86mbz7x2c.cloudfront.net/a4c37b14-2damyo.png",
+                        email!,
+                        nameController.text,
+                        selectedGender!,
+                        int.parse(ageController.text),
+                        widget.token,
+                      );
+                      FlutterSecureStorage storage =
+                          const FlutterSecureStorage();
+                      await storage.write(
+                          key: "accessToken", value: response['token']);
+
+                      userInfoModel = await getUserInfo();
+
                       context.go('/');
                     },
                     style: ElevatedButton.styleFrom(

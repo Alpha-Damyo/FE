@@ -1,13 +1,18 @@
+import 'package:damyo/models/challenge_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ChallengeDetailScreen extends StatelessWidget {
-  final String title;
+class ChallengeDetailScreen extends StatefulWidget {
+  final Challenge challenge;
+  const ChallengeDetailScreen({super.key, required this.challenge});
 
-  const ChallengeDetailScreen({super.key, required this.title});
+  @override
+  State<ChallengeDetailScreen> createState() => _ChallengeDetailScreenState();
+}
 
+class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -33,11 +38,10 @@ class ChallengeDetailScreen extends StatelessWidget {
                   Container(
                     width: 390.w,
                     height: 163.h,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       image: DecorationImage(
-                        image:
-                            AssetImage("assets/images/challenge_thumbnail.png"),
-                        fit: BoxFit.fill,
+                        image: NetworkImage(widget.challenge.bannerImgUrl),
+                        // fit: BoxFit.fill,
                       ),
                     ),
                   ),
@@ -47,7 +51,7 @@ class ChallengeDetailScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '$title : 2024.1.1 ~ 2024.6.30',
+                          '${widget.challenge.name} : ${widget.challenge.startTime.toString().substring(0, 10)} ~ ${widget.challenge.endTime.toString().substring(0, 10)}',
                           style: const TextStyle(
                             color: Color(0xFF262B32),
                             fontSize: 14,
@@ -59,7 +63,7 @@ class ChallengeDetailScreen extends StatelessWidget {
                           icon: const Icon(Icons.share),
                           onPressed: () {
                             Share.share(
-                                'Check out this challenge: $title running from 2024.1.1 ~ 2024.6.30! Learn more at https://via.placeholder.com/358x163');
+                                'Check out this challenge: ${widget.challenge.name} running from 2024.1.1 ~ 2024.6.30! Learn more at https://via.placeholder.com/358x163');
                           },
                         ),
                       ],
@@ -69,7 +73,8 @@ class ChallengeDetailScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  GoRouter.of(context).push('/vote', extra: {'title': title});
+                  GoRouter.of(context)
+                      .push('/vote', extra: {'title': widget.challenge.name});
                 },
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,

@@ -28,7 +28,6 @@ UserInfoModel userInfoModel = UserInfoModel(
     "106362899132468449802");
 
 class _MypageScreenState extends State<MypageScreen> {
-  
   void update() {
     setState(() {});
   }
@@ -468,8 +467,7 @@ class _MypageScreenState extends State<MypageScreen> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    context.push('/login',extra: update);
-                    
+                    context.push('/login', extra: update);
                   },
                   child: const Text(
                     '로그인/회원가입 하러 가기',
@@ -491,8 +489,8 @@ class _MypageScreenState extends State<MypageScreen> {
 
   Widget LoggedPage() {
     return Container(
-      width: 390.w,
-      height: 189.h,
+      // width: 390.w,
+      // height: 189.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
       decoration: const BoxDecoration(color: Colors.white),
       child: Column(
@@ -501,7 +499,6 @@ class _MypageScreenState extends State<MypageScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 358.w,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -513,14 +510,9 @@ class _MypageScreenState extends State<MypageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      height: 84.h,
                       clipBehavior: Clip.antiAlias,
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFDEDEDE),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.r),
-                        ),
-                      ),
+                      decoration: const BoxDecoration(
+                          color: Color(0xFFDEDEDE), shape: BoxShape.circle),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -573,7 +565,7 @@ class _MypageScreenState extends State<MypageScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                '바른 문화 기여도: ${Provider.of<UserInfoProvider>(context).score}점',
+                                '바른 문화 기여도: ${userInfoModel.contribution}점',
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
@@ -591,14 +583,14 @@ class _MypageScreenState extends State<MypageScreen> {
                 SizedBox(width: 70.w),
                 IconButton(
                     onPressed: () {
-                      context.push('/update_profile',extra: update);
+                      context.push('/update_profile', extra: update);
                     },
                     icon: const Icon(Icons.keyboard_arrow_right)),
                 SizedBox(width: 10.w),
               ],
             ),
           ),
-          SizedBox(height: 24.h),
+          const SizedBox(height: 20),
           Container(
             width: 358.w,
             padding: EdgeInsets.symmetric(horizontal: 55.w, vertical: 12.h),
@@ -609,27 +601,22 @@ class _MypageScreenState extends State<MypageScreen> {
                 borderRadius: BorderRadius.circular(10.r),
               ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Provider.of<IsLoginProvider>(context, listen: false)
-                        .logout();
-                  },
-                  child: const Text(
-                    '로그아웃',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                    ),
+            child: GestureDetector(
+              onTap: () {
+                Provider.of<IsLoginProvider>(context, listen: false).logout();
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: const Text(
+                  '로그아웃',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ],

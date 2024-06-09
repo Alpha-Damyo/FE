@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:damyo/models/challenge_model.dart';
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
@@ -160,7 +161,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await _initializeMap();
   //_requestPermission();
-  // await _getCurrentLocation();
+  await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
   await getFavorites();
@@ -212,16 +213,18 @@ final GoRouter router = GoRouter(
         GoRoute(
           name: 'login',
           path: 'login',
-          builder: (context, state){
-            final function =  state.extra as VoidCallback;
+          builder: (context, state) {
+            final function = state.extra as VoidCallback;
             return LoginScreen(update: function);
           },
           routes: [
             GoRoute(
-              name: 'signup',
-              path: 'signup',
-              builder: (context, state) => const SignupScreen(),
-            ),
+                name: 'signup',
+                path: 'signup',
+                builder: (context, state) {
+                  String token = state.extra.toString();
+                  return SignupScreen(token: token);
+                }),
           ],
         ),
         GoRoute(
@@ -242,16 +245,19 @@ final GoRouter router = GoRouter(
           name: 'update_profile',
           path: 'update_profile',
           builder: (context, state) {
-            final function =  state.extra as VoidCallback;
-            return UpdateprofileScreen(update: function,);
+            final function = state.extra as VoidCallback;
+            return UpdateprofileScreen(
+              update: function,
+            );
           },
         ),
         GoRoute(
           path: 'details',
           builder: (context, state) {
-            final title = (state.extra as Map<String, String>)['title'] ??
-                "Default Title";
-            return ChallengeDetailScreen(title: title);
+            final challenge = state.extra as Challenge;
+            return ChallengeDetailScreen(
+              challenge: challenge,
+            );
           },
         ),
         GoRoute(

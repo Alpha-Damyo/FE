@@ -29,21 +29,13 @@ class _AchievementScreen extends State<AchievementScreen> {
   // 유저 정보를 가져오는 함수
   Future<UserInfoModel?> getUser() async {
     UserInfoModel? user = await getUserInfo();
-    if (user != null) {
-      setState(() {
-        contributionScore = user.contribution;
-        contributionGap = user.gap;
-        contributionPecentage = user.percentage;
-        profileUrl = user.profileUrl;
-      });
-    } else {
-      setState(() {
-        contributionScore = 0;
-        contributionGap = null;
-        contributionPecentage = 100;
-        profileUrl = null;
-      });
-    }
+    setState(() {
+      contributionScore = user.contribution;
+      contributionGap = user.gap;
+      contributionPecentage = user.percentage;
+      profileUrl = user.profileUrl;
+    });
+    return null;
   }
 
   Future<void> _loadData(int term) async {
@@ -75,13 +67,13 @@ class _AchievementScreen extends State<AchievementScreen> {
         ),
         body: _isLoading
             ? const Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: 50.0, // 원하는 너비
-                height: 50.0, // 원하는 높이
-                child: CircularProgressIndicator(),
-              ),
-            )
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 50.0, // 원하는 너비
+                  height: 50.0, // 원하는 높이
+                  child: CircularProgressIndicator(),
+                ),
+              )
             : Column(
                 children: [
                   SizedBox(height: 10.h),
@@ -108,7 +100,7 @@ class _AchievementScreen extends State<AchievementScreen> {
 Widget badgeList(int contributionScore) {
   return Container(
     padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(color: Colors.white),
+    decoration: const BoxDecoration(color: Colors.white),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -193,7 +185,7 @@ Widget badge(String achieve, BuildContext context) {
           height: 87,
           // clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
-            color: Color(0xFFEEF1F4),
+            color: const Color(0xFFEEF1F4),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
@@ -254,7 +246,7 @@ void _showBadgeDialog(BuildContext context, String achieve) {
                   height: 96,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
-                    color: Color(0xFFD6ECFA),
+                    color: const Color(0xFFD6ECFA),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -290,7 +282,7 @@ Widget UserInfo(int contributionScore, double contributionPecentage,
     int? contributionGap, String? profileUrl) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-    decoration: BoxDecoration(color: Colors.white),
+    decoration: const BoxDecoration(color: Colors.white),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -312,7 +304,7 @@ Widget UserInfo(int contributionScore, double contributionPecentage,
                   child: Row(
                     children: [
                       textFormat(
-                          text: '최하영',
+                          text: '홍길동',
                           fontSize: 16,
                           fontWeight: FontWeight.w700),
                       textFormat(
@@ -342,12 +334,12 @@ Widget UserInfo(int contributionScore, double contributionPecentage,
                 children: [
                   textFormat(
                       text: '상위',
-                      color: Color(0xFF0099FC),
+                      color: const Color(0xFF0099FC),
                       fontSize: 20,
                       fontWeight: FontWeight.w700),
                   textFormat(
                       text: ' $contributionPecentage%',
-                      color: Color(0xFF0099FC),
+                      color: const Color(0xFF0099FC),
                       fontSize: 24,
                       fontWeight: FontWeight.w700)
                 ],
@@ -356,11 +348,11 @@ Widget UserInfo(int contributionScore, double contributionPecentage,
               (contributionGap != null)
                   ? textFormat(
                       text: '1등과 $contributionGap점 차이가 나요. 조금만 더 노력해보세요!',
-                      color: Color(0xFF6E767F),
+                      color: const Color(0xFF6E767F),
                       fontWeight: FontWeight.w500)
                   : textFormat(
                       text: '사용자 정보를 불러오지 못했습니다.',
-                      color: Color(0xFF6E767F),
+                      color: const Color(0xFF6E767F),
                       fontWeight: FontWeight.w500),
             ],
           ),
@@ -377,7 +369,7 @@ Widget UserInfo(int contributionScore, double contributionPecentage,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 340 * (contributionPecentage * 0.01),
+                width: 300 * (contributionPecentage * 0.01),
                 height: 10,
                 decoration: ShapeDecoration(
                   gradient: const LinearGradient(
@@ -407,7 +399,7 @@ Widget UserInfo(int contributionScore, double contributionPecentage,
                 width: 340 * (1 - (contributionPecentage * 0.01)),
                 height: 10,
                 decoration: ShapeDecoration(
-                  color: Color(0xFFEEF1F4),
+                  color: const Color(0xFFEEF1F4),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3)),
                 ),
@@ -423,13 +415,13 @@ Widget UserInfo(int contributionScore, double contributionPecentage,
 Widget explane() {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-    decoration: BoxDecoration(color: Colors.white),
+    decoration: const BoxDecoration(color: Colors.white),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
+        const SizedBox(
           width: double.infinity,
           child: Text(
             '기여도 획득 방법',
@@ -464,7 +456,7 @@ Widget explane() {
                       height: 0,
                     ),
                   ),
-                  const SizedBox(width: 23),
+                  SizedBox(width: 23),
                   Expanded(
                     child: SizedBox(
                       child: Text(
@@ -531,7 +523,7 @@ Widget explane() {
             ),
             const SizedBox(height: 20),
             Container(
-              decoration: ShapeDecoration(
+              decoration: const ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
                     width: 1,
@@ -543,7 +535,7 @@ Widget explane() {
             ),
             const SizedBox(height: 20),
             Container(
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -561,7 +553,7 @@ Widget explane() {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 23),
+                  SizedBox(width: 23),
                   Expanded(
                     child: SizedBox(
                       child: Text(
@@ -592,7 +584,7 @@ Widget explane() {
             ),
             clipBehavior: Clip.antiAlias,
             decoration: ShapeDecoration(
-              color: Color(0xFFF7F8FA),
+              color: const Color(0xFFF7F8FA),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -619,7 +611,7 @@ Widget explane() {
                   padding: const EdgeInsets.all(16),
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
-                    color: Color(0xFFD6ECFA),
+                    color: const Color(0xFFD6ECFA),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

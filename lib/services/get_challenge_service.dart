@@ -2,11 +2,17 @@ import 'dart:convert';
 
 import 'package:damyo/models/challenge_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-Future<List<Challenge>> getCurrentChallenge(String token) async {
+Future<List<Challenge>> getCurrentChallenge() async {
+  FlutterSecureStorage storage = const FlutterSecureStorage();
   final baseUrl = dotenv.get('BASE_URL');
   var url = Uri.parse('$baseUrl/ch/getCurrentChallenge');
+
+  final token = await storage.read(key: "accessToken");
+  print(token);
+
   var response = await http.post(
     url,
     headers: {

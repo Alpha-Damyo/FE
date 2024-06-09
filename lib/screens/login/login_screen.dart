@@ -1,6 +1,7 @@
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userinfo_provider.dart';
 import 'package:damyo/screens/home/mypage/mypage_screen.dart';
+import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/services/login_service.dart';
 import 'package:damyo/services/user_controller_service.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,12 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key, required this.update});
-
   VoidCallback update;
+  LoginScreen({
+    super.key,
+    required this.update,
+  });
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -33,10 +37,20 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Future<void> checkLoginState(Map<String, dynamic> userInfo) async {
+  Future<void> checkLoginState(
+      Map<String, dynamic> userInfo, String socialToken) async {
+    print(userInfo);
     if (userInfo['code'] == "A102") {
       // 회원가입이 되어있지 않음. 회원가입 페이지로 이동
-      context.go('/login/signup');
+      // context.go('/login/signup', extra: userInfo['token']);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return SignupScreen(
+            token: socialToken,
+          );
+        }),
+      );
     } else {
       // 로그인 성공, 토큰 저장
       print(userInfo['token']);
@@ -61,13 +75,15 @@ class _LoginScreenState extends State<LoginScreen> {
     // String? id = await storage.read(key: 'userID');
 
     // google accesstoken 받아오기
-    print(googleSignInAuthentication.accessToken.toString());
+    String googleAccessToken =
+        googleSignInAuthentication.accessToken.toString();
+
     userInfo = await login({
-      "token": googleSignInAuthentication.accessToken.toString(),
+      "token": googleAccessToken,
     }, "google");
     Provider.of<IsLoginProvider>(context, listen: false).login();
 
-    await checkLoginState(userInfo);
+    await checkLoginState(userInfo, googleAccessToken);
   }
 
   Future<void> signInWithNaver() async {
@@ -89,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }, "naver");
     Provider.of<IsLoginProvider>(context, listen: false).login();
 
-    await checkLoginState(userInfo);
+    await checkLoginState(userInfo, naverToken.accessToken);
   }
 
   void signOutWithNaver() async {
@@ -119,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
             "token": kakaoToken,
           }, "kakao");
           // print(userInfo);
-          await checkLoginState(userInfo);
+          await checkLoginState(userInfo, kakaoToken);
         } catch (error) {
           if (error == 404) {
             context.push('/login/signup');
@@ -138,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
           String kakaoToken = token.accessToken;
           print('카카오계정으로 로그인 성공2');
+          print(kakaoToken);
           try {
             User user = await UserApi.instance.me();
             print('사용자 정보 요청 성공'
@@ -150,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
               "token": kakaoToken,
             }, "kakao");
 
-            await checkLoginState(userInfo);
+            await checkLoginState(userInfo, kakaoToken);
           } catch (error) {
             if (error == 404) {
               context.push('/login/signup');
@@ -180,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
             "token": kakaoToken,
           }, "kakao");
           print(userInfo);
-          await checkLoginState(userInfo);
+          await checkLoginState(userInfo, kakaoToken);
         } catch (error) {
           if (error == 404) {
             context.push('/login/signup');
@@ -243,7 +260,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           image: DecorationImage(
                             image: AssetImage(
                                 'assets/icons/login_screen/login_logo.png'),
-                            fit: BoxFit.fill,
                           ),
                         ),
                       ),
@@ -286,6 +302,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 15.h),
                 GestureDetector(
+
                   onTap: signInWithNaver,
                   child: buildLoginButton(
                     text: '네이버로 계속하기',
