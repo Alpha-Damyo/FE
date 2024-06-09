@@ -171,7 +171,7 @@ class _MypageScreenState extends State<MypageScreen> {
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          SizedBox(width: 280.w),
+                                          SizedBox(width: 250.w),
                                         ],
                                       ),
                                     ),

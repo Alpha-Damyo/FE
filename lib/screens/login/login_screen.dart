@@ -69,15 +69,15 @@ class _LoginScreenState extends State<LoginScreen> {
     NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
     Map<String, dynamic> userInfo;
 
-    // print(naverUser.accessToken);
     print('name = ${naverUser.account.name}');
     print('email = ${naverUser.account.email}');
     print('id = ${naverUser.account.id}');
+    print(naverToken.accessToken);
     await storage.write(key: 'userID', value: naverUser.account.email);
     await storage.write(key: 'sns', value: "naver");
 
     userInfo = await login({
-      "token": naverToken.toString(),
+      "token": naverToken.accessToken,
     }, "naver");
     Provider.of<IsLoginProvider>(context, listen: false).login();
 
