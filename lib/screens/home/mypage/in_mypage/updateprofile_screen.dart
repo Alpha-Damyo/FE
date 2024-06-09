@@ -8,10 +8,8 @@ import 'package:damyo/services/profile_update_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-XFile? _profileImage;
+XFile? profileImage;
 final ImagePicker picker = ImagePicker();
-
-bool _changedImage = false;
 
 bool _isFieldEmpty(TextEditingController controller) {
   return controller.text.trim().isEmpty;
@@ -26,6 +24,8 @@ class UpdateprofileScreen extends StatefulWidget {
 
 class _UpdateprofileState extends State<UpdateprofileScreen> {
   final TextEditingController _nameController = TextEditingController();
+  XFile? _profileImage;
+  bool _changedImage = false;
 
   // 이미지를 가져오는 함수
   Future getImage(ImageSource imageSource) async {
@@ -40,12 +40,13 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
   @override
   void initState() {
     super.initState();
+    print(_changedImage);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    if(!_changedImage){
+    if (!_changedImage) {
       _profileImage = null;
     }
     super.dispose();
@@ -66,9 +67,12 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
           actions: [
             TextButton(
                 onPressed: () async {
-                  String? result2 = await putUserUpdateProfile(
-                      UpdateProfileModel.fromMap(_profileImage));
-                  print(result2);
+                  if (_profileImage != null) {
+                    profileImage = _profileImage;
+                    String? result2 = await putUserUpdateProfile(
+                        UpdateProfileModel.fromMap(profileImage));
+                  }
+
                   setState(() {
                     _changedImage = true;
                   });
@@ -79,7 +83,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
 
                       context.pop();
                     } catch (e) {
-                      _showErrorLog(context, '이름 변경에 실패하셨습니다.');
+                      _showErrorLog(context, '중복된 이름입니다.');
                     }
                   }
                 },
@@ -182,53 +186,57 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
   }
 }
 
-// 애러 메시지 띄우기
-void _showErrorLog(BuildContext context, String log) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        contentPadding: EdgeInsets.zero,
-        content: Container(
-          // width: 300,
-          height: 180,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
+Future<dynamic> _showErrorLog(BuildContext context, String log) {
+  return showModalBottomSheet(
+      context: context,
+      builder: (dialog) {
+        return Container(
+          width: 390,
+          height: 170,
+          decoration: const ShapeDecoration(
             color: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
             ),
           ),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      icon: const Icon(Icons.close),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 16.0, top: 43.0, bottom: 36.0),
+                child: textFormat(
+                    text: log,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF0099FC),
+                      fixedSize: const Size(350, 40),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26),
+                      ),
                     ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      textFormat(
-                          text: log, fontSize: 16, fontWeight: FontWeight.w600),
-                    ],
+                    onPressed: () {
+                      Navigator.of(dialog).pop();
+                    },
+                    child: textFormat(
+                        text: '닫기',
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
-        ),
-      );
-    },
-  );
+        );
+      });
 }
