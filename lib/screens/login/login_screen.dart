@@ -1,6 +1,8 @@
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userinfo_provider.dart';
+import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/services/login_service.dart';
+import 'package:damyo/services/user_controller_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
@@ -35,7 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
       context.go('/login/signup');
     } else {
       // 로그인 성공, 토큰 저장
+      print(userInfo['token']);
       await storage.write(key: 'accessToken', value: userInfo['token']);
+      userInfoModel = await getUserInfo();
 
       context.pop();
     }
@@ -55,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // String? id = await storage.read(key: 'userID');
 
     // google accesstoken 받아오기
-
+    print(googleSignInAuthentication.accessToken.toString());
     userInfo = await login({
       "token": googleSignInAuthentication.accessToken.toString(),
     }, "google");
