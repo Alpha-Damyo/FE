@@ -57,6 +57,9 @@ Future<String?> putUserUpdateProfile(UpdateProfileModel profileModel) async {
   var response = await request.send();
   var jsonBody = await response.stream.bytesToString();
 
+  
+  print(jsonBody);
+
   if (response.statusCode == 200) {
     return jsonBody;
   } else {
