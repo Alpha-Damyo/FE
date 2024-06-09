@@ -28,6 +28,10 @@ UserInfoModel userInfoModel = UserInfoModel(
     "106362899132468449802");
 
 class _MypageScreenState extends State<MypageScreen> {
+  void update() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<IsLoginProvider>(
@@ -186,7 +190,7 @@ class _MypageScreenState extends State<MypageScreen> {
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          SizedBox(width: 280.w),
+                                          SizedBox(width: 250.w),
                                         ],
                                       ),
                                     ),
@@ -456,22 +460,26 @@ class _MypageScreenState extends State<MypageScreen> {
                 borderRadius: BorderRadius.circular(10.r),
               ),
             ),
-            child: GestureDetector(
-              onTap: () {
-                context.push('/login');
-              },
-              child: Container(
-                alignment: Alignment.center,
-                child: const Text(
-                  '로그인/회원가입 하러 가기',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w600,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    context.push('/login', extra: update);
+                  },
+                  child: const Text(
+                    '로그인/회원가입 하러 가기',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
@@ -575,7 +583,7 @@ class _MypageScreenState extends State<MypageScreen> {
                 SizedBox(width: 70.w),
                 IconButton(
                     onPressed: () {
-                      context.push('/update_profile');
+                      context.push('/update_profile', extra: update);
                     },
                     icon: const Icon(Icons.keyboard_arrow_right)),
                 SizedBox(width: 10.w),

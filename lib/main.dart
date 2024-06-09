@@ -8,7 +8,6 @@ import 'package:damyo/screens/home/challenge/challengedetail_screen.dart';
 import 'package:damyo/screens/home/challenge/challengevote_screen.dart';
 import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
-import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/achievement_screen.dart';
@@ -214,13 +213,16 @@ final GoRouter router = GoRouter(
         GoRoute(
           name: 'login',
           path: 'login',
-          builder: (context, state) => const LoginScreen(),
+          builder: (context, state) {
+            // final function = state.extra as VoidCallback;
+            return const LoginScreen();
+          },
           routes: [
             GoRoute(
                 name: 'signup',
                 path: 'signup',
                 builder: (context, state) {
-                  String token = state.extra as String;
+                  String token = state.extra.toString();
                   return SignupScreen(token: token);
                 }),
           ],
@@ -243,7 +245,10 @@ final GoRouter router = GoRouter(
           name: 'update_profile',
           path: 'update_profile',
           builder: (context, state) {
-            return const UpdateprofileScreen();
+            final function = state.extra as VoidCallback;
+            return UpdateprofileScreen(
+              update: function,
+            );
           },
         ),
         GoRoute(

@@ -254,7 +254,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       // 받은 정보 서버에 보내기
                       // Provider.of<IsLoginProvider>(context, listen: false)
                       //     .checkFirst();
-                      Map<String, String> response = await signup(
+                      Map<String, dynamic> response = await signup(
                         "https://d2wcv86mbz7x2c.cloudfront.net/a4c37b14-2damyo.png",
                         email!,
                         nameController.text,
