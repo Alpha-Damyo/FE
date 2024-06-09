@@ -2,13 +2,15 @@ import 'dart:io';
 import 'package:damyo/models/updateprofile/update_name_model.dart';
 import 'package:damyo/models/updateprofile/update_profile_model.dart';
 import 'package:damyo/models/userinfo/user_info_model.dart';
+import 'package:damyo/screens/home/mypage/mypage_screen.dart';
 import 'package:damyo/services/user_controller_service.dart';
 import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:damyo/services/profile_update_service.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
+
 
 String? profileImage;
 final ImagePicker picker = ImagePicker();
@@ -18,8 +20,8 @@ bool _isFieldEmpty(TextEditingController controller) {
 }
 
 class UpdateprofileScreen extends StatefulWidget {
-  const UpdateprofileScreen({super.key});
-
+  UpdateprofileScreen({super.key, required this.update});
+  VoidCallback update;
   @override
   State<UpdateprofileScreen> createState() => _UpdateprofileState();
 }
@@ -41,10 +43,10 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
 
   // 유저 정보를 가져오는 함수
   Future<UserInfoModel?> getUserprofile() async {
-    UserInfoModel? user = await getUserInfo();
-    if (user != null) {
+    userInfoModel = await getUserInfo();
+    if (userInfoModel != null) {
       setState(() {
-        profileImage = user.profileUrl;
+        profileImage = userInfoModel.profileUrl;
       });
     } else {
       setState(() {
@@ -71,6 +73,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterSecureStorage secureStorage = const FlutterSecureStorage();
     return ScreenUtilInit(
       designSize: const Size(390, 755),
       builder: (context, child) => Scaffold(
@@ -84,9 +87,10 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
           actions: [
             TextButton(
                 onPressed: () async {
+                  String? token = await secureStorage.read(key: 'accessToken');
                   if (_profileImage != null) {
                     String? result2 = await putUserUpdateProfile(
-                        UpdateProfileModel.fromMap(_profileImage));
+                        UpdateProfileModel.fromMap(_profileImage), token!);
                   }
 
                   setState(() {
@@ -100,6 +104,7 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                       _showErrorLog(context, '중복된 이름입니다.');
                     }
                   }
+                  widget.update();
                 },
                 child: textFormat(
                     text: '완료', fontSize: 13, fontWeight: FontWeight.w500)),
@@ -122,7 +127,8 @@ class _UpdateprofileState extends State<UpdateprofileScreen> {
                     ),
                   ),
                   child: profileImage == null
-                      ? Image.asset('assets/icons/updateprofile_screen/defalut.png')
+                      ? Image.asset(
+                          'assets/icons/updateprofile_screen/defalut.png')
                       : _profileImage == null
                           ? Image.network(profileImage!)
                           : Image.file(

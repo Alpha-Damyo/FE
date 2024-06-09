@@ -5,6 +5,7 @@ import 'package:damyo/services/login_service.dart';
 import 'package:damyo/services/user_controller_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,8 +15,9 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key, required this.update});
 
+  VoidCallback update;
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -40,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print(userInfo['token']);
       await storage.write(key: 'accessToken', value: userInfo['token']);
       userInfoModel = await getUserInfo();
-
+      widget.update();
       context.pop();
     }
   }
@@ -68,20 +70,23 @@ class _LoginScreenState extends State<LoginScreen> {
     await checkLoginState(userInfo);
   }
 
-  void signInWithNaver() async {
+  Future<void> signInWithNaver() async {
     NaverLoginResult naverUser = await FlutterNaverLogin.logIn();
     NaverAccessToken naverToken = await FlutterNaverLogin.currentAccessToken;
     Map<String, dynamic> userInfo;
 
-    // print(naverUser.accessToken);
     print('name = ${naverUser.account.name}');
     print('email = ${naverUser.account.email}');
     print('id = ${naverUser.account.id}');
+    print(naverToken);
+
+    // await Duration(seconds: 5);
     await storage.write(key: 'userID', value: naverUser.account.email);
     await storage.write(key: 'sns', value: "naver");
+    
 
     userInfo = await login({
-      "token": naverToken.toString(),
+      "token": naverToken.accessToken,
     }, "naver");
     Provider.of<IsLoginProvider>(context, listen: false).login();
 
@@ -282,7 +287,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 15.h),
                 GestureDetector(
-                  onTap: signInWithNaver,
+                  onTap: ()async{
+                    await signInWithNaver();
+                  },
                   child: buildLoginButton(
                     text: '네이버로 계속하기',
                     backgroundColor: const Color(0xFF00C73C),

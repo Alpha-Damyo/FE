@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:damyo/models/userinfo/user_info_model.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/updateprofile_screen.dart';
 import 'package:damyo/services/user_controller_service.dart';
@@ -22,6 +24,7 @@ class _AchievementScreen extends State<AchievementScreen> {
   double? contributionPecentage;
   String? profileUrl;
   String? name;
+  bool _isLoading = true;
 
   // 유저 정보를 가져오는 함수
   Future<UserInfoModel?> getUser() async {
@@ -43,8 +46,17 @@ class _AchievementScreen extends State<AchievementScreen> {
     }
   }
 
+  Future<void> _loadData(int term) async {
+    Timer(Duration(milliseconds: term), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   void initState() {
+    _loadData(500);
     getUser();
     super.initState();
   }
@@ -61,24 +73,33 @@ class _AchievementScreen extends State<AchievementScreen> {
               text: '나의 기여도', fontSize: 20, fontWeight: FontWeight.w700),
           centerTitle: true,
         ),
-        body: Column(
-          children: [
-            SizedBox(height: 10.h),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    UserInfo(contributionScore!, contributionPecentage!,
-                        contributionGap, profileUrl),
-                    badgeList(contributionScore!),
-                    explane(),
-                  ],
-                ),
+        body: _isLoading
+            ? const Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 50.0, // 원하는 너비
+                height: 50.0, // 원하는 높이
+                child: CircularProgressIndicator(),
               ),
-            ),
-          ],
-        ),
+            )
+            : Column(
+                children: [
+                  SizedBox(height: 10.h),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: [
+                          UserInfo(contributionScore!, contributionPecentage!,
+                              contributionGap, profileUrl),
+                          badgeList(contributionScore!),
+                          explane(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
