@@ -1,6 +1,8 @@
+import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:damyo/style.dart';
 
 List<int> contributionPoint = [5, 50, 100, 500];
 
@@ -20,9 +22,8 @@ class _AchievementScreen extends State<AchievementScreen> {
         appBar: AppBar(
           scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
-          title: const Text(
-            '나의 기여도',
-          ),
+          title: textFormat(
+              text: '나의 기여도', fontSize: 20, fontWeight: FontWeight.w700),
           centerTitle: true,
         ),
         body: Column(
@@ -69,42 +70,29 @@ Widget badgeList() {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: SizedBox(
-                        child: Text(
-                          '기여도 뱃지',
-                          style: TextStyle(
-                            color: Colors.black,
+                        child: textFormat(
+                            text: '기여도 뱃지',
                             fontSize: 16,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                          ),
-                        ),
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 15),
-              const SizedBox(
-                width: double.infinity,
-                child: Text(
-                  '기여도가 올라갈 수록 뱃지가 생겨요. 기여도를 올려 뱃지를 모아보세요 !',
-                  style: TextStyle(
-                    color: Color(0xFF262B32),
-                    fontSize: 12,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    height: 0,
-                  ),
-                ),
-              ),
+              SizedBox(
+                  width: double.infinity,
+                  child: textFormat(
+                      text: '기여도가 올라갈 수록 뱃지가 생겨요. 기여도를 올려 뱃지를 모아보세요 !',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500)),
             ],
           ),
         ),
@@ -162,19 +150,10 @@ Widget badge(String achieve, BuildContext context) {
             },
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ),
-        Text(
-          achieve,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w500,
-            height: 0,
-          ),
-        )
+        textFormat(text: achieve, fontSize: 16, fontWeight: FontWeight.w500),
       ],
     ),
   );
@@ -233,26 +212,14 @@ void _showBadgeDialog(BuildContext context, String achieve) {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      achieve,
-                      style: const TextStyle(
-                        color: Colors.black,
+                    textFormat(
+                        text: achieve,
                         fontSize: 20,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                        fontWeight: FontWeight.w600),
                     const SizedBox(height: 12),
-                    Text(
-                      '획득 방법 :\n흡연구역에서 첫 흡연을 하고 인증 버튼을 눌러보세요.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontFamily: 'Pretendard',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                    textFormat(
+                        text: '획득 방법 :\n흡연구역에서 첫 흡연을 하고 인증 버튼을 눌러보세요.',
+                        textAlign: TextAlign.center),
                   ],
                 ),
               ],
@@ -286,45 +253,23 @@ Widget UserInfo() {
             children: [
               Expanded(
                 child: SizedBox(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
+                  child: Row(
+                    children: [
+                      textFormat(
                           text: '최하영',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w700,
-                            height: 0,
-                          ),
-                        ),
-                        TextSpan(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700),
+                      textFormat(
                           text: ' 님의 기여도',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w500,
-                            height: 0,
-                          ),
-                        ),
-                      ],
-                    ),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500),
+                    ],
                   ),
                 ),
               ),
               const SizedBox(width: 16),
-              Text(
-                '754점',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Pretendard',
-                  fontWeight: FontWeight.w700,
-                  height: 0,
-                ),
-              ),
+              textFormat(
+                  text: '754점', fontSize: 16, fontWeight: FontWeight.w700),
             ],
           ),
         ),
@@ -616,7 +561,8 @@ Widget explane() {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: Image.asset('assets/icons/achievement_screen/lock.png'),
+                  child:
+                      Image.asset('assets/icons/achievement_screen/lock.png'),
                 ),
               ],
             ),

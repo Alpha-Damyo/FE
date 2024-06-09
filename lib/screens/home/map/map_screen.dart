@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'dart:developer';
 import 'package:bottom_drawer/bottom_drawer.dart';
+import 'package:damyo/custom_icons_icons.dart';
 import 'package:damyo/main.dart';
 import 'package:damyo/models/smoking_area/sa_basic_model.dart';
 import 'package:damyo/models/smoking_area/sa_search_model.dart';
@@ -319,14 +320,11 @@ class _MapScreenState extends State<MapScreen>
                                 ),
                                 child: Align(
                                   alignment: Alignment.center,
-                                  child: Text(
-                                    _mapFilterCharacterList[index],
-                                    style: const TextStyle(
-                                      color: Color(0xFF464D57),
-                                      fontSize: 12,
-                                      fontFamily: 'Pretendard',
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  child: textFormat(
+                                    text: _mapFilterCharacterList[index],
+                                    color: const Color(0xFF464D57),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
@@ -368,10 +366,10 @@ class _MapScreenState extends State<MapScreen>
                             ),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.format_list_bulleted_rounded,
-                          size: iconSize,
-                          color: Color(0xff6f767f),
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child:
+                              Image.asset('assets/icons/map_screen/filter.png'),
                         ),
                       ),
                     ),
@@ -392,7 +390,7 @@ class _MapScreenState extends State<MapScreen>
                           isCameraMoved = false;
                         },
                         child: Container(
-                          width: 146,
+                          width: 153,
                           padding: const EdgeInsets.symmetric(
                               vertical: 5, horizontal: 16),
                           decoration: BoxDecoration(
@@ -417,7 +415,7 @@ class _MapScreenState extends State<MapScreen>
                                 size: 20,
                               ),
                               textFormat(
-                                text: "이 위치에서 재탐색",
+                                text: " 이 위치에서 재탐색",
                                 color: const Color(0xFF0099FC),
                                 fontWeight: FontWeight.w600,
                                 fontSize: 12,
@@ -428,7 +426,7 @@ class _MapScreenState extends State<MapScreen>
                       ),
                     ),
                     SizedBox(
-                        width: mapWidth / 2 - padding - alignButtonSize - 73),
+                        width: mapWidth / 2 - padding - alignButtonSize - 76.5),
                     InkWell(
                       onTap: () {
                         setState(() {

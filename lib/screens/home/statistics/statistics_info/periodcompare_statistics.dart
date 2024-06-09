@@ -1,3 +1,4 @@
+import 'package:damyo/database/smoke_database_helper.dart';
 import 'package:damyo/models/statistics/stat_date_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -9,22 +10,104 @@ String compareType = '일';
 bool compareCheck = true;
 // 날짜 정보를 가져오기 위해
 DateTime now = DateTime.now();
+List<String> weekOrder = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday'
+];
 
 class periodCompareInfo extends StatefulWidget {
   const periodCompareInfo({
     super.key,
     required this.everyInfo,
+    required this.userDB,
   });
 
   final statDateModel everyInfo;
+  final SmokeDatabaseHelper userDB;
 
   @override
   State<periodCompareInfo> createState() => _periodCompareInfoState();
 }
 
+double roundUpToNearestTen(int number) {
+  return (number + 9) ~/ 10 * 10;
+}
+
 class _periodCompareInfoState extends State<periodCompareInfo> {
-  bool _isLoading = false;
+  bool _isLoading = true;
   List<dynamic>? everyDayWeek, everyWeeks, everyMonths;
+  List<dynamic>? smokeWeekdayInfo, smokeWeeksInfo, smokeMonthsInfo;
+  int? maxWeekday, maxWeeks, maxMonths;
+
+  void weekdayInfo() async {
+    List<int> smokeCounts = List.filled(7, 0);
+    int max = 0;
+    final startDate = now.subtract(Duration(days: 6));
+    final dataInRange =
+        await widget.userDB.getSmokeInfoInWeekDayRange(startDate, now);
+
+    for (var item in dataInRange) {
+      int index = weekOrder.indexOf(item['weekday']);
+      if (index != -1) {
+        smokeCounts[index] = item['count'];
+        if (max < item['count']) {
+          max = item['count'];
+        }
+      }
+    }
+
+    setState(() {
+      smokeWeekdayInfo = smokeCounts;
+      maxWeekday = max;
+    });
+  }
+
+  void weeksInfo() async {
+    List<int> smokeCounts = List.filled(4, 0);
+    int max = 0;
+
+    for (int i = 0; i < 4; i++) {
+      final startDate = now.subtract(Duration(days: 6 + (7 * i)));
+      final endDate = now.subtract(Duration(days: 7 * i));
+      final dateInRange =
+          await widget.userDB.getSmokeInfoInWeeksRange(startDate, endDate);
+      smokeCounts[i] = dateInRange.first['count'];
+      if (max < dateInRange.first['count']) {
+        max = dateInRange.first['count'];
+      }
+    }
+
+    setState(() {
+      smokeWeeksInfo = smokeCounts;
+      maxWeeks = max;
+    });
+  }
+
+  void monthsInfo() async {
+    List<int> smokeCounts = List.filled(6, 0);
+    int max = 0;
+
+    for (int i = 0; i < 6; i++) {
+      final startDate = now.subtract(Duration(days: 27 + (28 * i)));
+      final endDate = now.subtract(Duration(days: 28 * i));
+      final dateInRange =
+          await widget.userDB.getSmokeInfoInWeeksRange(startDate, endDate);
+      smokeCounts[i] = dateInRange.first['count'];
+      if (max < dateInRange.first['count']) {
+        max = dateInRange.first['count'];
+      }
+    }
+
+    setState(() {
+      smokeMonthsInfo = smokeCounts;
+      maxMonths = max;
+    });
+  }
 
   void setEveryInfo() {
     setState(() {
@@ -34,9 +117,17 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
     });
   }
 
+  void setUserInfo() {
+    weekdayInfo();
+    weeksInfo();
+    monthsInfo();
+  }
+
   @override
   void initState() {
+    _loadData(500);
     setEveryInfo();
+    setUserInfo();
     super.initState();
   }
 
@@ -134,7 +225,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
                           barGroups: barDaysCompare,
                           gridData: gridData,
                           alignment: BarChartAlignment.spaceAround,
-                          maxY: 20,
+                          maxY: roundUpToNearestTen(maxWeekday! + 20),
                         ),
                       )
                     : (compareType == '주')
@@ -146,7 +237,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
                               barGroups: barWeeksCompare,
                               gridData: gridData,
                               alignment: BarChartAlignment.spaceAround,
-                              maxY: 20,
+                              maxY: roundUpToNearestTen(maxWeeks! + 20),
                             ),
                           )
                         : BarChart(
@@ -158,7 +249,7 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
                               barGroups: barMonthsCompare,
                               gridData: gridData,
                               alignment: BarChartAlignment.spaceAround,
-                              maxY: 20,
+                              maxY: roundUpToNearestTen(maxMonths! + 20),
                             ),
                           ),
               ),
@@ -280,9 +371,9 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
       );
 
   FlGridData get gridData => const FlGridData(
-        show: true,
+        show: false,
         drawHorizontalLine: true,
-        horizontalInterval: 5,
+        horizontalInterval: 10,
         drawVerticalLine: false,
       );
 
@@ -422,8 +513,8 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
 
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
-        showTitles: true,
-        interval: 5,
+        showTitles: false,
+        interval: 10,
         reservedSize: 20,
       );
 
@@ -506,22 +597,19 @@ class _periodCompareInfoState extends State<periodCompareInfo> {
         ),
       );
 
-  // 일, 주, 월 데이터 받아와서 저장 및 등록
-  List<double> UserAverDay = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7, 9.4];
-  List<double> UserAverWeek = [12.2, 9.0, 3.4, 10.3];
-  List<double> UserAverMonth = [12.2, 9.0, 3.4, 10.3, 2.8, 8.7];
-
   List<BarChartGroupData> get barDaysCompare => [
-        for (int i = 0; i < UserAverDay.length; i++)
-          makeGroupData(i, UserAverDay[i], everyDayWeek?[i + 1], compareCheck)
+        for (int i = 0; i < smokeWeekdayInfo!.length; i++)
+          makeGroupData(
+              i, smokeWeekdayInfo?[i] * 1.0, everyDayWeek?[i + 1], compareCheck)
       ];
   List<BarChartGroupData> get barWeeksCompare => [
-        for (int i = 0; i < UserAverWeek.length; i++)
-          makeGroupData(i, UserAverWeek[i], everyWeeks?[i+1], compareCheck)
+        for (int i = 0; i < smokeWeeksInfo!.length; i++)
+          makeGroupData(
+              i, smokeWeeksInfo?[i] * 1.0, everyWeeks?[i + 1], compareCheck)
       ];
   List<BarChartGroupData> get barMonthsCompare => [
-        for (int i = 0; i < UserAverMonth.length; i++)
-          makeGroupData(i, UserAverMonth[i],
+        for (int i = 0; i < smokeMonthsInfo!.length; i++)
+          makeGroupData(i, smokeMonthsInfo![i] * 1.0,
               everyMonths?[(now.month + 12 - i) % 12], compareCheck)
       ];
 

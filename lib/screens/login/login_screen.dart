@@ -104,6 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
           print(userInfo);
           checkLoginState(userInfo);
         } catch (error) {
+          if (error == 404) {
+               context.push('/login/signup');
+             }
           print('사용자 정보 요청 실패1 $error');
         }
       } catch (error) {
@@ -132,8 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
             checkLoginState(userInfo);
           } catch (error) {
             if (error == 404) {
-              context.push('/login/signup');
-            }
+               context.push('/login/signup');
+             }
             print('사용자 정보 요청 실패2 $error');
           }
         } catch (error) {
@@ -159,9 +162,9 @@ class _LoginScreenState extends State<LoginScreen> {
           print(userInfo);
           checkLoginState(userInfo);
         } catch (error) {
-          if (error == "404") {
-            context.push('/login/signup');
-          }
+          if (error == 404) {
+               context.push('/login/signup');
+             }
           print('사용자 정보 요청 실패3 $error');
         }
       } catch (error) {
@@ -216,8 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 150.h,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              'assets/icons/login_screen/login_logo.png'),
+                          image: AssetImage('assets/icons/login_screen/login_logo.png'),
                           fit: BoxFit.fill,
                         ),
                       ),

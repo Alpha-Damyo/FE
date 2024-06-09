@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:damyo/models/statistics/stat_region_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,12 +25,12 @@ class _localInfoState extends State<localInfo>
   late TabController _tabController;
   List<dynamic>? _GuList, _areaList;
   List<SaDetailModel>? _SaList;
+  bool _isLoading = true;
 
   void setRegionInfo() {
     setState(() {
       _GuList = widget.RegionInfo?.allRegion;
       _areaList = widget.RegionInfo?.areaTop;
-      // print(_areaList?[0].runtimeType);
       getSaModle(_areaList);
     });
   }
@@ -46,10 +49,19 @@ class _localInfoState extends State<localInfo>
     });
   }
 
+  Future<void> _loadData(int term) async {
+    Timer(Duration(milliseconds: term), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     setRegionInfo();
+    _loadData(500);
     super.initState();
   }
 
@@ -62,56 +74,65 @@ class _localInfoState extends State<localInfo>
   @override
   // 지역 정보 위젯
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+    return Container(
+      child: _isLoading
+          ? const Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              width: 50.0, // 원하는 너비
+              height: 50.0, // 원하는 높이
+              child: CircularProgressIndicator(),
+            ),
+          )
+          : Column(
               children: [
-                SizedBox(
-                  child: Text(
-                    '가장 인기있는 흡연구역',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        child: Text(
+                          '가장 인기있는 흡연구역',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicatorColor: Colors.black,
+                    tabs: const [
+                      Tab(text: '지역'),
+                      Tab(text: '흡연구역'),
+                    ],
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.grey,
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _tapContentsGu(),
+                        _tapContentsSmokeArea(context),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TabBar(
-              controller: _tabController,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: Colors.black,
-              tabs: const [
-                Tab(text: '지역'),
-                Tab(text: '흡연구역'),
-              ],
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _tapContentsGu(),
-                  _tapContentsSmokeArea(context),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -150,8 +171,6 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
   return Container(
     height: 55,
     child: Row(
-      // mainAxisSize: MainAxisSize.min,
-      // mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
@@ -195,18 +214,17 @@ Widget _Gu(Map<String, dynamic> _GuInfo, int rank) {
   );
 }
 
-Widget _Sa(Map<String, dynamic> _SaInfo, SaDetailModel SaModel, int rank, BuildContext context) {
+Widget _Sa(Map<String, dynamic> _SaInfo, SaDetailModel SaModel, int rank,
+    BuildContext context) {
   String key = _SaInfo.keys.first;
   dynamic value = _SaInfo[key];
   return Ink(
     height: 55,
     child: InkWell(
-      onTap:(){
-        context.push('/sa_info', extra: SaModel.id);
+      onTap: () {
+        context.push('/sa_info', extra: '${SaModel.id},${SaModel.name}');
       },
       child: Row(
-        // mainAxisSize: MainAxisSize.min,
-        // mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
