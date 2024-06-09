@@ -5,6 +5,7 @@ import 'package:damyo/models/updateprofile/update_profile_model.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_listview.dart';
 import 'package:damyo/services/image_service.dart';
 import 'package:damyo/services/smoking_area_service.dart';
+import 'package:damyo/style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
@@ -333,15 +334,13 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                           : const Color(0xffd2d7dd),
                       borderRadius: const BorderRadius.all(Radius.circular(26)),
                     ),
-                    child: const Align(
+                    child: Align(
                       alignment: Alignment.center,
-                      child: Text(
-                        '리뷰 작성',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                      child: textFormat(
+                        text: '리뷰 작성',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -368,12 +367,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          tagName,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
+        textFormat(
+          text: tagName,
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
         ),
         const SizedBox(height: 10),
         WriteReviewListview(
@@ -421,12 +418,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                   size: 60.w,
                   color: const Color(0xffa9afb7),
                 ),
-                const Text(
-                  '사진을 추가해주세요! (선택)',
-                  style: TextStyle(
-                    color: Color(0xff464D57),
-                    fontSize: 12,
-                  ),
+                textFormat(
+                  text: '사진을 추가해주세요! (선택)',
+                  color: const Color(0xff464D57),
+                  fontSize: 12,
                 ),
               ],
             ),

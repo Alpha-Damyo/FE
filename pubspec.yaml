@@ -118,6 +118,7 @@ flutter:
     - assets/icons/statistics_screen/
     - assets/icons/statistics_screen/special_statistics/
     - assets/icons/updateprofile_screen/
+    - assets/icons/login_screen/
     - assets/images/smoking_area_default_image.png
     - assets/icons/map_screen/bookmark.png
     - assets/icons/map_screen/challenge.png

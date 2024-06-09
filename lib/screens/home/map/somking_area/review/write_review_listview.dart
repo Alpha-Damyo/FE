@@ -1,3 +1,4 @@
+import 'package:damyo/style.dart';
 import 'package:flutter/material.dart';
 
 // Listview
@@ -52,11 +53,9 @@ class _WriteReviewListview extends State<WriteReviewListview> {
                     ),
                     borderRadius: BorderRadius.circular(36),
                   ),
-                  child: Text(
-                    widget.characterList[i],
-                    style: const TextStyle(
-                      fontSize: 12,
-                    ),
+                  child: textFormat(
+                    text: widget.characterList[i],
+                    fontSize: 12,
                   ),
                 ),
               ),
@@ -115,11 +114,9 @@ class _WriteReviewDuplicateListview
                     ),
                     borderRadius: BorderRadius.circular(36),
                   ),
-                  child: Text(
-                    widget.characterList[i],
-                    style: const TextStyle(
-                      fontSize: 12,
-                    ),
+                  child: textFormat(
+                    text: widget.characterList[i],
+                    fontSize: 12,
                   ),
                 ),
               ),
