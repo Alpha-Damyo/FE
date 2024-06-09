@@ -1,4 +1,5 @@
 import 'package:damyo/provider/islogin_provider.dart';
+import 'package:damyo/provider/userinfo_provider.dart';
 import 'package:damyo/services/login_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,11 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void checkLoginState(dynamic userInfo) {
-    print(userInfo.statusCode);
-    if (userInfo.statusCode != null) {
-      context.push('/login/signup');
+  Future<void> checkLoginState(Map<String, dynamic> userInfo) async {
+    if (userInfo['code'] == "A102") {
+      // 회원가입이 되어있지 않음. 회원가입 페이지로 이동
+      context.go('/login/signup');
     } else {
+      // 로그인 성공, 토큰 저장
+      await storage.write(key: 'accessToken', value: userInfo['token']);
+
       context.pop();
     }
   }
@@ -43,10 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleUser!.authentication;
-
-    print('name = ${googleUser.displayName}');
-    print('email = ${googleUser.email}');
-    print('id = ${googleUser.id}');
+    Map<String, dynamic> userInfo;
 
     await storage.write(key: 'userID', value: googleUser.email);
     await storage.write(key: 'sns', value: "google");
@@ -54,9 +55,13 @@ class _LoginScreenState extends State<LoginScreen> {
     // String? id = await storage.read(key: 'userID');
 
     // google accesstoken 받아오기
-    print(googleSignInAuthentication.accessToken);
+
+    userInfo = await login({
+      "token": googleSignInAuthentication.accessToken.toString(),
+    }, "google");
     Provider.of<IsLoginProvider>(context, listen: false).login();
-    //checkLoginState();
+
+    await checkLoginState(userInfo);
   }
 
   void signInWithNaver() async {
@@ -73,10 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     userInfo = await login({
       "token": naverToken.toString(),
-      "provider": "naver",
-    });
+    }, "naver");
     Provider.of<IsLoginProvider>(context, listen: false).login();
-    checkLoginState(userInfo);
+
+    await checkLoginState(userInfo);
   }
 
   void signOutWithNaver() async {
@@ -104,10 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
           //login(token.toString());
           userInfo = await login({
             "token": kakaoToken,
-            "provider": "kakao",
-          });
+          }, "kakao");
           // print(userInfo);
-          checkLoginState(userInfo);
+          await checkLoginState(userInfo);
         } catch (error) {
           if (error == 404) {
             context.push('/login/signup');
@@ -136,10 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
             await storage.write(key: 'sns', value: "kakao");
             userInfo = await login({
               "token": kakaoToken,
-              "provider": "kakao",
-            });
+            }, "kakao");
 
-            checkLoginState(userInfo);
+            await checkLoginState(userInfo);
           } catch (error) {
             if (error == 404) {
               context.push('/login/signup');
@@ -167,10 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
           await storage.write(key: 'sns', value: "kakao");
           userInfo = await login({
             "token": kakaoToken,
-            "provider": "kakao",
-          });
+          }, "kakao");
           print(userInfo);
-          checkLoginState(userInfo);
+          await checkLoginState(userInfo);
         } catch (error) {
           if (error == 404) {
             context.push('/login/signup');

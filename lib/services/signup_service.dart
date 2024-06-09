@@ -8,8 +8,7 @@ Future<http.Response> signup(
   final baseUrl = dotenv.get('BASE_URL');
 
   // 요청을 보낼 URL 구성
-  var url = Uri.parse(
-      'http://ec2-3-37-0-59.ap-northeast-2.compute.amazonaws.com/api/auth/signup');
+  var url = Uri.parse('$baseUrl/auth/');
 
   // MultipartRequest 객체 생성
   var request = http.MultipartRequest('POST', url);
