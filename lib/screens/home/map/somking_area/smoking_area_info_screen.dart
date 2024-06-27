@@ -179,16 +179,16 @@ class _SmokingAreaInfoScreenState extends State<SmokingAreaInfoScreen> {
                       child: Column(
                         children: [
                           const SizedBox(height: 5),
-                          const Row(
+                          Row(
                             children: [
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.only(right: 10.0),
                                 child: Icon(
                                   Icons.location_on_sharp,
                                   size: 25,
                                 ),
                               ),
-                              Text("서울특별시 성북구 정릉로 77")
+                              Text(snapshot.data.address)
                             ],
                           ),
                           const SizedBox(height: 20),
