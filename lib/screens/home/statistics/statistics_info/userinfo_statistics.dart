@@ -12,7 +12,7 @@ class userInfo extends StatefulWidget {
   });
 
   SmokeDatabaseHelper userDB;
-  final String userName = '최하영';
+  final String userName = '홍길동';
   @override
   State<userInfo> createState() => _userInfoState();
 }
@@ -28,16 +28,16 @@ class _userInfoState extends State<userInfo>
     _controller = ScrollController();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5), // 애니메이션 지속 시간 설정
+      duration: const Duration(seconds: 5), // 애니메이션 지속 시간 설정
     )..repeat();
     getDB();
     super.initState();
   }
 
   Future<void> getDB() async {
-    final _smokeDB = await widget.userDB.getSmokeInfoGroupedByColumn('id');
+    final smokeDB = await widget.userDB.getSmokeInfoGroupedByColumn('id');
     setState(() {
-      smokePlace = _smokeDB;
+      smokePlace = smokeDB;
     });
   }
 
@@ -132,8 +132,8 @@ class _userInfoState extends State<userInfo>
               const SizedBox(height: 10),
               (smokePlace == null || smokePlace!.isEmpty)
                   ? const Center(child: Text('No Data Available'))
-                  : SizedBox(
-                      width: 390,
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -168,7 +168,7 @@ class _userInfoState extends State<userInfo>
               context.push('/sa_info', extra: '$id,$name');
             },
             child: Container(
-              width: 120,
+              width: 130,
               height: 120,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
               decoration: BoxDecoration(
@@ -204,7 +204,7 @@ class _userInfoState extends State<userInfo>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '$cnt 회',
+                        '$cnt회',
                         style: const TextStyle(
                           color: Color(0xFF6E767F),
                           fontSize: 10,

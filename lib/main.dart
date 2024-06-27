@@ -1,21 +1,21 @@
 import 'dart:developer';
 
+import 'package:damyo/models/challenge_model.dart';
 import 'package:damyo/provider/filterlist_provider.dart';
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
 import 'package:damyo/screens/home/challenge/challengedetail_screen.dart';
 import 'package:damyo/screens/home/challenge/challengevote_screen.dart';
+import 'package:damyo/screens/home/home_screen.dart';
 import 'package:damyo/screens/home/inform/inform_screen.dart';
-import 'package:damyo/screens/home/map/search/search_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/review/write_review_screen.dart';
 import 'package:damyo/screens/home/map/somking_area/smoking_area_info_screen.dart';
-import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/achievement_screen.dart';
+import 'package:damyo/screens/home/mypage/in_mypage/favorite_screen.dart';
 import 'package:damyo/screens/home/mypage/in_mypage/updateprofile_screen.dart';
-import 'package:damyo/screens/login/login_screen.dart';
-import 'package:damyo/screens/home/home_screen.dart';
-import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/screens/home/statistics/statistics_info/special_statistics_util.dart';
+import 'package:damyo/screens/login/login_screen.dart';
+import 'package:damyo/screens/signup/signup_screen.dart';
 import 'package:damyo/secret.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,9 +24,8 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 // 지도 초기화
@@ -161,7 +160,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await dotenv.load(fileName: ".env");
   await _initializeMap();
-  _requestPermission();
+  //_requestPermission();
   await _getCurrentLocation();
   // Kakao sdk 초기화
   _initializeKakao();
@@ -214,13 +213,18 @@ final GoRouter router = GoRouter(
         GoRoute(
           name: 'login',
           path: 'login',
-          builder: (context, state) => const LoginScreen(),
+          builder: (context, state) {
+            final function = state.extra as VoidCallback;
+            return LoginScreen(update: function);
+          },
           routes: [
             GoRoute(
-              name: 'signup',
-              path: 'signup',
-              builder: (context, state) => const SignupScreen(),
-            ),
+                name: 'signup',
+                path: 'signup',
+                builder: (context, state) {
+                  String token = state.extra.toString();
+                  return SignupScreen(token: token);
+                }),
           ],
         ),
         GoRoute(
@@ -241,15 +245,19 @@ final GoRouter router = GoRouter(
           name: 'update_profile',
           path: 'update_profile',
           builder: (context, state) {
-            return const UpdateprofileScreen();
+            final function = state.extra as VoidCallback;
+            return UpdateprofileScreen(
+              update: function,
+            );
           },
         ),
         GoRoute(
           path: 'details',
           builder: (context, state) {
-            final title = (state.extra as Map<String, String>)['title'] ??
-                "Default Title";
-            return ChallengeDetailScreen(title: title);
+            final challenge = state.extra as Challenge;
+            return ChallengeDetailScreen(
+              challenge: challenge,
+            );
           },
         ),
         GoRoute(
@@ -279,6 +287,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
       theme: ThemeData(
         fontFamily: 'pretendard',

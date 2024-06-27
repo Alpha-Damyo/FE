@@ -1,3 +1,4 @@
+import 'package:damyo/models/userinfo/user_info_model.dart';
 import 'package:damyo/provider/islogin_provider.dart';
 import 'package:damyo/provider/userInfo_provider.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,25 @@ class MypageScreen extends StatefulWidget {
   State<MypageScreen> createState() => _MypageScreenState();
 }
 
+UserInfoModel userInfoModel = UserInfoModel(
+    "c8940db5-38ae-4eed-b641-c83a38d87dd8",
+    "김민제",
+    "kmj200050005@gmail.com",
+    "2024-06-06T07:08:11.512128",
+    "https://d2wcv86mbz7x2c.cloudfront.net/c7157892-d%EB%A9%80%ED%8B%B0%ED%8C%8C%ED%8A%B8%20%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%9A%A9.jpg",
+    0,
+    "남자",
+    33,
+    50,
+    463,
+    "google",
+    "106362899132468449802");
+
 class _MypageScreenState extends State<MypageScreen> {
+  void update() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<IsLoginProvider>(
@@ -23,14 +42,13 @@ class _MypageScreenState extends State<MypageScreen> {
             appBar: AppBar(
               scrolledUnderElevation: 0,
               backgroundColor: Colors.white,
-              title: Text(
+              title: const Text(
                 '마이페이지',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 20,
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w700,
-                  height: 0,
                 ),
               ),
               centerTitle: true,
@@ -80,11 +98,11 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
+                                          const Text(
                                             '즐겨찾기 관리',
                                             style: TextStyle(
-                                              color: const Color(0xFF262B32),
-                                              fontSize: 16.sp,
+                                              color: Color(0xFF262B32),
+                                              fontSize: 16,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -118,14 +136,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '흡연구역 업데이트',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                 ),
@@ -164,16 +181,16 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Text(
+                                          const Text(
                                             '업적 & 기여도',
                                             style: TextStyle(
-                                              color: const Color(0xFF262B32),
-                                              fontSize: 16.sp,
+                                              color: Color(0xFF262B32),
+                                              fontSize: 16,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          SizedBox(width: 280),
+                                          SizedBox(width: 250.w),
                                         ],
                                       ),
                                     ),
@@ -201,14 +218,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '흡연데이터 초기화',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                 ),
@@ -244,14 +260,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '푸쉬 알림',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                   height: 0,
@@ -341,14 +356,13 @@ class _MypageScreenState extends State<MypageScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          Expanded(
+                                          const Expanded(
                                             child: SizedBox(
                                               child: Text(
                                                 '앱 버전',
                                                 style: TextStyle(
-                                                  color:
-                                                      const Color(0xFF262B32),
-                                                  fontSize: 16.sp,
+                                                  color: Color(0xFF262B32),
+                                                  fontSize: 16,
                                                   fontFamily: 'Pretendard',
                                                   fontWeight: FontWeight.w500,
                                                   height: 0,
@@ -357,11 +371,11 @@ class _MypageScreenState extends State<MypageScreen> {
                                             ),
                                           ),
                                           SizedBox(width: 82.w),
-                                          Text(
+                                          const Text(
                                             '3.4',
                                             style: TextStyle(
-                                              color: const Color(0xFFA8AFB6),
-                                              fontSize: 14.sp,
+                                              color: Color(0xFFA8AFB6),
+                                              fontSize: 14,
                                               fontFamily: 'Pretendard',
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -411,21 +425,21 @@ class _MypageScreenState extends State<MypageScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     '로그인 / 회원가입',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 20.sp,
+                      fontSize: 20,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   SizedBox(height: 6.h),
-                  Text(
+                  const Text(
                     '담요와 함께 바른 문화를 만들어봐요 ! ',
                     style: TextStyle(
-                      color: const Color(0xFF6E767F),
-                      fontSize: 14.sp,
+                      color: Color(0xFF6E767F),
+                      fontSize: 14,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w400,
                     ),
@@ -453,13 +467,13 @@ class _MypageScreenState extends State<MypageScreen> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    context.push('/login');
+                    context.push('/login', extra: update);
                   },
-                  child: Text(
+                  child: const Text(
                     '로그인/회원가입 하러 가기',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 14.sp,
+                      fontSize: 14,
                       fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w600,
                     ),
@@ -475,8 +489,8 @@ class _MypageScreenState extends State<MypageScreen> {
 
   Widget LoggedPage() {
     return Container(
-      width: 390.w,
-      height: 189.h,
+      // width: 390.w,
+      // height: 189.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
       decoration: const BoxDecoration(color: Colors.white),
       child: Column(
@@ -485,7 +499,6 @@ class _MypageScreenState extends State<MypageScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 358.w,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -497,14 +510,9 @@ class _MypageScreenState extends State<MypageScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      height: 84.h,
                       clipBehavior: Clip.antiAlias,
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFDEDEDE),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.r),
-                        ),
-                      ),
+                      decoration: const BoxDecoration(
+                          color: Color(0xFFDEDEDE), shape: BoxShape.circle),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -513,10 +521,9 @@ class _MypageScreenState extends State<MypageScreen> {
                           Container(
                             width: 84.w,
                             height: 84.h,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage(
-                                    "https://via.placeholder.com/84x84"),
+                                image: NetworkImage(userInfoModel.profileUrl!),
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -531,12 +538,10 @@ class _MypageScreenState extends State<MypageScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          Provider.of<UserInfoProvider>(context)
-                              .name
-                              .toString(),
-                          style: TextStyle(
+                          userInfoModel.name!,
+                          style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 16.sp,
+                            fontSize: 16,
                             fontFamily: 'Pretendard',
                             fontWeight: FontWeight.w700,
                           ),
@@ -560,10 +565,10 @@ class _MypageScreenState extends State<MypageScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                '바른 문화 기여도: ${Provider.of<UserInfoProvider>(context).score}점',
-                                style: TextStyle(
+                                '바른 문화 기여도: ${userInfoModel.contribution}점',
+                                style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 12.sp,
+                                  fontSize: 12,
                                   fontFamily: 'Pretendard',
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -578,14 +583,14 @@ class _MypageScreenState extends State<MypageScreen> {
                 SizedBox(width: 70.w),
                 IconButton(
                     onPressed: () {
-                      context.push('/update_profile');
+                      context.push('/update_profile', extra: update);
                     },
                     icon: const Icon(Icons.keyboard_arrow_right)),
                 SizedBox(width: 10.w),
               ],
             ),
           ),
-          SizedBox(height: 24.h),
+          const SizedBox(height: 20),
           Container(
             width: 358.w,
             padding: EdgeInsets.symmetric(horizontal: 55.w, vertical: 12.h),
@@ -596,27 +601,22 @@ class _MypageScreenState extends State<MypageScreen> {
                 borderRadius: BorderRadius.circular(10.r),
               ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Provider.of<IsLoginProvider>(context, listen: false)
-                        .logout();
-                  },
-                  child: Text(
-                    '로그아웃',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14.sp,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w600,
-                    ),
+            child: GestureDetector(
+              onTap: () {
+                Provider.of<IsLoginProvider>(context, listen: false).logout();
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: const Text(
+                  '로그아웃',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ],

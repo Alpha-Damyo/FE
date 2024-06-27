@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:damyo/models/updateprofile/update_name_model.dart';
 import 'package:damyo/models/updateprofile/update_profile_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 Future<String?> putUserUpdateName(UpdateNameModel nameModel) async {
   final baseUrl = dotenv.get('BASE_URL');
   final token = dotenv.get('TEST_TOKEN');
+  
 
   var url = Uri.parse('$baseUrl/user/update/name?name=${nameModel.name}');
   var headers = {
@@ -28,9 +30,9 @@ Future<String?> putUserUpdateName(UpdateNameModel nameModel) async {
   }
 }
 
-Future<String?> putUserUpdateProfile(UpdateProfileModel profileModel) async {
+Future<String?> putUserUpdateProfile(UpdateProfileModel profileModel, String token) async {
   final baseUrl = dotenv.get('BASE_URL');
-  final token = dotenv.get('TEST_TOKEN');
+  // final token = dotenv.get('TEST_TOKEN');
   
   var url = Uri.parse('$baseUrl/user/update/profile');
   var request = http.MultipartRequest('PUT', url);

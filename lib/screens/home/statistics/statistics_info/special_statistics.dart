@@ -12,9 +12,9 @@ class _SpecialDaysState extends State<SpecialDays> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 390,
+      // width: 600,
       height: 84,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       decoration: const BoxDecoration(color: Colors.white),
       child: Ink(
         child: Column(
@@ -40,9 +40,10 @@ class _SpecialDaysState extends State<SpecialDays> {
                           padding: const EdgeInsets.only(
                               top: 5, left: 9, right: 8, bottom: 5),
                           clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(color: Colors.white),
-                          child:
-                              Image(image: AssetImage('assets/icons/statistics_screen/special_statistics/test.png')),
+                          decoration: const BoxDecoration(color: Colors.white),
+                          child: const Image(
+                              image: AssetImage(
+                                  'assets/icons/statistics_screen/special_statistics/test.png')),
                         ),
                         const SizedBox(width: 16),
                         const Text.rich(
@@ -78,7 +79,8 @@ class _SpecialDaysState extends State<SpecialDays> {
                       context.push('/special_day');
                     },
                     icon: const ImageIcon(
-                      AssetImage('assets/icons/statistics_screen/special_statistics/go.png'),
+                      AssetImage(
+                          'assets/icons/statistics_screen/special_statistics/go.png'),
                     ),
                   ),
                 ],
